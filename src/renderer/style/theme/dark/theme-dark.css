@@ -1,0 +1,10 @@
+@import './pages/login.css';
+@import './elements/buttons.css';
+
+.theme-dark * {
+  color: white;
+}
+
+.theme-dark body {
+  background-color: #232323;
+}

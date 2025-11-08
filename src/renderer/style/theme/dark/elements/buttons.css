@@ -1,0 +1,7 @@
+.theme-dark button.btn-primary {
+  background-color: #0072f8;
+  padding: 8px 12px;
+}
+.theme-dark button.btn-primary:hover {
+  background-color: #025dc5;
+}
