@@ -13,7 +13,8 @@
     "types": ["electron-vite/node", "vitest/globals"],
     "paths": {
       "@main/*": ["./src/main/*"],
-      "@common/*": ["./src/common/*"]
+      "@common/*": ["./src/common/*"],
+      "@preload/*": ["./src/preload/*"]
     }
   }
 }
