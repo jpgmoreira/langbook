@@ -3,6 +3,7 @@
 @import './elements/controls.css';
 @import './elements/table.css';
 @import './elements/scrollbar.css';
+@import './elements/text.css';
 @import './components/modal.css';
 @import './components/toast.css';
 

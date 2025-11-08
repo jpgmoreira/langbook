@@ -16,6 +16,7 @@
   const modals = reactive({
     create: false,
     rename: false,
+    delete: false,
   });
   async function createProfile() {
     const result = await profileStore.createProfile(names.create);
@@ -77,6 +78,25 @@
       </template>
     </Modal>
 
+    <!-- Delete modal: -->
+    <Modal :visible="modals.delete" @close="modals.delete = false">
+      <template #header>Delete</template>
+      <template #body>
+        <div>
+          Are you sure you want to delete profile
+          <span class="text-danger font-bold">{{ selected?.name }}</span>
+          ?
+        </div>
+        <div class="text-danger">This action cannot be undone!</div>
+      </template>
+      <template #footer>
+        <div class="flex justify-between">
+          <button type="button" class="btn-warning" @click="modals.delete = false">Cancel</button>
+          <button type="button" class="btn-danger">Delete</button>
+        </div>
+      </template>
+    </Modal>
+
     <div class="flex justify-center items-center h-10 text-lg">Select or create a profile</div>
     <div class="flex grow table-container overflow-y-auto">
       <div v-if="!records.length" class="flex grow items-center justify-center">
@@ -117,7 +137,14 @@
         <button type="button" class="btn-primary" :disabled="!selected" @click="startRename">
           Rename
         </button>
-        <button type="button" class="btn-primary" :disabled="!selected">Delete</button>
+        <button
+          type="button"
+          class="btn-primary"
+          :disabled="!selected"
+          @click="modals.delete = true"
+        >
+          Delete
+        </button>
       </div>
       <button type="button" class="btn-primary absolute right-2">About</button>
     </footer>

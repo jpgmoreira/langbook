@@ -48,3 +48,27 @@
   transform: none;
   outline: none;
 }
+
+.theme-dark button.btn-danger {
+  background-color: #dc2626;
+  color: white;
+  padding: 6px 10px;
+}
+.theme-dark button.btn-danger:hover {
+  background-color: #b91c1c;
+}
+.theme-dark button.btn-danger:active {
+  background-color: #991b1b;
+  transform: translateY(1px);
+}
+.theme-dark button.btn-danger:focus {
+  outline: 2px solid #f87171;
+  outline-offset: 1px;
+}
+.theme-dark button.btn-danger:disabled {
+  background-color: #7f1d1d;
+  color: #f3f3f3;
+  cursor: not-allowed;
+  transform: none;
+  outline: none;
+}

@@ -8,6 +8,9 @@
     if (e.key === 'Escape' && props.visible) {
       emit('close');
     }
+    if (e.key === 'Tab') {
+      e.preventDefault();
+    }
   }
   onMounted(() => window.addEventListener('keydown', onKey));
   onUnmounted(() => window.removeEventListener('keydown', onKey));
