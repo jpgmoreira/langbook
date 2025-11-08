@@ -1,0 +1,1 @@
+<template>Login page</template>

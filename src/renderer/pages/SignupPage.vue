@@ -1,0 +1,1 @@
+<template>Signup page</template>
