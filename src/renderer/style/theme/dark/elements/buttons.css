@@ -13,6 +13,13 @@
   outline: 2px solid #3b82f6;
   outline-offset: 1px;
 }
+.theme-dark button.btn-primary:disabled {
+  background-color: #4b5563;
+  color: #a1a1aa;
+  cursor: not-allowed;
+  transform: none;
+  outline: none;
+}
 
 .theme-dark button.btn-warning {
   background-color: #f59e0b;
@@ -29,4 +36,11 @@
 .theme-dark button.btn-warning:focus {
   outline: 2px solid #fbbf24;
   outline-offset: 1px;
+}
+.theme-dark button.btn-warning:disabled {
+  background-color: #a16207;
+  color: #e5e5e5;
+  cursor: not-allowed;
+  transform: none;
+  outline: none;
 }
