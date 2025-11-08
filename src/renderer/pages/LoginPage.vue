@@ -11,9 +11,11 @@
   const selected = ref<ProfileRecord | null>(null);
   const names = reactive({
     create: '',
+    rename: '',
   });
   const modals = reactive({
     create: false,
+    rename: false,
   });
   async function createProfile() {
     const result = await profileStore.createProfile(names.create);
@@ -27,10 +29,25 @@
   function selectRow(record: ProfileRecord) {
     selected.value = record;
   }
+  function startRename() {
+    names.rename = selected.value?.name || '';
+    modals.rename = true;
+  }
+  async function applyRename() {
+    const profileId = selected.value!.id;
+    const newName = names.rename;
+    const result = await profileStore.renameProfile(profileId, newName);
+    if (result.status === 'error') {
+      uiStore.showToast(result.errorMsg, 'error');
+    } else {
+      modals.rename = false;
+    }
+  }
 </script>
 
 <template>
   <div class="flex flex-col h-screen login-page">
+    <!-- Create modal: -->
     <Modal :visible="modals.create" @close="modals.create = false">
       <template #header>New Profile</template>
       <template #body>
@@ -41,6 +58,21 @@
         <div class="flex justify-between">
           <button type="button" class="btn-warning" @click="modals.create = false">Cancel</button>
           <button type="button" class="btn-primary" @click="createProfile">Create</button>
+        </div>
+      </template>
+    </Modal>
+
+    <!-- Rename modal: -->
+    <Modal :visible="modals.rename" @close="modals.rename = false">
+      <template #header>Rename</template>
+      <template #body>
+        <div class="mb-1">Rename the "{{ selected?.name }}" profile:</div>
+        <input type="text" v-model.trim="names.rename" :placeholder="selected?.name" />
+      </template>
+      <template #footer>
+        <div class="flex justify-between">
+          <button type="button" class="btn-warning" @click="modals.rename = false">Cancel</button>
+          <button type="button" class="btn-primary" @click="applyRename">Rename</button>
         </div>
       </template>
     </Modal>
@@ -82,7 +114,9 @@
       <div class="flex grow gap-1 justify-center">
         <button type="button" class="btn-primary" @click="modals.create = true">Create</button>
         <button type="button" class="btn-primary" :disabled="!selected">Select</button>
-        <button type="button" class="btn-primary" :disabled="!selected">Rename</button>
+        <button type="button" class="btn-primary" :disabled="!selected" @click="startRename">
+          Rename
+        </button>
         <button type="button" class="btn-primary" :disabled="!selected">Delete</button>
       </div>
       <button type="button" class="btn-primary absolute right-2">About</button>

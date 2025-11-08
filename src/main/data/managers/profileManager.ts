@@ -92,6 +92,18 @@ export class ProfileManager {
     return { status: 'success' };
   }
 
+  public renameProfile(profileId: string, name: string): GenericResponseDTO {
+    name = name.trim();
+    const validationResult = this.validateProfileName(name);
+    if (validationResult.status === 'error') {
+      return validationResult;
+    }
+    const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
+    record.name = name;
+    // TODO: Rename profile in their folder.
+    return { status: 'success' };
+  }
+
   public loadProfile(profileId: string) {}
 
   public logout() {

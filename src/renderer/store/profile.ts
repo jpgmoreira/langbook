@@ -5,6 +5,7 @@ import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
 import { Channels } from '@preload/channels';
 import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
+import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 
 EventEmitter.instance.on(Events.loadInitialData, (data: StartupData) => {
   useProfileStore().initFromStartupData(data);
@@ -37,6 +38,19 @@ export const useProfileStore = defineStore('profile', {
     clear() {
       this.currProfile = null;
       this.registry.currProfileId = null;
+    },
+    async renameProfile(profileId: string, newName: string) {
+      newName = newName.trim();
+      const result = await window.api.invoke<GenericResponseDTO>(
+        Channels.renameProfile,
+        profileId,
+        newName
+      );
+      if (result.status === 'success') {
+        const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
+        record.name = newName;
+      }
+      return result;
     },
   },
 });

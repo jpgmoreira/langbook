@@ -1,4 +1,5 @@
 import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
+import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { ProfileManager } from '@main/data/managers/profileManager';
 import { loadStartupData } from '@main/data/startup';
 import { Channels } from '@preload/channels';
@@ -17,4 +18,10 @@ ipcMain.handle(
       data,
     };
   }
+);
+
+ipcMain.handle(
+  Channels.renameProfile,
+  async (_: IpcMainInvokeEvent, profileId: string, name: string): Promise<GenericResponseDTO> =>
+    ProfileManager.instance.renameProfile(profileId, name)
 );
