@@ -25,7 +25,7 @@
 </script>
 
 <template>
-  <div class="flex flex-col h-screen login-page">
+  <div class="flex flex-col h-screen login-page" style="border: 1px solid red">
     <Modal :visible="modals.create" @close="modals.create = false">
       <template #header>New Profile</template>
       <template #body>
@@ -41,9 +41,38 @@
     </Modal>
 
     <div class="flex justify-center items-center h-10 text-lg">Select or create a profile</div>
-    <div class="flex grow table-container">
+    <div class="flex grow table-container overflow-y-auto" style="border: 1px solid cyan">
       <div v-if="!records.length" class="flex grow items-center justify-center">
         <div class="text-xl opacity-70 whitespace-nowrap">No profiles yet!</div>
+      </div>
+      <div v-else class="grow">
+        <table>
+          <thead class="sticky top-0">
+            <tr>
+              <th>Profile</th>
+              <th>#Sessions</th>
+              <th>#Cards</th>
+              <th>Created at</th>
+              <th>Last access</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- <tr v-for="profile in records">
+              <td>{{ profile.name }}</td>
+              <td>{{ profile.sessions }}</td>
+              <td>{{ profile.cards }}</td>
+              <td>{{ profile.createdAt }}</td>
+              <td>{{ profile.lastAccess }}</td>
+            </tr> -->
+            <tr v-for="i in 100">
+              <td>{{ i }}</td>
+              <td>{{ i }}</td>
+              <td>{{ i }}</td>
+              <td>{{ i }}</td>
+              <td>{{ i }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <footer class="relative flex p-2">

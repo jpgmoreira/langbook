@@ -1,0 +1,43 @@
+.theme-dark table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #444;
+}
+
+.theme-dark th,
+.theme-dark td {
+  padding: 6px 10px;
+  text-align: left;
+  border: 1px solid #444;
+}
+
+.theme-dark th {
+  background-color: #333333;
+  font-weight: 600;
+}
+
+.theme-dark td {
+  background-color: #2a2a2a;
+}
+
+.theme-dark tr:hover td {
+  background-color: #383838;
+}
+
+.theme-dark tr:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+
+.theme-dark tbody tr:last-child td {
+  border-bottom: 1px solid #444;
+}
+
+.theme-dark caption {
+  caption-side: bottom;
+  padding: 6px;
+  color: #aaa;
+  font-size: 12px;
+}
