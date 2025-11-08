@@ -13,8 +13,16 @@
   <div class="flex flex-col h-screen login-page">
     <Modal :visible="modals.create" @close="modals.create = false">
       <template #header>New Profile</template>
-      <template #body>Create a new profile</template>
-      <template #footer></template>
+      <template #body>
+        <div class="mb-1">Create a new profile:</div>
+        <input type="text" placeholder="Profile Name..." />
+      </template>
+      <template #footer>
+        <div class="flex justify-between">
+          <button type="button" class="btn-warning" @click="modals.create = false">Cancel</button>
+          <button type="button" class="btn-primary">Create</button>
+        </div>
+      </template>
     </Modal>
 
     <div class="flex justify-center items-center h-10 text-lg">Select or create a profile</div>

@@ -1,0 +1,12 @@
+.theme-dark input,
+.theme-dark select,
+.theme-dark textarea {
+  background-color: #3f444b;
+  border: 1px solid #30343a;
+}
+
+.theme-dark input {
+  width: 100%;
+  padding: 4px 5px;
+  border-radius: 5px;
+}

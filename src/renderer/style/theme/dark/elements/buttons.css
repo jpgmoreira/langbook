@@ -1,7 +1,32 @@
 .theme-dark button.btn-primary {
   background-color: #0072f8;
-  padding: 8px 12px;
+  padding: 6px 10px;
 }
 .theme-dark button.btn-primary:hover {
   background-color: #025dc5;
+}
+.theme-dark button.btn-primary:active {
+  background-color: #014c9e;
+  transform: translateY(1px);
+}
+.theme-dark button.btn-primary:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 1px;
+}
+
+.theme-dark button.btn-warning {
+  background-color: #f59e0b;
+  color: black;
+  padding: 6px 10px;
+}
+.theme-dark button.btn-warning:hover {
+  background-color: #d97706;
+}
+.theme-dark button.btn-warning:active {
+  background-color: #b45309;
+  transform: translateY(1px);
+}
+.theme-dark button.btn-warning:focus {
+  outline: 2px solid #fbbf24;
+  outline-offset: 1px;
 }
