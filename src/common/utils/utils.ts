@@ -27,3 +27,7 @@ export function buildId(name: string, timestamp: number) {
   const id = `${slug}-${code}`;
   return id;
 }
+
+export async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

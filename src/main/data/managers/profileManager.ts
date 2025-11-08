@@ -11,7 +11,7 @@ import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@main/events/events';
 import fs from 'fs';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
-import { buildId } from '@common/utils/utils';
+import { buildId, sleep } from '@common/utils/utils';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   ProfileManager.instance.clear();
@@ -101,6 +101,21 @@ export class ProfileManager {
     const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
     record.name = name;
     // TODO: Rename profile in their folder.
+    return { status: 'success' };
+  }
+
+  public async deleteProfile(profileId: string): Promise<GenericResponseDTO> {
+    await sleep(5000);
+    try {
+      // TODO: Perform entire profile deletion.
+      this.registry.profileRecords = this.registry.profileRecords.filter((p) => p.id !== profileId);
+    } catch (err) {
+      console.log('Error while deleting profile:', err);
+      return {
+        status: 'error',
+        errorMsg: 'Error while deleting profile.',
+      };
+    }
     return { status: 'success' };
   }
 

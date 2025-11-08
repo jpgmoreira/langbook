@@ -9,6 +9,7 @@
   const uiStore = useUIStore();
   const records = computed(() => profileStore.registry.profileRecords);
   const selected = ref<ProfileRecord | null>(null);
+  const isDeleting = ref(false);
   const names = reactive({
     create: '',
     rename: '',
@@ -24,8 +25,20 @@
       uiStore.showToast(result.errorMsg, 'error');
     } else {
       modals.create = false;
+      names.create = '';
       // TODO: ... router!
     }
+  }
+  async function deleteProfile() {
+    const profileId = selected.value!.id;
+    isDeleting.value = true;
+    const result = await profileStore.deleteProfile(profileId);
+    if (result.status === 'error') {
+      uiStore.showToast(result.errorMsg, 'error');
+    }
+    isDeleting.value = false;
+    modals.delete = false;
+    selected.value = null;
   }
   function selectRow(record: ProfileRecord) {
     selected.value = record;
@@ -42,6 +55,7 @@
       uiStore.showToast(result.errorMsg, 'error');
     } else {
       modals.rename = false;
+      names.rename = '';
     }
   }
 </script>
@@ -79,7 +93,7 @@
     </Modal>
 
     <!-- Delete modal: -->
-    <Modal :visible="modals.delete" @close="modals.delete = false">
+    <Modal :visible="modals.delete" :frozen="isDeleting" @close="modals.delete = false">
       <template #header>Delete</template>
       <template #body>
         <div>
@@ -87,12 +101,25 @@
           <span class="text-danger font-bold">{{ selected?.name }}</span>
           ?
         </div>
-        <div class="text-danger">This action cannot be undone!</div>
+        <div class="text-danger flex justify-center">This action cannot be undone!</div>
+        <div v-if="isDeleting" class="text-danger flex items-center">
+          <span class="loader mr-1"></span>
+          Deleting...
+        </div>
       </template>
       <template #footer>
         <div class="flex justify-between">
-          <button type="button" class="btn-warning" @click="modals.delete = false">Cancel</button>
-          <button type="button" class="btn-danger">Delete</button>
+          <button
+            type="button"
+            class="btn-warning"
+            @click="modals.delete = false"
+            :disabled="isDeleting"
+          >
+            Cancel
+          </button>
+          <button type="button" class="btn-danger" @click="deleteProfile" :disabled="isDeleting">
+            Delete
+          </button>
         </div>
       </template>
     </Modal>

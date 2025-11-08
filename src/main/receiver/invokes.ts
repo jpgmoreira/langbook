@@ -25,3 +25,9 @@ ipcMain.handle(
   async (_: IpcMainInvokeEvent, profileId: string, name: string): Promise<GenericResponseDTO> =>
     ProfileManager.instance.renameProfile(profileId, name)
 );
+
+ipcMain.handle(
+  Channels.deleteProfile,
+  async (_: IpcMainInvokeEvent, profileId: string): Promise<GenericResponseDTO> =>
+    ProfileManager.instance.deleteProfile(profileId)
+);

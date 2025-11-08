@@ -1,12 +1,25 @@
 <script lang="ts" setup>
   import { onMounted, onUnmounted } from 'vue';
-  const props = defineProps<{ visible: boolean }>();
+  const props = defineProps({
+    visible: {
+      type: Boolean,
+      required: true,
+    },
+    frozen: {
+      type: Boolean,
+      required: false,
+    },
+  });
   const emit = defineEmits<{
     (e: 'close'): void;
   }>();
+  function close() {
+    if (props.frozen) return;
+    emit('close');
+  }
   function onKey(e: KeyboardEvent) {
     if (e.key === 'Escape' && props.visible) {
-      emit('close');
+      close();
     }
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -20,7 +33,7 @@
   <teleport to="body">
     <div class="modal-container">
       <Transition name="backdrop-fade">
-        <div v-if="props.visible" class="backdrop" @click="emit('close')"></div>
+        <div v-if="props.visible" class="backdrop" @click="close"></div>
       </Transition>
       <Transition name="modal-slide">
         <div v-if="props.visible" class="modal">
@@ -28,7 +41,7 @@
             <div>
               <slot name="header"></slot>
             </div>
-            <div class="modal-close" @click="emit('close')"></div>
+            <div class="modal-close" @click="close"></div>
           </div>
           <div class="modal-body">
             <slot name="body"></slot>

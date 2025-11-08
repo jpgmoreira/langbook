@@ -25,7 +25,7 @@ export const useProfileStore = defineStore('profile', {
       this.currProfile = data.currProfile;
       this.registry = data.profileRegistry;
     },
-    async createProfile(name: string) {
+    async createProfile(name: string): Promise<CreateProfileResponseDTO> {
       const result = await window.api.invoke<CreateProfileResponseDTO>(
         Channels.createProfile,
         name
@@ -39,7 +39,7 @@ export const useProfileStore = defineStore('profile', {
       this.currProfile = null;
       this.registry.currProfileId = null;
     },
-    async renameProfile(profileId: string, newName: string) {
+    async renameProfile(profileId: string, newName: string): Promise<GenericResponseDTO> {
       newName = newName.trim();
       const result = await window.api.invoke<GenericResponseDTO>(
         Channels.renameProfile,
@@ -49,6 +49,15 @@ export const useProfileStore = defineStore('profile', {
       if (result.status === 'success') {
         const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
         record.name = newName;
+      }
+      return result;
+    },
+    async deleteProfile(profileId: string): Promise<GenericResponseDTO> {
+      const result = await window.api.invoke<GenericResponseDTO>(Channels.deleteProfile, profileId);
+      if (result.status === 'success') {
+        this.registry.profileRecords = this.registry.profileRecords.filter(
+          (p) => p.id !== profileId
+        );
       }
       return result;
     },

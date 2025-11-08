@@ -4,6 +4,7 @@ export const allowedSendChannels = Object.freeze([] as const);
 export const allowedInvokeChannels = Object.freeze([
   Channels.createProfile,
   Channels.renameProfile,
+  Channels.deleteProfile,
 ] as const);
 export const allowedOnChannels = Object.freeze([Channels.loadStartupData] as const);
 
