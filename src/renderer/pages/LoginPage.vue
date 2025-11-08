@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-  import { computed, reactive } from 'vue';
+  import { computed, reactive, ref } from 'vue';
   import { useProfileStore } from '@renderer/store/profile';
   import { useUIStore } from '@renderer/store/ui';
   import { parseTimestamp } from '@common/utils/dateUtils';
   import Modal from '@renderer/components/ui/Modal.vue';
+  import { ProfileRecord } from '@common/schemas/profile';
   const profileStore = useProfileStore();
   const uiStore = useUIStore();
   const records = computed(() => profileStore.registry.profileRecords);
+  const selected = ref<ProfileRecord | null>(null);
   const names = reactive({
     create: '',
   });
-
   const modals = reactive({
     create: false,
   });
@@ -22,6 +23,9 @@
       modals.create = false;
       // TODO: ... router!
     }
+  }
+  function selectRow(record: ProfileRecord) {
+    selected.value = record;
   }
 </script>
 
@@ -58,7 +62,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="profile in records" class="cursor-pointer">
+            <tr
+              v-for="profile in records"
+              class="cursor-pointer"
+              :class="{ selected: profile === selected }"
+              @click="selectRow(profile)"
+            >
               <td>{{ profile.name }}</td>
               <td>{{ profile.sessions }}</td>
               <td>{{ profile.cards }}</td>
@@ -72,9 +81,9 @@
     <footer class="relative flex p-2">
       <div class="flex grow gap-1 justify-center">
         <button type="button" class="btn-primary" @click="modals.create = true">Create</button>
-        <button type="button" class="btn-primary">Select</button>
-        <button type="button" class="btn-primary">Rename</button>
-        <button type="button" class="btn-primary">Delete</button>
+        <button type="button" class="btn-primary" :disabled="!selected">Select</button>
+        <button type="button" class="btn-primary" :disabled="!selected">Rename</button>
+        <button type="button" class="btn-primary" :disabled="!selected">Delete</button>
       </div>
       <button type="button" class="btn-primary absolute right-2">About</button>
     </footer>

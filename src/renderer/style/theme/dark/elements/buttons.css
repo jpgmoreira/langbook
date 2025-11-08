@@ -1,3 +1,7 @@
+.theme-dark button {
+  transition: background 0.2s ease;
+}
+
 .theme-dark button.btn-primary {
   background-color: #0072f8;
   padding: 6px 10px;
