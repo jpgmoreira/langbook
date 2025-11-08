@@ -10,6 +10,8 @@ import { DATA_DIR } from '../constants';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@main/events/events';
 import fs from 'fs';
+import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
+import { buildId } from '@common/utils/utils';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   ProfileManager.instance.clear();
@@ -68,6 +70,26 @@ export class ProfileManager {
 
   public getProfileRegistry() {
     return structuredClone(this._registryProxy.target || null);
+  }
+
+  public createProfile(name: string): GenericResponseDTO {
+    name = name.trim();
+    const validationResult = this.validateProfileName(name);
+    if (validationResult.status === 'error') {
+      return validationResult;
+    }
+    const now = Date.now();
+    const id = buildId(name, now);
+    this.registry.profileRecords.push({
+      id,
+      name,
+      createdAt: now,
+      lastAccess: now,
+      cards: 0,
+      sessions: 0,
+    });
+    this.loadProfile(id);
+    return { status: 'success' };
   }
 
   public loadProfile(profileId: string) {}

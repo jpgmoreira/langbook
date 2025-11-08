@@ -2,6 +2,7 @@
 @import './elements/buttons.css';
 @import './elements/controls.css';
 @import './components/modal.css';
+@import './components/toast.css';
 
 .theme-dark * {
   color: white;
