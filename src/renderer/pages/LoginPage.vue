@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-  import { computed, reactive, ref } from 'vue';
+  import { computed, reactive, ref, useTemplateRef } from 'vue';
   import { useProfileStore } from '@renderer/store/profile';
   import { useUIStore } from '@renderer/store/ui';
   import { parseTimestamp } from '@common/utils/dateUtils';
   import Modal from '@renderer/components/ui/Modal.vue';
   import { ProfileRecord } from '@common/schemas/profile';
+  import { nextTick } from 'vue';
   const profileStore = useProfileStore();
   const uiStore = useUIStore();
   const records = computed(() => profileStore.registry.profileRecords);
@@ -19,6 +20,8 @@
     rename: false,
     delete: false,
   });
+  const createInput = useTemplateRef('create-input');
+  const renameInput = useTemplateRef('rename-input');
   async function createProfile() {
     const result = await profileStore.createProfile(names.create);
     if (result.status === 'error') {
@@ -46,6 +49,10 @@
   function startRename() {
     names.rename = selected.value?.name || '';
     modals.rename = true;
+    nextTick(() => {
+      renameInput.value?.focus();
+      renameInput.value?.select();
+    });
   }
   async function applyRename() {
     const profileId = selected.value!.id;
@@ -58,6 +65,10 @@
       names.rename = '';
     }
   }
+  function openCreateModal() {
+    modals.create = true;
+    nextTick(() => createInput.value?.focus());
+  }
 </script>
 
 <template>
@@ -67,7 +78,13 @@
       <template #header>New Profile</template>
       <template #body>
         <div class="mb-1">Create a new profile:</div>
-        <input type="text" v-model.trim="names.create" placeholder="Profile Name..." />
+        <input
+          type="text"
+          ref="create-input"
+          v-model.trim="names.create"
+          placeholder="Profile Name..."
+          @keydown.enter="createProfile"
+        />
       </template>
       <template #footer>
         <div class="flex justify-between">
@@ -82,7 +99,13 @@
       <template #header>Rename</template>
       <template #body>
         <div class="mb-1">Rename the "{{ selected?.name }}" profile:</div>
-        <input type="text" v-model.trim="names.rename" :placeholder="selected?.name" />
+        <input
+          type="text"
+          ref="rename-input"
+          v-model.trim="names.rename"
+          :placeholder="selected?.name"
+          @keydown.enter="applyRename"
+        />
       </template>
       <template #footer>
         <div class="flex justify-between">
@@ -159,7 +182,7 @@
     </div>
     <footer class="relative flex p-2">
       <div class="flex grow gap-1 justify-center">
-        <button type="button" class="btn-primary" @click="modals.create = true">Create</button>
+        <button type="button" class="btn-primary" @click="openCreateModal">Create</button>
         <button type="button" class="btn-primary" :disabled="!selected">Select</button>
         <button type="button" class="btn-primary" :disabled="!selected" @click="startRename">
           Rename
@@ -173,6 +196,7 @@
           Delete
         </button>
       </div>
+      <!-- TODO: About -->
       <button type="button" class="btn-primary absolute right-2">About</button>
     </footer>
   </div>
