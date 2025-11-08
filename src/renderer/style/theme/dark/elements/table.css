@@ -2,8 +2,6 @@
   width: 100%;
   border-collapse: collapse;
   background-color: #2a2a2a;
-  color: white;
-  border: 1px solid #444;
 }
 
 .theme-dark th,
@@ -15,7 +13,11 @@
 
 .theme-dark th {
   background-color: #333333;
-  font-weight: 600;
+  border-top: none;
+  border-bottom: none;
+  box-shadow:
+    inset 0 1px 0 #444,
+    inset 0 -1px 0 #444;
 }
 
 .theme-dark td {
@@ -33,6 +35,10 @@
 
 .theme-dark tbody tr:last-child td {
   border-bottom: 1px solid #444;
+}
+
+.theme-dark tbody tr:first-child td {
+  border-top: none;
 }
 
 .theme-dark caption {

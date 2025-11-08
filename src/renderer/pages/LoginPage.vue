@@ -2,6 +2,7 @@
   import { computed, reactive } from 'vue';
   import { useProfileStore } from '@renderer/store/profile';
   import { useUIStore } from '@renderer/store/ui';
+  import { parseTimestamp } from '@common/utils/dateUtils';
   import Modal from '@renderer/components/ui/Modal.vue';
   const profileStore = useProfileStore();
   const uiStore = useUIStore();
@@ -25,7 +26,7 @@
 </script>
 
 <template>
-  <div class="flex flex-col h-screen login-page" style="border: 1px solid red">
+  <div class="flex flex-col h-screen login-page">
     <Modal :visible="modals.create" @close="modals.create = false">
       <template #header>New Profile</template>
       <template #body>
@@ -41,7 +42,7 @@
     </Modal>
 
     <div class="flex justify-center items-center h-10 text-lg">Select or create a profile</div>
-    <div class="flex grow table-container overflow-y-auto" style="border: 1px solid cyan">
+    <div class="flex grow table-container overflow-y-auto">
       <div v-if="!records.length" class="flex grow items-center justify-center">
         <div class="text-xl opacity-70 whitespace-nowrap">No profiles yet!</div>
       </div>
@@ -57,19 +58,12 @@
             </tr>
           </thead>
           <tbody>
-            <!-- <tr v-for="profile in records">
+            <tr v-for="profile in records" class="cursor-pointer">
               <td>{{ profile.name }}</td>
               <td>{{ profile.sessions }}</td>
               <td>{{ profile.cards }}</td>
-              <td>{{ profile.createdAt }}</td>
-              <td>{{ profile.lastAccess }}</td>
-            </tr> -->
-            <tr v-for="i in 100">
-              <td>{{ i }}</td>
-              <td>{{ i }}</td>
-              <td>{{ i }}</td>
-              <td>{{ i }}</td>
-              <td>{{ i }}</td>
+              <td>{{ parseTimestamp(profile.createdAt) }}</td>
+              <td>{{ parseTimestamp(profile.lastAccess) }}</td>
             </tr>
           </tbody>
         </table>
