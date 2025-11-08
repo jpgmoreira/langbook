@@ -1,8 +1,13 @@
 @import './pages/login.css';
 @import './elements/buttons.css';
+@import './components/modal.css';
 
 .theme-dark * {
   color: white;
+}
+
+.theme-dark *:focus {
+  outline: 2px solid #3b83f67c;
 }
 
 .theme-dark body {
