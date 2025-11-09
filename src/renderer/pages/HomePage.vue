@@ -51,8 +51,8 @@
         <TreeView
           class="select-none"
           files-hint
-          search
           file-icon
+          checkbox
           style="border: 1px solid olivedrab"
         />
       </div>
@@ -69,19 +69,20 @@
         <div class="grow" style="border: 2px solid lightgreen"></div>
         <div style="border: 1px solid orangered">
           <div>Filters:</div>
-          <input
-            type="text"
-            placeholder="Text"
-            v-model.trim="filtersStore.filters.text"
-            @input="filtersStore.setDirty"
-          />
           <Multiselect
             :options="tagsOptions"
             :selected="filtersStore.filters.tags"
             placeholder="Tags"
             direction="up"
+            close
             @select-option="filtersStore.selectTag"
             @deselect-option="filtersStore.deselectTag"
+          />
+          <input
+            type="text"
+            placeholder="Text"
+            v-model.trim="filtersStore.filters.text"
+            @input="filtersStore.setDirty"
           />
         </div>
         <footer class="flex items-center justify-evenly py-1" style="border: 1px solid orange">

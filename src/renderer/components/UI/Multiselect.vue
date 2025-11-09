@@ -47,6 +47,7 @@
    *        .multiselect .context-menu .option .option-index
    *        .multiselect .context-menu .highlight
    *        .multiselect .badge
+   *        .multiselect .badge:focus
    *        .multiselect .badge .badge-index
    *        .multiselect .badge .close-button
    *        .multiselect .badge .close-button svg path  (set the "stroke" CSS property to change X color)
