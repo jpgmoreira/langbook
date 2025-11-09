@@ -38,10 +38,12 @@ export function throttle<T extends (...args: any[]) => void>(fn: T, wait: number
 }
 
 /**
- * Returns a random alphanumeric ID with ~20 characters.
+ * Returns a random alphanumeric ID with ~17 characters.
  */
 export function randomId() {
-  return Date.now().toString(36) + Math.random().toString(36).substring(1);
+  const timePart = toBase62(Date.now());
+  const randomPart = toBase62(Math.floor(Math.random() * 1e15));
+  return `${timePart}.${randomPart}`;
 }
 
 /**

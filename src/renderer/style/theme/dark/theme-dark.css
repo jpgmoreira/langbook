@@ -7,6 +7,9 @@
 @import './components/modal.css';
 @import './components/toast.css';
 @import './components/header.css';
+@import './components/treeView/checkbox.css';
+@import './components/treeView/contextMenu.css';
+@import './components/treeView/treeView.css';
 
 .theme-dark * {
   color: white;
