@@ -5,6 +5,7 @@
   const isResizing = ref(false);
   const treeAreaWidth = ref(300);
   const contestsAreaWidth = ref(window.innerWidth - 300);
+  const showFilters = ref(false);
   function windowMouseUp() {
     isResizing.value = false;
   }
@@ -26,7 +27,7 @@
 
 <template>
   <div
-    class="main-container h-screen flex flex-col"
+    class="home-page h-screen flex flex-col"
     :class="{ resizing: isResizing }"
     style="border: 1px solid red"
   >
@@ -47,16 +48,29 @@
         @mousedown="isResizing = true"
       ></div>
       <div
-        class="flex grow"
+        class="flex flex-col grow"
         :style="{ width: `${contestsAreaWidth}px` }"
         style="border: 1px solid tomato"
-      ></div>
+      >
+        <div class="grow" style="border: 2px solid lightgreen"></div>
+        <footer class="flex items-center justify-evenly py-1" style="border: 1px solid orange">
+          <button
+            type="button"
+            class="caret-button"
+            :class="{ rotated: showFilters }"
+            @click="showFilters = !showFilters"
+          ></button>
+          <button type="button" class="btn-primary">Filter</button>
+          <button type="button" class="btn-primary whitespace-nowrap">Add card</button>
+          <button type="button" class="btn-primary">Flashcards</button>
+        </footer>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-  .main-container.resizing {
+  .home-page.resizing {
     cursor: ew-resize;
   }
   .separator {
@@ -67,5 +81,12 @@
   .separator.resizing {
     background: #0087e7;
     cursor: ew-resize;
+  }
+
+  .caret-button {
+    transition: transform 0.2s ease;
+  }
+  .caret-button.rotated {
+    transform: rotate(180deg);
   }
 </style>

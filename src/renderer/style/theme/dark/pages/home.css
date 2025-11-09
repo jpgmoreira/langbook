@@ -1,0 +1,7 @@
+.theme-dark .home-page .caret-button {
+  min-width: 18px;
+  min-height: 18px;
+  background-image: url('@renderer/assets/images/caret.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
