@@ -25,6 +25,30 @@
   outline: none;
 }
 
+.theme-dark button.btn-secondary {
+  background-color: #4b5563;
+  color: #e5e7eb;
+  padding: 6px 10px;
+}
+.theme-dark button.btn-secondary:hover {
+  background-color: #41454d;
+}
+.theme-dark button.btn-secondary:active {
+  background-color: #374151;
+  transform: translateY(1px);
+}
+.theme-dark button.btn-secondary:focus {
+  outline: 2px solid #9ca3af;
+  outline-offset: 1px;
+}
+.theme-dark button.btn-secondary:disabled {
+  background-color: #3f3f46;
+  color: #a1a1aa;
+  cursor: not-allowed;
+  transform: none;
+  outline: none;
+}
+
 .theme-dark button.btn-warning {
   background-color: #f59e0b;
   color: black;

@@ -443,13 +443,10 @@
               <strong>"{{ modalState.currentNode.text }}"</strong>
               {{ modalState.currentNode.type === 'dir' ? 'folder' : 'session' }}?
             </span>
-            <span class="text-danger text-xl my-2">This action cannot be undone!</span>
-            <div
-              v-if="modalState.isDeleting"
-              class="text-danger text-xl flex items-center justify-center"
-            >
-              Deleting...
+            <span class="text-danger my-2">This action cannot be undone!</span>
+            <div v-if="modalState.isDeleting" class="text-danger flex items-center justify-center">
               <span class="loader ml-2"></span>
+              Deleting...
             </div>
           </template>
           <template v-else>
