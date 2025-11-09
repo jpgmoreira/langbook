@@ -630,9 +630,6 @@
 
   .node-input {
     height: 28px;
-    padding-left: 2px;
-    margin-left: 3px;
-    padding-right: 5px;
     cursor: pointer;
     background-color: transparent;
     field-sizing: content; /** CSS experimental. On recent electron versions it should work fine. */
