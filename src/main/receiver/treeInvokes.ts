@@ -6,6 +6,7 @@ import { ModifierKeys } from '@common/types/keys';
 import { TreeOperationResponseDTO } from '@common/dto/treeOperationResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { measure } from '@main/utils/performance';
+import { sleep } from '@common/utils/utils';
 
 ipcMain.handle(
   TreeChannels.createNode,
@@ -96,7 +97,12 @@ ipcMain.handle(
 
 ipcMain.handle(
   TreeChannels.deleteNode,
-  (_: IpcMainInvokeEvent, anchor: number, nodeId: string): TreeOperationResponseDTO => {
+  async (
+    _: IpcMainInvokeEvent,
+    anchor: number,
+    nodeId: string
+  ): Promise<TreeOperationResponseDTO> => {
+    await sleep(2000);
     return measure('deleteNode', () => {
       TreeManager.instance.deleteNode(nodeId);
       return TreeManager.instance.buildResult(anchor);
@@ -106,7 +112,8 @@ ipcMain.handle(
 
 ipcMain.handle(
   TreeChannels.deleteSelectedNodes,
-  (_: IpcMainInvokeEvent, anchor: number): TreeOperationResponseDTO => {
+  async (_: IpcMainInvokeEvent, anchor: number): Promise<TreeOperationResponseDTO> => {
+    await sleep(2000);
     return measure('deleteSelectedNodes', () => {
       TreeManager.instance.deleteSelectedNodes();
       return TreeManager.instance.buildResult(anchor);

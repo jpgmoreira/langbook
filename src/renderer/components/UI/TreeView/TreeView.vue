@@ -277,8 +277,8 @@
 
   async function handleDeletion() {
     modalState.isDeleting = true;
-    if (modalState.multiple) deleteSelectedNodes();
-    else deleteNode();
+    if (modalState.multiple) await deleteSelectedNodes();
+    else await deleteNode();
     modalState.isDeleting = false;
     closeModal();
   }
@@ -423,7 +423,7 @@
   >
     <!-- The modal belongs to here, because the delete node operation belongs to here,
    and the modal must intercept the delete node operation to request for confirmation. -->
-    <Modal :visible="modalState.visible" @close="closeModal">
+    <Modal :visible="modalState.visible" :frozen="modalState.isDeleting" @close="closeModal">
       <template #header>
         <div v-if="!modalState.multiple && modalState.currentNode?.type === 'dir'">
           Delete folder
@@ -444,8 +444,8 @@
               {{ modalState.currentNode.type === 'dir' ? 'folder' : 'session' }}?
             </span>
             <span class="text-danger my-2">This action cannot be undone!</span>
-            <div v-if="modalState.isDeleting" class="text-danger flex items-center justify-center">
-              <span class="loader ml-2"></span>
+            <div v-if="modalState.isDeleting" class="text-danger flex items-center">
+              <span class="loader mr-2"></span>
               Deleting...
             </div>
           </template>
@@ -458,13 +458,10 @@
               <strong>{{ nSelectedFolders }}</strong>
               {{ nSelectedFolders === 1 ? 'folder' : 'folders' }}?
             </span>
-            <span class="text-danger text-xl my-2">This action cannot be undone!</span>
-            <div
-              v-if="modalState.isDeleting"
-              class="text-danger text-xl flex items-center justify-center"
-            >
+            <span class="text-danger my-2">This action cannot be undone!</span>
+            <div v-if="modalState.isDeleting" class="text-danger flex items-center">
+              <span class="loader mr-2"></span>
               Deleting...
-              <span class="loader ml-2"></span>
             </div>
           </template>
         </div>
