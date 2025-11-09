@@ -133,7 +133,7 @@ export class ProfileManager {
     EventEmitter.instance.emit(Events.clearProfileData);
   }
 
-  private clear() {
+  public clear() {
     this._currProfileProxy = null;
     this.registry.currProfileId = null;
   }
