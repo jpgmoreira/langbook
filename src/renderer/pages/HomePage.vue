@@ -53,6 +53,10 @@
         style="border: 1px solid tomato"
       >
         <div class="grow" style="border: 2px solid lightgreen"></div>
+        <div style="border: 1px solid orangered">
+          <div>Filters:</div>
+          <input type="text" placeholder="Text" />
+        </div>
         <footer class="flex items-center justify-evenly py-1" style="border: 1px solid orange">
           <button
             type="button"
