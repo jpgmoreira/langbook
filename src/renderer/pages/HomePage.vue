@@ -17,7 +17,12 @@
       value: t,
     }))
   );
+  const filterButtonClass = computed(() => {
+    if (filtersStore.dirty) return 'btn-warning';
+    return 'btn-primary';
+  });
   function filter() {
+    filtersStore.dirty = false;
     console.log(filtersStore.filters);
   }
   function windowMouseUp() {
@@ -82,7 +87,7 @@
             type="text"
             placeholder="Text"
             v-model.trim="filtersStore.filters.text"
-            @input="filtersStore.setDirty"
+            @input="filtersStore.dirty = true"
           />
         </div>
         <footer class="flex items-center justify-evenly py-1" style="border: 1px solid orange">
@@ -92,7 +97,7 @@
             :class="{ rotated: showFilters }"
             @click="showFilters = !showFilters"
           ></button>
-          <button type="button" class="btn-primary" @click="filter">Filter</button>
+          <button type="button" :class="filterButtonClass" @click="filter">Filter</button>
           <button type="button" class="btn-primary whitespace-nowrap">Add card</button>
           <button type="button" class="btn-primary">Flashcards</button>
         </footer>

@@ -25,9 +25,6 @@ export const useFiltersStore = defineStore('filters', {
       this.dirty = false;
       this.filters = getEmptyFilters();
     },
-    setDirty() {
-      this.dirty = true;
-    },
     selectTag(tag: string) {
       const tags = this.filters.tags;
       if (!tags.includes(tag)) {
