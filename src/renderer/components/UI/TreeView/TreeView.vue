@@ -57,7 +57,7 @@
 
   const emit = defineEmits<{
     (e: 'rename', newName: string): void;
-    (e: 'deleteSingle', contestId: string): void;
+    (e: 'deleteSingle', sessionId: string): void;
     (e: 'deleteMultiple'): void;
   }>();
 
@@ -342,7 +342,7 @@
   }
 
   function fileHintText(node: DirNode) {
-    return node.nFileDesc === 1 ? '1 contest' : `${toLocaleNumber(node.nFileDesc)} contests`;
+    return node.nFileDesc === 1 ? '1 session' : `${toLocaleNumber(node.nFileDesc)} sessions`;
   }
 
   // --- Events: ---
@@ -430,7 +430,7 @@
           <strong>"{{ modalState.currentNode.text }}"</strong>
         </div>
         <div v-else-if="!modalState.multiple && modalState.currentNode?.type === 'file'">
-          Delete contest
+          Delete session
           <strong>"{{ modalState.currentNode.text }}"</strong>
         </div>
         <div v-else>Delete selection</div>
@@ -441,7 +441,7 @@
             <span>
               Are you sure you want to delete the
               <strong>"{{ modalState.currentNode.text }}"</strong>
-              {{ modalState.currentNode.type === 'dir' ? 'folder' : 'contest' }}?
+              {{ modalState.currentNode.type === 'dir' ? 'folder' : 'session' }}?
             </span>
             <span class="text-danger text-xl my-2">This action cannot be undone!</span>
             <div
@@ -456,7 +456,7 @@
             <span>
               Are you sure you want to delete
               <strong>{{ tree?.nSelectedFiles || 0 }}</strong>
-              {{ tree?.nSelectedFiles === 1 ? 'contest' : 'contests' }}
+              {{ tree?.nSelectedFiles === 1 ? 'session' : 'sessions' }}
               and
               <strong>{{ nSelectedFolders }}</strong>
               {{ nSelectedFolders === 1 ? 'folder' : 'folders' }}?
@@ -539,9 +539,9 @@
       <div v-if="props.search" class="flex w-full sticky left-0 right-0">
         <input
           v-model.trim="searchText"
-          class="w-full rounded-none"
+          class="w-full !rounded-none !border-none"
           type="text"
-          placeholder="Search for contests..."
+          placeholder="Search for sessions..."
           @keydown.enter="search"
         />
         <button type="button" class="btn-primary rounded-none" @click="search">Search</button>
@@ -637,6 +637,7 @@
   .node-input {
     height: 28px;
     padding-left: 2px;
+    margin-left: 3px;
     padding-right: 5px;
     cursor: pointer;
     background-color: transparent;

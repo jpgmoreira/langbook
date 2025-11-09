@@ -16,6 +16,7 @@
 .theme-dark .treeview .node-input {
   color: #dedede;
   border-radius: 4px;
+  border: none;
   transition:
     background 0.2s ease,
     box-shadow 0.2s ease,
@@ -76,8 +77,8 @@
 /* Icons */
 .theme-dark .treeview .file-icon {
   background-image: url('@renderer/assets/images/open-book.png');
-  width: 25px;
-  height: 25px;
+  min-width: 23px;
+  min-height: 23px;
 }
 
 /* Hint text */
