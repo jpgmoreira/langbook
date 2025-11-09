@@ -10,6 +10,12 @@
 /* Caret Icon */
 .theme-dark .treeview .node-caret {
   background-image: url('@renderer/assets/images/arrow-down.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+  margin-right: 4px;
 }
 
 /* Base Node */
@@ -69,9 +75,24 @@
      STRUCTURE & MISC
      ======================== */
 
-/* Indent line */
-.theme-dark .treeview .indent-span::after {
-  background-color: #606368;
+/* Indent */
+.theme-dark .treeview .indent-vertical-span {
+  background: url('@renderer/assets/images/vertical.png');
+  background-size: contain;
+  background-repeat: repeat-x;
+  height: 28px;
+}
+.theme-dark .treeview .indent-middle-span {
+  background: url('@renderer/assets/images/middle.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 28px;
+}
+.theme-dark .treeview .indent-last-span {
+  background: url('@renderer/assets/images/end.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 28px;
 }
 
 /* Icons */

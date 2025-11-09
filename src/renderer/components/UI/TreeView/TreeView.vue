@@ -68,6 +68,7 @@
 
   const rowHeight = 28;
   const paddingBottom = 250;
+  const indentSpanWidth = 20;
 
   const uiStore = useUIStore();
 
@@ -599,7 +600,16 @@
             :key="node.id"
             class="flex items-center whitespace-nowrap"
           >
-            <span v-for="_ in node.depth" class="indent-span"></span>
+            <span
+              :style="{ width: `${(node.depth - 1) * indentSpanWidth}px` }"
+              class="indent-vertical-span"
+            ></span>
+            <span
+              v-if="node.depth > 0"
+              :style="{ width: `${indentSpanWidth}px` }"
+              class="indent-middle-span"
+            ></span>
+
             <span
               v-if="node.type === 'dir'"
               class="node-caret"
@@ -610,7 +620,6 @@
             <div class="flex items-center" @click="handleSelection(node)">
               <input
                 v-if="props.checkbox"
-                class="input-checkbox"
                 type="checkbox"
                 :checked="node.selected"
                 :indeterminate="isCheckIndeterminate(node)"
@@ -656,26 +665,6 @@
 </template>
 
 <style scoped>
-  .indent-span {
-    width: 20px;
-    height: 28px;
-    position: relative;
-  }
-
-  .indent-span::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 0.5px;
-    transform: translateX(-50%);
-  }
-
-  .input-checkbox {
-    margin-left: 5px;
-  }
-
   .node-input {
     height: 28px;
     cursor: pointer;
@@ -687,8 +676,6 @@
     transition: transform 0.2s ease;
     display: inline-block;
     transform: rotate(0deg);
-    width: 20px;
-    height: 20px;
   }
   .node-caret.closed {
     transform: rotate(-90deg);
