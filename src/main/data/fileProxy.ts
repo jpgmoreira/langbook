@@ -53,7 +53,15 @@ export class FileProxy<T extends JSONObject> {
   private handler = {
     get: this.proxyGetHandler.bind(this),
     set: this.proxySetHandler.bind(this),
+    deleteProperty: this.proxyDeleteHandler.bind(this),
   };
+
+  private proxyDeleteHandler(obj: JSONObject, prop: string) {
+    if (!(prop in obj)) return true;
+    delete obj[prop];
+    this.queueWrite();
+    return true;
+  }
 
   private proxyGetHandler(obj: JSONObject, prop: string) {
     if (!util.types.isProxy(obj[prop]) && typeof obj[prop] === 'object' && obj[prop] !== null) {
