@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import Modal from '../Modal.vue';
   import ContextMenu from './ContextMenu.vue';
+  import { useFiltersStore } from '@renderer/store/filters';
   import { TreeOperationResponseDTO } from '@common/dto/treeOperationResponseDTO';
   import { NodeType, Node, DirNode } from '@common/types/tree';
   import { ModifierKeys } from '@common/types/keys';
@@ -62,6 +63,8 @@
   }>();
 
   // --- Variables: ---
+
+  const filtersStore = useFiltersStore();
 
   const rowHeight = 28;
   const paddingBottom = 250;
@@ -140,53 +143,61 @@
     const node = contextState.activeNode;
     const parentId = node ? node.id : null;
     const prefix = type === 'dir' ? 'Folder' : 'Session';
-    tree.value = await window.api.invoke(
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
       TreeChannels.createNode,
       tree.value?.anchor || 0,
       type,
       prefix,
       parentId
     );
+    updateTree(newTree);
   }
 
   async function createNodeAbove(type: NodeType) {
     const node = contextState.activeNode;
     if (!node) return;
     const prefix = type === 'dir' ? 'Folder' : 'Session';
-    tree.value = await window.api.invoke(
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
       TreeChannels.createNodeAbove,
       tree.value?.anchor || 0,
       type,
       prefix,
       node.id
     );
+    updateTree(newTree);
   }
 
   async function createNodeBelow(type: NodeType) {
     const node = contextState.activeNode;
     if (!node) return;
     const prefix = type === 'dir' ? 'Folder' : 'Session';
-    tree.value = await window.api.invoke(
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
       TreeChannels.createNodeBelow,
       tree.value?.anchor || 0,
       type,
       prefix,
       node.id
     );
+    updateTree(newTree);
   }
 
   // --- Toggle dir open: ---
 
   async function toggleDirOpen(node: Node) {
-    tree.value = await window.api.invoke(
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
       TreeChannels.toggleDirOpen,
       tree.value?.anchor || 0,
       node.id
     );
+    updateTree(newTree);
   }
 
   async function collapseAll() {
-    tree.value = await window.api.invoke(TreeChannels.collapseAll, tree.value?.anchor || 0);
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
+      TreeChannels.collapseAll,
+      tree.value?.anchor || 0
+    );
+    updateTree(newTree);
   }
 
   // --- Renaming: ---
@@ -243,20 +254,29 @@
     if (isNodeDisabled(node)) return; // Do not allow folder selection while searching.
     const localKeys = { ...keys };
     if (props.checkbox) localKeys.ctrl = true;
-    tree.value = await window.api.invoke(
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
       TreeChannels.handleSelection,
       tree.value?.anchor || 0,
       node.id,
       localKeys
     );
+    updateTree(newTree);
   }
 
   async function clearSelection() {
-    tree.value = await window.api.invoke(TreeChannels.clearSelection, tree.value?.anchor || 0);
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
+      TreeChannels.clearSelection,
+      tree.value?.anchor || 0
+    );
+    updateTree(newTree);
   }
 
   async function selectAll() {
-    tree.value = await window.api.invoke(TreeChannels.selectAll, tree.value?.anchor || 0);
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
+      TreeChannels.selectAll,
+      tree.value?.anchor || 0
+    );
+    updateTree(newTree);
   }
 
   // --- Deletion: ---
@@ -264,14 +284,23 @@
   async function deleteNode() {
     const node = modalState.currentNode;
     if (!node) return;
-    tree.value = await window.api.invoke(TreeChannels.deleteNode, tree.value?.anchor || 0, node.id);
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
+      TreeChannels.deleteNode,
+      tree.value?.anchor || 0,
+      node.id
+    );
+    updateTree(newTree);
     if (node.type === 'file') {
       emit('deleteSingle', node.sessionId);
     }
   }
 
   async function deleteSelectedNodes() {
-    tree.value = await window.api.invoke(TreeChannels.deleteSelectedNodes, tree.value?.anchor || 0);
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
+      TreeChannels.deleteSelectedNodes,
+      tree.value?.anchor || 0
+    );
+    updateTree(newTree);
     emit('deleteMultiple');
   }
 
@@ -305,30 +334,37 @@
 
   async function search() {
     const text = searchText.value.trim();
-    tree.value = await window.api.invoke(TreeChannels.search, tree.value?.anchor || 0, text);
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
+      TreeChannels.search,
+      tree.value?.anchor || 0,
+      text
+    );
     nextTick(() => {
       isSearching.value = Boolean(text);
     });
+    updateTree(newTree);
   }
 
   // --- Movement: ---
 
   async function moveSelection(channel: TreeChannels) {
     if (!tree.value) return;
-    tree.value = await window.api.invoke(
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
       channel,
       tree.value.anchor || 0,
       contextState.activeNode?.id || null
     );
+    updateTree(newTree);
   }
 
   async function moveSelectionToRoot() {
     if (!tree.value) return;
-    tree.value = await window.api.invoke(
+    const newTree = await window.api.invoke<TreeOperationResponseDTO>(
       TreeChannels.moveSelectedNodesInto,
       tree.value.anchor || 0,
       null
     );
+    updateTree(newTree);
   }
 
   // --- Helpers: ---
@@ -343,6 +379,17 @@
 
   function fileHintText(node: DirNode) {
     return node.nFileDesc === 1 ? '1 session' : `${toLocaleNumber(node.nFileDesc)} sessions`;
+  }
+
+  function updateTree(newTree: TreeOperationResponseDTO) {
+    if (!tree.value) {
+      tree.value = newTree;
+      return;
+    }
+    if (tree.value.nSelectedFiles !== newTree.nSelectedFiles) {
+      filtersStore.dirty = true;
+    }
+    tree.value = newTree;
   }
 
   // --- Events: ---
@@ -360,11 +407,12 @@
       if (!container) return;
       const scrollTop = container.scrollTop;
       const newAnchor = Math.max(0, Math.floor(scrollTop / rowHeight) - 30);
-      tree.value = await window.api.invoke<TreeOperationResponseDTO>(
+      const newTree = await window.api.invoke<TreeOperationResponseDTO>(
         TreeChannels.getState,
         newAnchor
       );
-      nodeContainerOffset.value = tree.value.anchor * rowHeight; // This is the key! Using a computed-value causes flickering.
+      updateTree(newTree);
+      nodeContainerOffset.value = (tree.value?.anchor || 0) * rowHeight; // This is the key! Using a computed-value causes flickering.
     }, 40);
   }
 
