@@ -1,11 +1,20 @@
 <script lang="ts" setup>
-  import { ref, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
+  import { useTagsStore } from '@renderer/store/tags';
   import Header from '@renderer/components/Header.vue';
   import TreeView from '@renderer/components/UI/TreeView/TreeView.vue';
+  import Multiselect from '@renderer/components/UI/Multiselect.vue';
+  const tagsStore = useTagsStore();
   const isResizing = ref(false);
   const treeAreaWidth = ref(300);
   const contestsAreaWidth = ref(window.innerWidth - 300);
   const showFilters = ref(false);
+  const tagsOptions = computed(() =>
+    Object.keys(tagsStore.tags).map((t) => ({
+      text: t,
+      value: t,
+    }))
+  );
   function windowMouseUp() {
     isResizing.value = false;
   }
@@ -56,6 +65,7 @@
         <div style="border: 1px solid orangered">
           <div>Filters:</div>
           <input type="text" placeholder="Text" />
+          <Multiselect :options="tagsOptions" placeholder="Tags" direction="up" />
         </div>
         <footer class="flex items-center justify-evenly py-1" style="border: 1px solid orange">
           <button
