@@ -18,9 +18,9 @@ export class FiltersManager {
 
   private _proxy: FileProxy<Filters> | null = null;
 
-  private get proxy() {
-    return this._proxy!.proxy;
-  }
+  // private get proxy() {
+  //   return this._proxy!.proxy;
+  // }
 
   private constructor() {}
 

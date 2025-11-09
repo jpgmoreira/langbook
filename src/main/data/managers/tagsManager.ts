@@ -18,9 +18,9 @@ export class TagsManager {
 
   private _proxy: FileProxy<Tags> | null = null;
 
-  private get proxy() {
-    return this._proxy!.proxy;
-  }
+  // private get proxy() {
+  //   return this._proxy!.proxy;
+  // }
 
   private constructor() {}
 

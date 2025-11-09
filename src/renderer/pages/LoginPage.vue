@@ -3,7 +3,7 @@
   import { useProfileStore } from '@renderer/store/profile';
   import { useUIStore } from '@renderer/store/ui';
   import { parseTimestamp } from '@common/utils/dateUtils';
-  import Modal from '@renderer/components/ui/Modal.vue';
+  import Modal from '@renderer/components/UI/Modal.vue';
   import { ProfileRecord } from '@common/schemas/profile';
   import { nextTick } from 'vue';
   import { useRouter } from 'vue-router';
