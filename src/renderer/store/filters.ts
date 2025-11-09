@@ -14,6 +14,7 @@ EventEmitter.instance.on(Events.clearProfileData, () => {
 
 export const useFiltersStore = defineStore('filters', {
   state: () => ({
+    dirty: false,
     filters: getEmptyFilters(),
   }),
   actions: {
@@ -21,7 +22,25 @@ export const useFiltersStore = defineStore('filters', {
       this.filters = data.filters;
     },
     clear() {
+      this.dirty = false;
       this.filters = getEmptyFilters();
+    },
+    setDirty() {
+      this.dirty = true;
+    },
+    selectTag(tag: string) {
+      const tags = this.filters.tags;
+      if (!tags.includes(tag)) {
+        tags.push(tag);
+        this.dirty = true;
+      }
+    },
+    deselectTag(tag: string) {
+      const tags = this.filters.tags;
+      if (tags.includes(tag)) {
+        this.filters.tags = tags.filter((t) => t !== tag);
+        this.dirty = true;
+      }
     },
   },
 });

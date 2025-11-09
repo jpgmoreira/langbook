@@ -1,10 +1,12 @@
 <script lang="ts" setup>
   import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
   import { useTagsStore } from '@renderer/store/tags';
+  import { useFiltersStore } from '@renderer/store/filters';
   import Header from '@renderer/components/Header.vue';
   import TreeView from '@renderer/components/UI/TreeView/TreeView.vue';
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
   const tagsStore = useTagsStore();
+  const filtersStore = useFiltersStore();
   const isResizing = ref(false);
   const treeAreaWidth = ref(300);
   const contestsAreaWidth = ref(window.innerWidth - 300);
@@ -15,6 +17,9 @@
       value: t,
     }))
   );
+  function filter() {
+    console.log(filtersStore.filters);
+  }
   function windowMouseUp() {
     isResizing.value = false;
   }
@@ -64,8 +69,20 @@
         <div class="grow" style="border: 2px solid lightgreen"></div>
         <div style="border: 1px solid orangered">
           <div>Filters:</div>
-          <input type="text" placeholder="Text" />
-          <Multiselect :options="tagsOptions" placeholder="Tags" direction="up" />
+          <input
+            type="text"
+            placeholder="Text"
+            v-model.trim="filtersStore.filters.text"
+            @input="filtersStore.setDirty"
+          />
+          <Multiselect
+            :options="tagsOptions"
+            :selected="filtersStore.filters.tags"
+            placeholder="Tags"
+            direction="up"
+            @select-option="filtersStore.selectTag"
+            @deselect-option="filtersStore.deselectTag"
+          />
         </div>
         <footer class="flex items-center justify-evenly py-1" style="border: 1px solid orange">
           <button
@@ -74,7 +91,7 @@
             :class="{ rotated: showFilters }"
             @click="showFilters = !showFilters"
           ></button>
-          <button type="button" class="btn-primary">Filter</button>
+          <button type="button" class="btn-primary" @click="filter">Filter</button>
           <button type="button" class="btn-primary whitespace-nowrap">Add card</button>
           <button type="button" class="btn-primary">Flashcards</button>
         </footer>
