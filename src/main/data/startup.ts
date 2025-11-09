@@ -6,6 +6,7 @@ import { Filters, getEmptyFilters } from '@common/schemas/filters';
 import { FiltersManager } from './managers/filtersManager';
 import { Sessions } from '@common/schemas/sessions';
 import { SessionsManager } from './managers/sessionsManager';
+import { TreeManager } from './managers/treeManager';
 
 export async function loadStartupData(): Promise<StartupData> {
   const currProfile = ProfileManager.instance.getCurrProfile();
@@ -17,6 +18,7 @@ export async function loadStartupData(): Promise<StartupData> {
     TagsManager.instance.loadProfile(currProfile.id);
     FiltersManager.instance.loadProfile(currProfile.id);
     SessionsManager.instance.loadProfile(currProfile.id);
+    TreeManager.instance.loadTree(currProfile.id);
     tags = TagsManager.instance.getTags();
     filters = FiltersManager.instance.getFilters();
     sessions = SessionsManager.instance.getSessions();
