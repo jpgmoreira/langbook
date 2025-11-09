@@ -31,3 +31,10 @@ export function buildId(name: string, timestamp: number) {
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+/**
+ * Returns a random alphanumeric ID with ~20 characters.
+ */
+export function randomId() {
+  return Date.now().toString(36) + Math.random().toString(36).substring(1);
+}

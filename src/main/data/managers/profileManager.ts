@@ -129,6 +129,13 @@ export class ProfileManager {
     this.registry.currProfileId = profileId;
   }
 
+  public addSessions(n: 1 | -1) {
+    const profileId = this.profile?.id;
+    if (!profileId) return;
+    const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
+    record.sessions += n;
+  }
+
   public logout() {
     EventEmitter.instance.emit(Events.clearProfileData);
   }

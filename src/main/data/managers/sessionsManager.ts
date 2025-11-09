@@ -3,7 +3,9 @@ import path from 'path';
 import { DATA_DIR } from '../constants';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@main/events/events';
-import { Sessions } from '@common/schemas/sessions';
+import { getEmptySession, Session, Sessions } from '@common/schemas/sessions';
+import { randomId } from '@common/utils/utils';
+import { ProfileManager } from './profileManager';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   SessionsManager.instance.clear();
@@ -38,6 +40,27 @@ export class SessionsManager {
 
   public getSessions() {
     return structuredClone(this._proxy!.target);
+  }
+
+  public createSession(name: string): Session {
+    const now = Date.now();
+    const id = randomId();
+    const newSession = getEmptySession(id, name, now);
+    this.proxy[id] = newSession;
+    ProfileManager.instance.addSessions(1);
+    return newSession;
+  }
+
+  public renameSession(sessionId: string, newName: string) {
+    const session = this.proxy[sessionId];
+    if (!session) return;
+    session.name = newName;
+  }
+
+  public deleteSession(sessionId: string) {
+    if (!(sessionId in this.proxy)) return;
+    delete this.proxy[sessionId];
+    ProfileManager.instance.addSessions(-1);
   }
 
   public clear() {
