@@ -35,6 +35,10 @@ export const useProfileStore = defineStore('profile', {
       }
       return result;
     },
+    async login(profileId: string) {
+      const data = await window.api.invoke<StartupData>(Channels.login, profileId);
+      EventEmitter.instance.emit(Events.loadInitialData, data);
+    },
     clear() {
       this.currProfile = null;
       this.registry.currProfileId = null;

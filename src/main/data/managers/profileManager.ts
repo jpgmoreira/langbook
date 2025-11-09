@@ -9,7 +9,6 @@ import path from 'path';
 import { DATA_DIR } from '../constants';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@main/events/events';
-import fs from 'fs';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { buildId, sleep } from '@common/utils/utils';
 
@@ -92,6 +91,10 @@ export class ProfileManager {
     return { status: 'success' };
   }
 
+  public login(profileId: string) {
+    this.loadProfile(profileId);
+  }
+
   public renameProfile(profileId: string, name: string): GenericResponseDTO {
     name = name.trim();
     const validationResult = this.validateProfileName(name);
@@ -119,13 +122,18 @@ export class ProfileManager {
     return { status: 'success' };
   }
 
-  public loadProfile(profileId: string) {}
+  private loadProfile(profileId: string) {
+    const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
+    const filePath = path.join(DATA_DIR, 'profileData', profileId, 'profile.json');
+    this._currProfileProxy = new FileProxy(filePath, getEmptyProfile(profileId, record.name));
+    this.registry.currProfileId = profileId;
+  }
 
   public logout() {
     EventEmitter.instance.emit(Events.clearProfileData);
   }
 
-  public clear() {
+  private clear() {
     this._currProfileProxy = null;
     this.registry.currProfileId = null;
   }

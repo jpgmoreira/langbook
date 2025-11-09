@@ -5,6 +5,7 @@ export const allowedInvokeChannels = Object.freeze([
   Channels.createProfile,
   Channels.renameProfile,
   Channels.deleteProfile,
+  Channels.login,
 ] as const);
 export const allowedOnChannels = Object.freeze([Channels.loadStartupData] as const);
 

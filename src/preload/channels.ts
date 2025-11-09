@@ -3,4 +3,5 @@ export enum Channels {
   createProfile = 'create-profile',
   renameProfile = 'rename-profile',
   deleteProfile = 'delete-profile',
+  login = 'login',
 }

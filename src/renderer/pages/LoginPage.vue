@@ -6,8 +6,11 @@
   import Modal from '@renderer/components/ui/Modal.vue';
   import { ProfileRecord } from '@common/schemas/profile';
   import { nextTick } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { APP_NAME } from '@common/constants';
   const profileStore = useProfileStore();
   const uiStore = useUIStore();
+  const router = useRouter();
   const records = computed(() => profileStore.registry.profileRecords);
   const selected = ref<ProfileRecord | null>(null);
   const isDeleting = ref(false);
@@ -23,13 +26,15 @@
   const createInput = useTemplateRef('create-input');
   const renameInput = useTemplateRef('rename-input');
   async function createProfile() {
-    const result = await profileStore.createProfile(names.create);
+    const name = names.create.trim();
+    const result = await profileStore.createProfile(name);
     if (result.status === 'error') {
       uiStore.showToast(result.errorMsg, 'error');
     } else {
       modals.create = false;
       names.create = '';
-      // TODO: ... router!
+      document.title = `${name}@${APP_NAME}`;
+      router.replace('/home');
     }
   }
   async function deleteProfile() {
@@ -68,6 +73,13 @@
   function openCreateModal() {
     modals.create = true;
     nextTick(() => createInput.value?.focus());
+  }
+  async function login() {
+    const profileId = selected.value!.id;
+    const name = selected.value!.name;
+    await profileStore.login(profileId);
+    document.title = `${name}@${APP_NAME}`;
+    router.replace('/home');
   }
 </script>
 
@@ -183,7 +195,9 @@
     <footer class="relative flex p-2">
       <div class="flex grow gap-1 justify-center">
         <button type="button" class="btn-primary" @click="openCreateModal">Create</button>
-        <button type="button" class="btn-primary" :disabled="!selected">Select</button>
+        <button type="button" class="btn-primary" @click="login" :disabled="!selected">
+          Select
+        </button>
         <button type="button" class="btn-primary" :disabled="!selected" @click="startRename">
           Rename
         </button>

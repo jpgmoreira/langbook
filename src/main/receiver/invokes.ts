@@ -1,5 +1,6 @@
 import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
+import { StartupData } from '@common/schemas/startup';
 import { ProfileManager } from '@main/data/managers/profileManager';
 import { loadStartupData } from '@main/data/startup';
 import { Channels } from '@preload/channels';
@@ -30,4 +31,12 @@ ipcMain.handle(
   Channels.deleteProfile,
   async (_: IpcMainInvokeEvent, profileId: string): Promise<GenericResponseDTO> =>
     ProfileManager.instance.deleteProfile(profileId)
+);
+
+ipcMain.handle(
+  Channels.login,
+  async (_: IpcMainInvokeEvent, profileId: string): Promise<StartupData> => {
+    ProfileManager.instance.login(profileId);
+    return loadStartupData();
+  }
 );
