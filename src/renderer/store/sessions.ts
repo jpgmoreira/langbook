@@ -2,26 +2,26 @@ import { defineStore } from 'pinia';
 import { StartupData } from '@common/schemas/startup';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
-import { getEmptyFilters } from '@common/schemas/filters';
+import { Sessions } from '@common/schemas/sessions';
 
 EventEmitter.instance.on(Events.loadInitialData, (data: StartupData) => {
-  useFiltersStore().initFromStartupData(data);
+  useSessionsStore().initFromStartupData(data);
 });
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
-  useFiltersStore().clear();
+  useSessionsStore().clear();
 });
 
-export const useFiltersStore = defineStore('filters', {
+export const useSessionsStore = defineStore('sessions', {
   state: () => ({
-    filters: getEmptyFilters(),
+    sessions: {} as Sessions,
   }),
   actions: {
     initFromStartupData(data: StartupData) {
-      this.filters = data.filters;
+      this.sessions = data.sessions;
     },
     clear() {
-      this.filters = getEmptyFilters();
+      this.sessions = {};
     },
   },
 });

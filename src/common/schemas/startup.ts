@@ -1,5 +1,6 @@
 import { Filters } from './filters';
 import { Profile, ProfileRegistry } from './profile';
+import { Sessions } from './sessions';
 import { Tags } from './tags';
 
 export type StartupData = {
@@ -7,4 +8,5 @@ export type StartupData = {
   profileRegistry: ProfileRegistry;
   tags: Tags;
   filters: Filters;
+  sessions: Sessions;
 };
