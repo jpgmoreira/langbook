@@ -487,7 +487,6 @@ export class TreeManager {
   private deleteCallback(node: Node) {
     if (node.type !== 'file') return;
     SessionsManager.instance.deleteSession(node.sessionId);
-    // Sessions in the cards are lazy-deleted.
   }
 
   public deleteNode(nodeId: string) {
