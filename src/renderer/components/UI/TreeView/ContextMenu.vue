@@ -138,14 +138,14 @@
       <div v-if="dirSections.create && dirSections.move" class="separator"></div>
 
       <div v-if="dirSections.move">
+        <div class="item" @click="emit('moveSelectedNodesInto')">
+          Move selected nodes into the folder
+        </div>
         <div v-if="props.nSelectedFolders" class="item" @click="emit('moveSelectedFoldersAbove')">
           Move selected folders above
         </div>
         <div v-if="props.nSelectedFolders" class="item" @click="emit('moveSelectedFoldersBelow')">
           Move selected folders below
-        </div>
-        <div class="item" @click="emit('moveSelectedNodesInto')">
-          Move selected nodes into the folder
         </div>
       </div>
       <div
