@@ -58,7 +58,6 @@
           files-hint
           file-icon
           checkbox
-          search
           style="border: 1px solid olivedrab"
         />
       </div>
