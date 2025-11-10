@@ -19,6 +19,9 @@
   import { useUIStore } from '@renderer/store/ui';
   import { toLocaleNumber } from '@common/utils/utils';
   import { hasBit } from '@common/utils/bitMask';
+  import verticalIndent from '@renderer/assets/images/vertical.png';
+  import middleIndent from '@renderer/assets/images/middle.png';
+  import endIndent from '@renderer/assets/images/end.png';
 
   // --- Types: ---
 
@@ -405,6 +408,33 @@
     return '';
   }
 
+  function getNodeIndentStyle(node: Node) {
+    const backgrounds: string[] = [];
+    const positions: string[] = [];
+    const repeats: string[] = [];
+    for (let i = 0; i < node.depth; i++) {
+      const x = i * indentSpanWidth;
+      let img = '';
+      if (i === node.depth - 1) {
+        img = node.ui.isLastChild ? `url(${endIndent})` : `url(${middleIndent})`;
+      } else if (hasBit(node.ui.depths, i)) {
+        img = `url(${verticalIndent})`;
+      } else {
+        continue;
+      }
+      backgrounds.push(img);
+      positions.push(`${x}px 0`);
+      repeats.push('no-repeat');
+    }
+    return {
+      width: `${node.depth * indentSpanWidth}px`,
+      height: `${rowHeight}px`,
+      backgroundImage: backgrounds.join(', '),
+      backgroundPosition: positions.join(', '),
+      backgroundRepeat: repeats.join(', '),
+    };
+  }
+
   // --- Events: ---
 
   let lastScrollTop = 0;
@@ -612,11 +642,7 @@
             :key="node.id"
             class="flex items-center whitespace-nowrap"
           >
-            <span
-              v-for="i in node.depth"
-              :class="getNodeIndentClass(node, i - 1)"
-              :style="{ width: `${indentSpanWidth}px` }"
-            ></span>
+            <span :style="getNodeIndentStyle(node)"></span>
 
             <span
               v-if="node.type === 'dir'"

@@ -75,26 +75,6 @@
      STRUCTURE & MISC
      ======================== */
 
-/* Indent */
-.theme-dark .treeview .indent-vertical-span {
-  background: url('@renderer/assets/images/vertical.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  height: 28px;
-}
-.theme-dark .treeview .indent-middle-span {
-  background: url('@renderer/assets/images/middle.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  height: 28px;
-}
-.theme-dark .treeview .indent-last-span {
-  background: url('@renderer/assets/images/end.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  height: 28px;
-}
-
 /* Icons */
 .theme-dark .treeview .file-icon {
   background-image: url('@renderer/assets/images/open-book.png');
