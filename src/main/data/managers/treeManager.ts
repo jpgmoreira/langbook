@@ -118,18 +118,12 @@ export class TreeManager {
     return file || dir || null;
   }
 
-  public buildResult(anchor: number): TreeOperationResponseDTO {
-    const visibleNodes: Node[] = [];
-    let nSurfaceNodes = 0;
+  private calculateUiDepths() {
     const depthSet = new Set<string>();
     let currDepth = 0;
-    for (let i = 0; i < this.expandedFlat.length; i++) {
-      const node = this.expandedFlat[i];
-      // Helpers for the UI:
-      // - Set node depths array for the UI:
+    for (const node of this.expandedFlat) {
       node.ui.depths = currDepth;
       if (depthSet.has(node.id)) {
-        depthSet.delete(node.id);
         currDepth = clearBit(currDepth, node.depth - 1);
       }
       // - Set current node last direct child status:
@@ -144,7 +138,14 @@ export class TreeManager {
         depthSet.add(lastDirectChild.id);
         currDepth = setBit(currDepth, node.depth);
       }
-      //
+    }
+  }
+
+  public buildResult(anchor: number): TreeOperationResponseDTO {
+    const visibleNodes: Node[] = [];
+    let nSurfaceNodes = 0;
+    for (let i = 0; i < this.expandedFlat.length; i++) {
+      const node = this.expandedFlat[i];
       if (!node.hidden) {
         if (nSurfaceNodes >= anchor && visibleNodes.length < TREE_PAGE_SIZE) {
           visibleNodes.push(node);
@@ -343,6 +344,7 @@ export class TreeManager {
       this.appendNode(newNode, this.target.root);
     }
     this.refresh(true);
+    this.calculateUiDepths();
     return newNode;
   }
 
@@ -354,6 +356,7 @@ export class TreeManager {
     if (parent) newNode.selected = parent.selected;
     this.appendNodeAbove(newNode, baseNode);
     this.refresh(true);
+    this.calculateUiDepths();
   }
 
   public createNodeBelow(type: NodeType, prefix: string, baseNodeId: string) {
@@ -364,6 +367,7 @@ export class TreeManager {
     if (parent) newNode.selected = parent.selected;
     this.appendNodeBelow(newNode, baseNode);
     this.refresh(true);
+    this.calculateUiDepths();
   }
 
   // --- Handle directory open/closed state: ---
@@ -537,6 +541,7 @@ export class TreeManager {
     }
     delete this.target.idToNode[nodeId];
     this.refresh(true);
+    this.calculateUiDepths();
   }
 
   public deleteSelectedNodes() {
@@ -548,6 +553,7 @@ export class TreeManager {
       }
     }
     this.refresh(true);
+    this.calculateUiDepths();
   }
 
   // --- Search: ---
@@ -607,6 +613,7 @@ export class TreeManager {
       }
     }
     this.refresh(true);
+    this.calculateUiDepths();
   }
 
   public moveSelectedFilesBelow(baseNodeId: string) {
@@ -622,6 +629,7 @@ export class TreeManager {
       }
     }
     this.refresh(true);
+    this.calculateUiDepths();
   }
 
   public moveSelectedFoldersAbove(baseNodeId: string) {
@@ -638,6 +646,7 @@ export class TreeManager {
       }
     }
     this.refresh(true);
+    this.calculateUiDepths();
   }
 
   public moveSelectedFoldersBelow(baseNodeId: string) {
@@ -655,6 +664,7 @@ export class TreeManager {
       }
     }
     this.refresh(true);
+    this.calculateUiDepths();
   }
 
   public moveSelectedNodesInto(destinationId: string | null) {
@@ -672,5 +682,6 @@ export class TreeManager {
       }
     }
     this.refresh(true);
+    this.calculateUiDepths();
   }
 }
