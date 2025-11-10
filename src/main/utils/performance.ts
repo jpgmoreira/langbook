@@ -5,7 +5,7 @@ const ENABLE_PERFORMANCE_LOGS = process.env.ENABLE_PERFORMANCE_LOGS === 'true';
 if (ENABLE_PERFORMANCE_LOGS) {
   const obs = new PerformanceObserver((items) => {
     items.getEntries().forEach((entry) => {
-      console.log(`> [performance] [${entry.name}]: ${entry.duration.toFixed(3)} ms`);
+      console.log(`> [performance] [${entry.name}]: ${entry.duration.toFixed(2)} ms`);
     });
   });
   obs.observe({ entryTypes: ['measure'] });

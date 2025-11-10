@@ -18,6 +18,7 @@
   import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
   import { useUIStore } from '@renderer/store/ui';
   import { toLocaleNumber } from '@common/utils/utils';
+  import { hasBit } from '@common/utils/bitMask';
 
   // --- Types: ---
 
@@ -393,6 +394,17 @@
     tree.value = newTree;
   }
 
+  function getNodeIndentClass(node: Node, index: number) {
+    if (index === node.depth - 1) {
+      if (node.ui.isLastChild) return 'indent-last-span';
+      return 'indent-middle-span';
+    }
+    if (hasBit(BigInt(parseInt(node.ui.depths, 36)), index)) {
+      return 'indent-vertical-span';
+    }
+    return '';
+  }
+
   // --- Events: ---
 
   let lastScrollTop = 0;
@@ -600,15 +612,11 @@
             :key="node.id"
             class="flex items-center whitespace-nowrap"
           >
-            <span
-              :style="{ width: `${(node.depth - 1) * indentSpanWidth}px` }"
-              class="indent-vertical-span"
-            ></span>
-            <span
-              v-if="node.depth > 0"
+            <!-- <span
+              v-for="i in node.depth"
+              :class="getNodeIndentClass(node, i - 1)"
               :style="{ width: `${indentSpanWidth}px` }"
-              class="indent-middle-span"
-            ></span>
+            ></span> -->
 
             <span
               v-if="node.type === 'dir'"

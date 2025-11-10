@@ -7,6 +7,7 @@ import { TreeOperationResponseDTO } from '@common/dto/treeOperationResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import path from 'path';
 import { SessionsManager } from './sessionsManager';
+import { setBit, clearBit } from '@common/utils/bitMask';
 
 // Contains a linked list of the base nodes of the tree.
 type Root = Links & {
@@ -110,11 +111,43 @@ export class TreeManager {
     return { nSub, nSubSel, nSubFiles };
   }
 
+  private getLastDirectChild(node: Node): Node | null {
+    if (node.type !== 'dir') return null;
+    const file = this.getTail(node.files, false);
+    const dir = this.getTail(node.dirs, false);
+    return file || dir || null;
+  }
+
   public buildResult(anchor: number): TreeOperationResponseDTO {
     const visibleNodes: Node[] = [];
     let nSurfaceNodes = 0;
+    const depthSet = new Set<string>();
+    let currDepth = BigInt(0);
+    let currDepthStr = '0';
     for (let i = 0; i < this.expandedFlat.length; i++) {
       const node = this.expandedFlat[i];
+      // Helpers for the UI:
+      // - Set node depths array for the UI:
+      node.ui.depths = currDepthStr;
+      if (depthSet.has(node.id)) {
+        depthSet.delete(node.id);
+        currDepth = clearBit(currDepth, node.depth - 1);
+        currDepthStr = currDepth.toString(36);
+      }
+      // - Set current node last direct child status:
+      const parent = this.getParent(node, false);
+      if (parent) {
+        const parentLastDirectChild = this.getLastDirectChild(parent);
+        node.ui.isLastChild = node === parentLastDirectChild;
+      }
+      // - Find last direct child of node, and set it as limit in the map:
+      const lastDirectChild = this.getLastDirectChild(node);
+      if (lastDirectChild) {
+        depthSet.add(lastDirectChild.id);
+        currDepth = setBit(currDepth, node.depth);
+        currDepthStr = currDepth.toString(36);
+      }
+      //
       if (!node.hidden) {
         if (nSurfaceNodes >= anchor && visibleNodes.length < TREE_PAGE_SIZE) {
           visibleNodes.push(node);
@@ -223,6 +256,10 @@ export class TreeManager {
       nDesc: 0,
       nSelDesc: 0,
       nFileDesc: 0,
+      ui: {
+        isLastChild: false,
+        depths: '0',
+      },
     } as const;
   }
 
@@ -240,6 +277,10 @@ export class TreeManager {
       nextId: null,
       prevId: null,
       sessionId: newSession.id,
+      ui: {
+        isLastChild: false,
+        depths: '0',
+      },
     } as const;
   }
 

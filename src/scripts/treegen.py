@@ -35,6 +35,7 @@ class Node:
         self.files = {"headId": None, "tailId": None} if node_type == "dir" else None
         self.nDesc = 0 if node_type == "dir" else None
         self.nSelDesc = 0 if node_type == "dir" else None
+        self.ui = {"isLastChild": False, "depths": "0"}
 
 
 def create_random_tree(total_nodes: int):

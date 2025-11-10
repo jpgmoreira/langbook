@@ -79,7 +79,7 @@
 .theme-dark .treeview .indent-vertical-span {
   background: url('@renderer/assets/images/vertical.png');
   background-size: contain;
-  background-repeat: repeat-x;
+  background-repeat: no-repeat;
   height: 28px;
 }
 .theme-dark .treeview .indent-middle-span {

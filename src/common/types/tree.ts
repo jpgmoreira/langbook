@@ -21,6 +21,11 @@ export type BaseNode = {
   parentId: string | null;
   nextId: string | null; // Next sibling ID, in the same doubly linked list.
   prevId: string | null; // Previous sibling ID, in the same doubly linked list.
+  ui: {
+    // Auxiliary for the UI.
+    isLastChild: boolean;
+    depths: string; // Big int of depths.
+  };
 };
 
 // Dir nodes store their children as a doubly linked list (Links).
