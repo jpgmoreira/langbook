@@ -24,7 +24,7 @@ export type BaseNode = {
   ui: {
     // Auxiliary for the UI.
     isLastChild: boolean;
-    depths: string; // Big int of depths.
+    depths: number; // Int representing depths as bits.
   };
 };
 

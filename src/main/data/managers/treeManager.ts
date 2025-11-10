@@ -122,17 +122,15 @@ export class TreeManager {
     const visibleNodes: Node[] = [];
     let nSurfaceNodes = 0;
     const depthSet = new Set<string>();
-    let currDepth = BigInt(0);
-    let currDepthStr = '0';
+    let currDepth = 0;
     for (let i = 0; i < this.expandedFlat.length; i++) {
       const node = this.expandedFlat[i];
       // Helpers for the UI:
       // - Set node depths array for the UI:
-      node.ui.depths = currDepthStr;
+      node.ui.depths = currDepth;
       if (depthSet.has(node.id)) {
         depthSet.delete(node.id);
         currDepth = clearBit(currDepth, node.depth - 1);
-        currDepthStr = currDepth.toString(36);
       }
       // - Set current node last direct child status:
       const parent = this.getParent(node, false);
@@ -145,7 +143,6 @@ export class TreeManager {
       if (lastDirectChild) {
         depthSet.add(lastDirectChild.id);
         currDepth = setBit(currDepth, node.depth);
-        currDepthStr = currDepth.toString(36);
       }
       //
       if (!node.hidden) {
@@ -258,7 +255,7 @@ export class TreeManager {
       nFileDesc: 0,
       ui: {
         isLastChild: false,
-        depths: '0',
+        depths: 0,
       },
     } as const;
   }
@@ -279,7 +276,7 @@ export class TreeManager {
       sessionId: newSession.id,
       ui: {
         isLastChild: false,
-        depths: '0',
+        depths: 0,
       },
     } as const;
   }

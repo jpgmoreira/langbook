@@ -399,7 +399,7 @@
       if (node.ui.isLastChild) return 'indent-last-span';
       return 'indent-middle-span';
     }
-    if (hasBit(BigInt(parseInt(node.ui.depths, 36)), index)) {
+    if (hasBit(node.ui.depths, index)) {
       return 'indent-vertical-span';
     }
     return '';
@@ -612,11 +612,11 @@
             :key="node.id"
             class="flex items-center whitespace-nowrap"
           >
-            <!-- <span
+            <span
               v-for="i in node.depth"
               :class="getNodeIndentClass(node, i - 1)"
               :style="{ width: `${indentSpanWidth}px` }"
-            ></span> -->
+            ></span>
 
             <span
               v-if="node.type === 'dir'"
