@@ -45,33 +45,19 @@
 </script>
 
 <template>
-  <div
-    class="home-page h-screen flex flex-col"
-    :class="{ resizing: isResizing }"
-    style="border: 1px solid red"
-  >
+  <div class="home-page h-screen flex flex-col" :class="{ resizing: isResizing }">
     <Header />
-    <div class="flex grow" style="border: 1px solid cyan">
+    <div class="flex grow">
       <div :style="{ width: `${treeAreaWidth}px` }">
-        <TreeView
-          class="select-none"
-          files-hint
-          file-icon
-          checkbox
-          style="border: 1px solid olivedrab"
-        />
+        <TreeView class="select-none" files-hint file-icon checkbox />
       </div>
       <div
         class="separator shrink-0"
         :class="{ resizing: isResizing }"
         @mousedown="isResizing = true"
       ></div>
-      <div
-        class="flex flex-col grow"
-        :style="{ width: `${contestsAreaWidth}px` }"
-        style="border: 1px solid tomato"
-      >
-        <div class="grow" style="border: 2px solid lightgreen"></div>
+      <div class="flex flex-col grow" :style="{ width: `${contestsAreaWidth}px` }">
+        <div class="grow" style="border: 3px solid lightgreen"></div>
         <div style="border: 1px solid orangered">
           <div>Filters:</div>
           <Multiselect
@@ -90,7 +76,7 @@
             @input="filtersStore.dirty = true"
           />
         </div>
-        <footer class="flex items-center justify-evenly py-1" style="border: 1px solid orange">
+        <footer class="flex items-center justify-evenly py-1">
           <button
             type="button"
             class="caret-button"
