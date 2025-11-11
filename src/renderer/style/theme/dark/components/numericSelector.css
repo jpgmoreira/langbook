@@ -1,0 +1,23 @@
+.theme-dark .numeric-selector {
+  display: inline-flex;
+  border: 1px solid #30343a;
+}
+
+.theme-dark .numeric-selector > div {
+  background-color: #3f444b;
+  padding: 3px 5px;
+  cursor: pointer;
+  border-left: 1px solid #30343a;
+  transition: background 0.2s ease;
+}
+
+.theme-dark .numeric-selector > div:first-child {
+  border-left: none;
+}
+
+.theme-dark .numeric-selector > div:hover {
+  background-color: #2f6097;
+}
+.theme-dark .numeric-selector > div.selected {
+  background-color: #448ee4;
+}

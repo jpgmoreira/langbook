@@ -5,6 +5,7 @@
   import Header from '@renderer/components/Header.vue';
   import TreeView from '@renderer/components/UI/TreeView/TreeView.vue';
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
+  import NumericSelector from '@renderer/components/UI/NumericSelector.vue';
   const tagsStore = useTagsStore();
   const filtersStore = useFiltersStore();
   const isResizing = ref(false);
@@ -23,7 +24,6 @@
   });
   function filter() {
     filtersStore.dirty = false;
-    console.log(filtersStore.filters);
   }
   function windowMouseUp() {
     isResizing.value = false;
@@ -77,6 +77,13 @@
             v-model.trim="filtersStore.filters.text"
             @input="filtersStore.dirty = true"
           />
+          <div class="flex items-center">
+            <span>Frequency:</span>
+            <NumericSelector
+              :selected="filtersStore.filters.frequencies"
+              @toggle="filtersStore.toggleFrequency"
+            />
+          </div>
         </div>
         <footer class="flex items-center justify-evenly py-1">
           <button

@@ -42,5 +42,13 @@ export const useFiltersStore = defineStore('filters', {
     changeTagsMode(mode: TagsMode) {
       this.filters.tagsMode = mode;
     },
+    toggleFrequency(value: number) {
+      const frequencies = this.filters.frequencies;
+      if (frequencies.includes(value)) {
+        this.filters.frequencies = frequencies.filter((v) => v !== value);
+      } else {
+        frequencies.push(value);
+      }
+    },
   },
 });
