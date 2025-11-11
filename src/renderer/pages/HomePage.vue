@@ -14,7 +14,7 @@
   const hideFilters = ref(false);
   const tagsOptions = computed(() =>
     Object.keys(tagsStore.tags).map((t) => ({
-      text: t,
+      text: tagsStore.getTagWithCount(t),
       value: t,
     }))
   );

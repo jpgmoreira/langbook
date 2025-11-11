@@ -23,5 +23,9 @@ export const useTagsStore = defineStore('tags', {
     clear() {
       this.tags = {};
     },
+    getTagWithCount(tag: string) {
+      if (!(tag in this.tags)) return '';
+      return `${tag} (${this.tags[tag]})`;
+    },
   },
 });
