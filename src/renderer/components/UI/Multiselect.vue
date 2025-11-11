@@ -54,6 +54,7 @@
    *        .multiselect .badges-container
    *        .multiselect .editor
    */
+  import { TagsMode } from '@common/schemas/filters';
   import { toLocaleNumber } from '@common/utils/utils';
   import { computed, reactive, useTemplateRef, ref, watch } from 'vue';
   export type MultiselectOption = {
@@ -66,6 +67,7 @@
     selected?: string[];
     create?: boolean;
     close?: boolean;
+    tagsMode: TagsMode;
     direction?: 'up' | 'down';
     badgeNumbers?: boolean;
     optionNumbers?: boolean;
@@ -75,6 +77,7 @@
     (e: 'selectOption', optionValue: string): void;
     (e: 'createOption', optionText: string): void;
     (e: 'deselectOption', optionValue: string): void;
+    (e: 'changeTagsMode', newMode: TagsMode);
   }>();
   const optionHeight = 30;
   const pageSize = 100;
@@ -229,6 +232,10 @@
     }
     return result;
   }
+  function changeTagsMode(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    emit('changeTagsMode', target.value as TagsMode);
+  }
   watch(showContextMenu, () => {
     anchor.value = 0;
     scrollOffset.value = 0;
@@ -315,7 +322,7 @@
         @keydown.enter.prevent="editorEnter"
         @keydown.escape.prevent="clear"
       />
-      <select>
+      <select :value="tagsMode" @change="changeTagsMode">
         <option value="all">All tags</option>
         <option value="any">Any tag</option>
       </select>

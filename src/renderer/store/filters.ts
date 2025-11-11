@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { StartupData } from '@common/schemas/startup';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
-import { getEmptyFilters } from '@common/schemas/filters';
+import { getEmptyFilters, TagsMode } from '@common/schemas/filters';
 
 EventEmitter.instance.on(Events.loadInitialData, (data: StartupData) => {
   useFiltersStore().initFromStartupData(data);
@@ -38,6 +38,9 @@ export const useFiltersStore = defineStore('filters', {
         this.filters.tags = tags.filter((t) => t !== tag);
         this.dirty = true;
       }
+    },
+    changeTagsMode(mode: TagsMode) {
+      this.filters.tagsMode = mode;
     },
   },
 });

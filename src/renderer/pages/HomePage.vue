@@ -63,11 +63,13 @@
           <Multiselect
             :options="tagsOptions"
             :selected="filtersStore.filters.tags"
+            :tagsMode="filtersStore.filters.tagsMode"
             placeholder="Tags"
             direction="up"
             close
             @select-option="filtersStore.selectTag"
             @deselect-option="filtersStore.deselectTag"
+            @change-tags-mode="filtersStore.changeTagsMode"
           />
           <input
             type="text"
