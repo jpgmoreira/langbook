@@ -49,6 +49,13 @@ export const useFiltersStore = defineStore('filters', {
       } else {
         frequencies.push(value);
       }
+      this.dirty = true;
+    },
+    clearFilters() {
+      this.dirty = true;
+      this.filters.tags = [];
+      this.filters.text = '';
+      this.filters.frequencies = [];
     },
   },
 });

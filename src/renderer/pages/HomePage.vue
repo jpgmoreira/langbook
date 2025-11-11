@@ -11,7 +11,7 @@
   const isResizing = ref(false);
   const treeAreaWidth = ref(300);
   const contestsAreaWidth = ref(window.innerWidth - 300);
-  const showFilters = ref(false);
+  const hideFilters = ref(false);
   const tagsOptions = computed(() =>
     Object.keys(tagsStore.tags).map((t) => ({
       text: t,
@@ -45,7 +45,7 @@
 </script>
 
 <template>
-  <div class="home-page h-screen flex flex-col" :class="{ resizing: isResizing }">
+  <div class="home-page h-screen flex flex-col overflow-hidden" :class="{ resizing: isResizing }">
     <Header />
     <div class="flex grow">
       <div :style="{ width: `${treeAreaWidth}px` }">
@@ -57,8 +57,8 @@
         @mousedown="isResizing = true"
       ></div>
       <div class="flex flex-col grow" :style="{ width: `${contestsAreaWidth}px` }">
-        <div class="grow" style="border: 3px solid lightgreen"></div>
-        <div style="border: 1px solid orangered">
+        <div class="grow" style="border: 0px solid lightgreen"></div>
+        <div v-if="!hideFilters" class="filters-container px-2 py-1.5 whitespace-nowrap">
           <div>Filters:</div>
           <Multiselect
             :options="tagsOptions"
@@ -72,13 +72,14 @@
             @change-tags-mode="filtersStore.changeTagsMode"
           />
           <input
+            class="my-1"
             type="text"
             placeholder="Text"
             v-model.trim="filtersStore.filters.text"
             @input="filtersStore.dirty = true"
           />
           <div class="flex items-center">
-            <span>Frequency:</span>
+            <span class="mr-1">Frequency:</span>
             <NumericSelector
               :selected="filtersStore.filters.frequencies"
               @toggle="filtersStore.toggleFrequency"
@@ -89,10 +90,13 @@
           <button
             type="button"
             class="caret-button"
-            :class="{ rotated: showFilters }"
-            @click="showFilters = !showFilters"
+            :class="{ rotated: hideFilters }"
+            @click="hideFilters = !hideFilters"
           ></button>
           <button type="button" :class="filterButtonClass" @click="filter">Filter</button>
+          <button type="button" class="btn-primary" @click="filtersStore.clearFilters">
+            Clear
+          </button>
           <button type="button" class="btn-primary whitespace-nowrap">Add card</button>
           <button type="button" class="btn-primary">Flashcards</button>
         </footer>

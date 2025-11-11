@@ -5,3 +5,11 @@
   background-size: cover;
   background-repeat: no-repeat;
 }
+
+.theme-dark .home-page footer {
+  border-top: 1px solid #30343a;
+}
+
+.theme-dark .home-page .filters-container {
+  border-top: 1px solid #30343a;
+}
