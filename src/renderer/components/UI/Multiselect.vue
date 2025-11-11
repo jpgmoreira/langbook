@@ -300,20 +300,26 @@
         </button>
       </span>
     </div>
-    <input
-      ref="editor"
-      v-model.trim="state.content"
-      type="text"
-      class="editor"
-      :placeholder="props.placeholder"
-      @input="editorInput"
-      @focus="state.editorHasFocus = true"
-      @blur="editorBlur"
-      @keydown.up.prevent="contextUp"
-      @keydown.down.prevent="contextDown"
-      @keydown.enter.prevent="editorEnter"
-      @keydown.escape.prevent="clear"
-    />
+    <div class="input-parent">
+      <input
+        ref="editor"
+        v-model.trim="state.content"
+        type="text"
+        class="editor"
+        :placeholder="props.placeholder"
+        @input="editorInput"
+        @focus="state.editorHasFocus = true"
+        @blur="editorBlur"
+        @keydown.up.prevent="contextUp"
+        @keydown.down.prevent="contextDown"
+        @keydown.enter.prevent="editorEnter"
+        @keydown.escape.prevent="clear"
+      />
+      <select>
+        <option value="all">All tags</option>
+        <option value="any">Any tag</option>
+      </select>
+    </div>
   </div>
 </template>
 

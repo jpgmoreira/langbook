@@ -73,3 +73,13 @@
 .theme-dark .multiselect .editor {
   border: none;
 }
+.theme-dark .multiselect .input-parent {
+  display: flex;
+}
+.theme-dark .multiselect .input-parent select {
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
