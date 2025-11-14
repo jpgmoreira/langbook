@@ -6,6 +6,7 @@
   import TreeView from '@renderer/components/UI/TreeView/TreeView.vue';
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
   import NumericSelector from '@renderer/components/UI/NumericSelector.vue';
+  import { Channels } from '@preload/channels';
   const tagsStore = useTagsStore();
   const filtersStore = useFiltersStore();
   const isResizing = ref(false);
@@ -24,6 +25,9 @@
   });
   function filter() {
     filtersStore.dirty = false;
+  }
+  function openAddCard() {
+    window.api.invoke(Channels.openAddCard);
   }
   function windowMouseUp() {
     isResizing.value = false;
@@ -97,7 +101,9 @@
           <button type="button" class="btn-primary" @click="filtersStore.clearFilters">
             Clear
           </button>
-          <button type="button" class="btn-primary whitespace-nowrap">Add card</button>
+          <button type="button" class="btn-primary whitespace-nowrap" @click="openAddCard">
+            Add card
+          </button>
           <button type="button" class="btn-primary">Flashcards</button>
         </footer>
       </div>

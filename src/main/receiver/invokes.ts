@@ -2,6 +2,7 @@ import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { StartupData } from '@common/schemas/startup';
 import { ProfileManager } from '@main/data/managers/profileManager';
+import { WindowsManager } from '@main/data/managers/windowsManager';
 import { loadStartupData } from '@main/data/startup';
 import { Channels } from '@preload/channels';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
@@ -40,3 +41,7 @@ ipcMain.handle(
     return loadStartupData();
   }
 );
+
+ipcMain.handle(Channels.openAddCard, async (_: IpcMainInvokeEvent) => {
+  WindowsManager.instance.openAddCard();
+});

@@ -5,6 +5,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { installExtension, VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { loadStartupData } from './data/startup';
 import { Channels } from '@preload/channels';
+import { WindowsManager } from './data/managers/windowsManager';
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -18,6 +19,8 @@ function createWindow(): void {
     },
   });
   Menu.setApplicationMenu(null);
+
+  WindowsManager.instance.setMainWindow(mainWindow);
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
