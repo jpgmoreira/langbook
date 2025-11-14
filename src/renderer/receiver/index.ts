@@ -15,3 +15,9 @@ window.api.on(Channels.loadStartupData, (data: StartupData) => {
   document.title = `${data.currProfile.name}@${APP_NAME}`;
   return router.replace('/home');
 });
+
+window.api.on(Channels.openEditor, (card: null) => {
+  document.documentElement.classList.add('theme-dark');
+  document.title = card ? 'Edit Card' : 'Add Card';
+  router.replace('/editor');
+});

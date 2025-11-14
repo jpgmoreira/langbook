@@ -26,8 +26,8 @@
   function filter() {
     filtersStore.dirty = false;
   }
-  function openAddCard() {
-    window.api.invoke(Channels.openAddCard);
+  function openEditor(card: null) {
+    window.api.invoke(Channels.openEditor, card);
   }
   function windowMouseUp() {
     isResizing.value = false;
@@ -101,7 +101,7 @@
           <button type="button" class="btn-primary" @click="filtersStore.clearFilters">
             Clear
           </button>
-          <button type="button" class="btn-primary whitespace-nowrap" @click="openAddCard">
+          <button type="button" class="btn-primary whitespace-nowrap" @click="openEditor(null)">
             Add card
           </button>
           <button type="button" class="btn-primary">Flashcards</button>

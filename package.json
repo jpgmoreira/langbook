@@ -1,6 +1,6 @@
 {
-  "name": "langbook",
-  "productName": "Langbook",
+  "name": "Xlangbook",
+  "productName": "XLangbook",
   "version": "0.0.1",
   "description": "An application for studying languages",
   "main": "./out/main/main.js",

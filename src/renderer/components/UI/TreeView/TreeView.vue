@@ -397,17 +397,6 @@
     tree.value = newTree;
   }
 
-  function getNodeIndentClass(node: Node, index: number) {
-    if (index === node.depth - 1) {
-      if (node.ui.isLastChild) return 'indent-last-span';
-      return 'indent-middle-span';
-    }
-    if (hasBit(node.ui.depths, index)) {
-      return 'indent-vertical-span';
-    }
-    return '';
-  }
-
   function getNodeIndentStyle(node: Node) {
     const backgrounds: string[] = [];
     const positions: string[] = [];
