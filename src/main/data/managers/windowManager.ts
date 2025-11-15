@@ -15,7 +15,7 @@ export class WindowManager {
   private mainWindow!: BrowserWindow;
   private editorWindow!: BrowserWindow;
 
-  private readonly indexHtmlPath = join(__dirname, '../../../renderer/index.html');
+  private readonly indexHtmlPath = join(__dirname, '../renderer/index.html');
   private readonly iconPath = join(__dirname, '../../../../build/icon.png');
   private readonly preloadPath = join(__dirname, '../preload/index.js');
 
@@ -48,7 +48,7 @@ export class WindowManager {
     if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
       window.loadURL(process.env['ELECTRON_RENDERER_URL']);
     } else {
-      window.loadFile(join(__dirname, this.indexHtmlPath));
+      window.loadFile(this.indexHtmlPath);
     }
     if (is.dev) {
       window.webContents.openDevTools({ mode: 'right' });
