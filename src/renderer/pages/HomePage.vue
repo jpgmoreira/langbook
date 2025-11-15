@@ -2,6 +2,7 @@
   import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
   import { useTagsStore } from '@renderer/store/tags';
   import { useFiltersStore } from '@renderer/store/filters';
+  import { useUIStore } from '@renderer/store/ui';
   import Header from '@renderer/components/Header.vue';
   import TreeView from '@renderer/components/UI/TreeView/TreeView.vue';
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
@@ -9,6 +10,7 @@
   import { Channels } from '@preload/channels';
   const tagsStore = useTagsStore();
   const filtersStore = useFiltersStore();
+  const uiStore = useUIStore();
   const isResizing = ref(false);
   const treeAreaWidth = ref(300);
   const contestsAreaWidth = ref(window.innerWidth - 300);
@@ -27,6 +29,7 @@
     filtersStore.dirty = false;
   }
   function openEditor(card: null) {
+    uiStore.backdropVisible = true;
     window.api.invoke(Channels.openEditor, card);
   }
   function windowMouseUp() {

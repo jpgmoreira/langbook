@@ -10,6 +10,7 @@ export const useUIStore = defineStore('ui', {
       type: 'success',
       timer: null,
     },
+    backdropVisible: false,
   }),
   actions: {
     showToast(message: string, type: ToastType, duration: number = 3000) {

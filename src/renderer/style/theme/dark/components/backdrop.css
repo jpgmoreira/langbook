@@ -1,0 +1,6 @@
+.theme-dark .main-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: #aaaaaa7c;
+}

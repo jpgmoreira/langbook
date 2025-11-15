@@ -33,7 +33,7 @@
   <teleport to="body">
     <div class="modal-container">
       <Transition name="backdrop-fade">
-        <div v-if="props.visible" class="backdrop" @click="close"></div>
+        <div v-if="props.visible" class="modal-backdrop" @click="close"></div>
       </Transition>
       <Transition name="modal-slide">
         <div v-if="props.visible" class="modal">
@@ -56,7 +56,7 @@
 </template>
 
 <style scoped>
-  .backdrop {
+  .modal-backdrop {
     position: fixed;
     inset: 0;
     z-index: 9999;

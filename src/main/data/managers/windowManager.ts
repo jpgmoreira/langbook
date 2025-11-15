@@ -58,6 +58,8 @@ export class WindowManager {
   private createEditorWindow(): void {
     this.editorWindow = new BrowserWindow({
       ...this.commonWindowConfig,
+      width: 1000,
+      height: 680,
       parent: this.mainWindow,
       modal: true,
     });
