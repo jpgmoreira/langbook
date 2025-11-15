@@ -5,4 +5,5 @@ export enum Channels {
   deleteProfile = 'delete-profile',
   login = 'login',
   openEditor = 'open-editor',
+  closeEditor = 'close-editor',
 }

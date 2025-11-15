@@ -4,6 +4,7 @@ import { APP_NAME } from '@common/constants';
 import { StartupData } from '@common/schemas/startup';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
+import { useUIStore } from '@renderer/store/ui';
 
 window.api.on(Channels.loadStartupData, (data: StartupData) => {
   EventEmitter.instance.emit(Events.loadInitialData, data);
@@ -20,4 +21,9 @@ window.api.on(Channels.openEditor, (card: null) => {
   document.documentElement.classList.add('theme-dark');
   document.title = card ? 'Edit Card' : 'Add Card';
   router.replace('/editor');
+});
+
+window.api.on(Channels.closeEditor, (card: null) => {
+  useUIStore().backdropVisible = false;
+  // handle card...
 });
