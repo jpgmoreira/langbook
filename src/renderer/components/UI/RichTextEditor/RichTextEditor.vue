@@ -142,17 +142,26 @@
   }
 
   function sanitizeNode(node: Node) {
-    const allowedAttributes = ['src', 'width'];
-
+    const allowedAttributes = ['src', 'width', 'class'];
+    const allowedClasses = ['someclass'];
     if (node.nodeType === Node.ELEMENT_NODE) {
       const el = node as HTMLElement;
-      el.removeAttribute('style');
       [...el.attributes].forEach((attr) => {
         const name = attr.name.toLowerCase();
         if (!allowedAttributes.includes(name)) {
           el.removeAttribute(name);
         }
       });
+      if (el.hasAttribute('class')) {
+        const finalClasses = el.classList.value
+          .split(/\s+/)
+          .filter((cls) => allowedClasses.includes(cls));
+        if (finalClasses.length > 0) {
+          el.className = finalClasses.join(' ');
+        } else {
+          el.removeAttribute('class');
+        }
+      }
       if (el.tagName === 'IMG') {
         try {
           const url = new URL((el as HTMLImageElement).src);
