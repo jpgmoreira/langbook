@@ -113,10 +113,13 @@
       return;
     }
     // 2. Check if pasting HTML content.
+    // FIX: Allow pasting of content that comes from inside the RTE, including styles and images.
     const html = data.getData('text/html').trim();
     if (html) {
       console.log('-> paste HTML.');
-      const stripped = stripHtml(html).result;
+      const stripped = stripHtml(html, {
+        ignoreTags: ['div', 'img'],
+      }).result;
       setTimeout(() => {
         document.execCommand('insertHTML', false, stripped);
       }, 0);
