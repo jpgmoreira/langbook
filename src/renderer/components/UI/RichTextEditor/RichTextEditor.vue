@@ -1,5 +1,34 @@
 <script lang="ts" setup>
+  import { useTemplateRef } from 'vue';
   import { stripHtml } from 'string-strip-html';
+
+  const rteRef = useTemplateRef('rte');
+
+  function focus() {
+    rteRef.value?.focus();
+  }
+
+  function drop(e: DragEvent) {
+    // Due to some problems and difficulties related to drop events in JavaScript, the only thing you are allowed to drop
+    //   in a card's field are image files from your operating system.
+    e.preventDefault();
+    if (!e.dataTransfer) return;
+    for (const item of e.dataTransfer.items) {
+      if (item.kind === 'file' && item.type.startsWith('image/')) {
+        const file = item.getAsFile();
+        if (!file) return;
+        console.log('-> drop an image from the operating system.');
+        const reader = new FileReader();
+        reader.onload = (fileEvent) => {
+          focus();
+          const result = fileEvent.target?.result;
+          if (typeof result !== 'string') return;
+          document.execCommand('insertImage', false, result);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  }
 
   function paste(e: ClipboardEvent) {
     e.preventDefault();
@@ -86,5 +115,12 @@
 </script>
 
 <template>
-  <div spellcheck="false" contenteditable="true" @keydown="keydown" @paste="paste"></div>
+  <div
+    ref="rte"
+    spellcheck="false"
+    contenteditable="true"
+    @keydown="keydown"
+    @paste="paste"
+    @drop="drop"
+  ></div>
 </template>
