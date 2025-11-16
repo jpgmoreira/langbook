@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import { ref, reactive, useTemplateRef } from 'vue';
-  import { stripHtml } from 'string-strip-html';
 
   // --- Variables: ---
 
