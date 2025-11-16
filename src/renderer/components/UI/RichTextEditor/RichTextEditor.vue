@@ -91,9 +91,14 @@
 
   function paste(e: ClipboardEvent) {
     e.preventDefault();
-    if (!e.clipboardData) return;
+    const data = e.clipboardData;
+    if (!data) return;
+    handlePaste(data);
+  }
+
+  function handlePaste(data: DataTransfer) {
     // 1. Check if pasting an image from the clipboard:
-    const items = e.clipboardData.items;
+    const items = data.items;
     if (items && items.length && items[0].kind === 'file' && items[0].type.startsWith('image/')) {
       const file = items[0].getAsFile();
       if (!file) return;
@@ -108,19 +113,17 @@
       return;
     }
     // 2. Check if pasting HTML content.
-    // No HTML content other than images is allowed.
-    // It's possible to paste HTML tags as plaintext, but if there is an image tag in the content, then other HTML tags will be stripped.
-    const html = e.clipboardData.getData('text/html').trim();
-    if (html && html.includes('<img ')) {
-      console.log('-> paste as HTML.');
-      const stripped = stripHtml(html, { ignoreTags: ['img'] }).result;
+    const html = data.getData('text/html').trim();
+    if (html) {
+      console.log('-> paste HTML.');
+      const stripped = stripHtml(html).result;
       setTimeout(() => {
         document.execCommand('insertHTML', false, stripped);
       }, 0);
       return;
     }
     // 3. Paste as plaintext:
-    const text = e.clipboardData.getData('text/plain').trim();
+    const text = data.getData('text/plain').trim();
     if (text) {
       console.log('-> paste as plaintext');
       setTimeout(() => {
