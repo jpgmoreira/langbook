@@ -12,6 +12,16 @@
     bottom: '',
   });
 
+  const allowedSpanStyles = Object.freeze([
+    'font-weight',
+    'font-style',
+    'text-decoration',
+    'text-decoration-line',
+    'color',
+    'background-color',
+    'font-size',
+  ]);
+
   // --- Functions: ---
 
   function focus() {
@@ -178,40 +188,35 @@
     return doc.body.innerHTML;
   }
 
+  function cleanSpanStyle(el: HTMLSpanElement) {
+    const style = el.getAttribute('style');
+    if (style) {
+      const styleMap = style
+        .split(';')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const filtered = styleMap.filter((s) => {
+        const prop = s.split(':')[0].trim();
+        return allowedSpanStyles.includes(prop);
+      });
+      if (filtered.length > 0) {
+        el.setAttribute('style', filtered.join('; ') + ';');
+      } else {
+        el.removeAttribute('style');
+      }
+    }
+  }
+
   function sanitizeNode(node: Node) {
     const allowedAttributes = ['src', 'class'];
     const allowedClasses = ['selected-image'];
-    const allowedStyles = [
-      'font-weight',
-      'font-style',
-      'text-decoration',
-      'text-decoration-line',
-      'color',
-      'background-color',
-      'font-size',
-    ];
     if (node.nodeType === Node.ELEMENT_NODE) {
       const el = node as HTMLElement;
       for (const attr of el.attributes) {
         const name = attr.name.toLowerCase();
         // Allow pasting only allowed styles for spans.
         if (name === 'style' && el.tagName === 'SPAN') {
-          const style = el.getAttribute('style');
-          if (style) {
-            const styleMap = style
-              .split(';')
-              .map((s) => s.trim())
-              .filter(Boolean);
-            const filtered = styleMap.filter((s) => {
-              const prop = s.split(':')[0].trim();
-              return allowedStyles.includes(prop);
-            });
-            if (filtered.length > 0) {
-              el.setAttribute('style', filtered.join('; ') + ';');
-            } else {
-              el.removeAttribute('style');
-            }
-          }
+          cleanSpanStyle(el);
           continue;
         }
         if (!allowedAttributes.includes(name)) {
