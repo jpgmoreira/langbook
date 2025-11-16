@@ -142,12 +142,14 @@
   }
 
   function sanitizeNode(node: Node) {
+    const allowedAttributes = ['src', 'width'];
+
     if (node.nodeType === Node.ELEMENT_NODE) {
       const el = node as HTMLElement;
       el.removeAttribute('style');
       [...el.attributes].forEach((attr) => {
         const name = attr.name.toLowerCase();
-        if (name !== 'src' && name !== 'href' && name !== 'alt') {
+        if (!allowedAttributes.includes(name)) {
           el.removeAttribute(name);
         }
       });
