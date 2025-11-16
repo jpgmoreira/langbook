@@ -65,7 +65,7 @@
     isCtxVisible.value = false;
   }
 
-  // --- User interactions: ---
+  // --- Drop: ---
 
   function drop(e: DragEvent) {
     // Due to some problems and difficulties related to drop events in JavaScript, the only thing you are allowed to drop
@@ -88,6 +88,8 @@
       }
     }
   }
+
+  // --- Paste: ---
 
   function paste(e: ClipboardEvent) {
     e.preventDefault();
@@ -116,12 +118,9 @@
     // FIX: Allow pasting of content that comes from inside the RTE, including styles and images.
     const html = data.getData('text/html').trim();
     if (html) {
-      console.log('-> paste HTML.');
-      const stripped = stripHtml(html, {
-        ignoreTags: ['div', 'img'],
-      }).result;
+      const cleaned = cleanPastedHTML(html);
       setTimeout(() => {
-        document.execCommand('insertHTML', false, stripped);
+        document.execCommand('insertHTML', false, cleaned);
       }, 0);
       return;
     }
@@ -134,6 +133,41 @@
       }, 0);
     }
   }
+
+  function cleanPastedHTML(html: string): string {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    sanitizeNode(doc.body);
+    return doc.body.innerHTML;
+  }
+
+  function sanitizeNode(node: Node) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = node as HTMLElement;
+      el.removeAttribute('style');
+      [...el.attributes].forEach((attr) => {
+        const name = attr.name.toLowerCase();
+        if (name !== 'src' && name !== 'href' && name !== 'alt') {
+          el.removeAttribute(name);
+        }
+      });
+      if (el.tagName === 'IMG') {
+        try {
+          const url = new URL((el as HTMLImageElement).src);
+          if (url.protocol.startsWith('http')) {
+            el.remove();
+            return;
+          }
+        } catch {
+          el.remove();
+          return;
+        }
+      }
+    }
+    node.childNodes.forEach(sanitizeNode);
+  }
+
+  // --- Keydown: ---
 
   function keydown(e: KeyboardEvent) {
     // Allowed keyboard hotkeys:
