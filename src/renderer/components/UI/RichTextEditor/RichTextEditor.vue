@@ -56,10 +56,48 @@
     document.execCommand('copy');
     isCtxVisible.value = false;
   }
-  function contextMenuPaste() {
-    /// Fix here.
+
+  async function contextMenuPaste() {
     isCtxVisible.value = false;
+    try {
+      const clipboardItems = await navigator.clipboard.read();
+      const dataTransfer = new DataTransfer();
+      let html = '';
+      let plainText = '';
+      for (const item of clipboardItems) {
+        for (const type of item.types) {
+          const blob = await item.getType(type);
+          // 1. If it is an image:
+          if (type.startsWith('image/')) {
+            const file = new File([blob], 'pasted-image', { type });
+            dataTransfer.items.add(file);
+            continue;
+          }
+          // 2. If it is HTML:
+          if (type === 'text/html') {
+            html = await blob.text();
+            dataTransfer.setData('text/html', html);
+            continue;
+          }
+          // 3. If it is plain text:
+          if (type === 'text/plain') {
+            plainText = await blob.text();
+            dataTransfer.setData('text/plain', plainText);
+            continue;
+          }
+        }
+      }
+      // Fallback for plain text:
+      if (!plainText) {
+        const txt = await navigator.clipboard.readText();
+        if (txt) dataTransfer.setData('text/plain', txt);
+      }
+      handlePaste(dataTransfer);
+    } catch (err) {
+      console.warn('Clipboard read failed:', err);
+    }
   }
+
   function contextMenuCut() {
     document.execCommand('cut');
     isCtxVisible.value = false;
