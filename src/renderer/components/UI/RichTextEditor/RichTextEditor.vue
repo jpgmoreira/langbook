@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-  import { ref, reactive, useTemplateRef } from 'vue';
+  import { ref, reactive, useTemplateRef, onMounted } from 'vue';
 
   // --- Variables: ---
+
+  const styledSpanClass = 'xrte';
 
   const rteRef = useTemplateRef('rte');
   const isCtxVisible = ref(false);
@@ -179,16 +181,45 @@
   }
 
   function sanitizeNode(node: Node) {
-    const allowedAttributes = ['src', 'width', 'class'];
-    const allowedClasses = ['someclass'];
+    const allowedAttributes = ['src', 'class'];
+    const allowedClasses = ['selected-image', styledSpanClass];
+    const allowedStyles = [
+      'font-weight',
+      'font-style',
+      'text-decoration',
+      'text-decoration-line',
+      'color',
+      'background-color',
+      'font-size',
+    ];
     if (node.nodeType === Node.ELEMENT_NODE) {
       const el = node as HTMLElement;
-      [...el.attributes].forEach((attr) => {
+      for (const attr of el.attributes) {
         const name = attr.name.toLowerCase();
+        // Allow pasting only allowed styles, from the spans that were copied from the RTE itself.
+        if (name === 'style' && el.tagName === 'SPAN' && el.classList.contains(styledSpanClass)) {
+          const style = el.getAttribute('style');
+          if (style) {
+            const styleMap = style
+              .split(';')
+              .map((s) => s.trim())
+              .filter(Boolean);
+            const filtered = styleMap.filter((s) => {
+              const prop = s.split(':')[0].trim();
+              return allowedStyles.includes(prop);
+            });
+            if (filtered.length > 0) {
+              el.setAttribute('style', filtered.join('; ') + ';');
+            } else {
+              el.removeAttribute('style');
+            }
+          }
+          continue;
+        }
         if (!allowedAttributes.includes(name)) {
           el.removeAttribute(name);
         }
-      });
+      }
       if (el.hasAttribute('class')) {
         const finalClasses = el.classList.value
           .split(/\s+/)
@@ -213,6 +244,16 @@
       }
     }
     node.childNodes.forEach(sanitizeNode);
+  }
+
+  // --- Add identifier class to all spans before cut and copy: ---
+
+  function addClassToSpans() {
+    if (!rteRef.value) return;
+    const allSpans = rteRef.value.querySelectorAll('span');
+    allSpans.forEach((span) => {
+      span.classList.add(styledSpanClass);
+    });
   }
 
   // --- Keydown: ---
@@ -263,6 +304,11 @@
       }
     }
   }
+
+  // -- Lifecycle hooks: ---
+  onMounted(() => {
+    document.execCommand('styleWithCSS');
+  });
 </script>
 
 <template>
@@ -276,6 +322,8 @@
       ref="rte"
       spellcheck="false"
       contenteditable="true"
+      @copy="addClassToSpans"
+      @cut="addClassToSpans"
       @keydown="keydown"
       @mousedown.right.prevent="openCtx"
       @mousedown.left="isCtxVisible = false"
