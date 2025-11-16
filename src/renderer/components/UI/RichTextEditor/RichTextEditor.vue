@@ -74,6 +74,7 @@
     // Allowed keyboard hotkeys:
     // - CTRL + c: Copy.
     // - CTRL + v: Paste.
+    // - CTRL + x: Cut.
     // - CTRL + z: Undo.
     // - CTRL + y: Redo.
     // - CTRL + b: Toggle bold.
@@ -101,6 +102,9 @@
           break;
         case 's':
           document.execCommand('strikeThrough');
+          break;
+        case 'x':
+          document.execCommand('cut');
           break;
         default:
           e.preventDefault();
