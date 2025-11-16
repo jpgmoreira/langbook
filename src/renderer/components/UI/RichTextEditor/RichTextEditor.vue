@@ -1,12 +1,71 @@
 <script lang="ts" setup>
-  import { useTemplateRef } from 'vue';
+  import { ref, reactive, useTemplateRef } from 'vue';
   import { stripHtml } from 'string-strip-html';
 
+  // --- Variables: ---
+
   const rteRef = useTemplateRef('rte');
+  const isCtxVisible = ref(false);
+  const ctxStyle = reactive({
+    left: '',
+    right: '',
+    top: '',
+    bottom: '',
+  });
+
+  // --- Functions: ---
 
   function focus() {
     rteRef.value?.focus();
   }
+
+  function openCtx(e: MouseEvent) {
+    const rte = rteRef.value;
+    if (!rte) return;
+    const rect = rte.getBoundingClientRect();
+    const rl = rect.left,
+      rr = rect.right,
+      rt = rect.top,
+      rb = rect.bottom,
+      cx = e.clientX,
+      cy = e.clientY;
+    const ctxWidth = 100,
+      ctxHeight = 100;
+    Object.assign(ctxStyle, {
+      left: '',
+      right: '',
+      top: '',
+      bottom: '',
+    });
+    if (rb - cy < ctxHeight) {
+      ctxStyle.bottom = rb - cy + 'px';
+    } else {
+      ctxStyle.top = cy - rt + 'px';
+    }
+    if (rr - cx < ctxWidth) {
+      ctxStyle.right = rr - cx + 'px';
+    } else {
+      ctxStyle.left = cx - rl + 'px';
+    }
+    isCtxVisible.value = true;
+  }
+
+  // --- Context menu interactions: ---
+
+  function contextMenuCopy() {
+    document.execCommand('copy');
+    isCtxVisible.value = false;
+  }
+  function contextMenuPaste() {
+    /// Fix here.
+    isCtxVisible.value = false;
+  }
+  function contextMenuCut() {
+    document.execCommand('cut');
+    isCtxVisible.value = false;
+  }
+
+  // --- User interactions: ---
 
   function drop(e: DragEvent) {
     // Due to some problems and difficulties related to drop events in JavaScript, the only thing you are allowed to drop
@@ -119,12 +178,31 @@
 </script>
 
 <template>
-  <div
-    ref="rte"
-    spellcheck="false"
-    contenteditable="true"
-    @keydown="keydown"
-    @paste="paste"
-    @drop="drop"
-  ></div>
+  <div class="rte-root">
+    <div v-if="isCtxVisible" :style="ctxStyle" class="context-menu">
+      <div @mousedown.prevent="contextMenuCut">Cut</div>
+      <div @mousedown.prevent="contextMenuCopy">Copy</div>
+      <div @mousedown.prevent="contextMenuPaste">Paste</div>
+    </div>
+    <div
+      ref="rte"
+      spellcheck="false"
+      contenteditable="true"
+      @keydown="keydown"
+      @mousedown.right.prevent="openCtx"
+      @mousedown.left="isCtxVisible = false"
+      @wheel="isCtxVisible = false"
+      @paste="paste"
+      @drop="drop"
+    ></div>
+  </div>
 </template>
+
+<style scoped>
+  .rte-root {
+    position: relative;
+  }
+  .context-menu {
+    position: absolute;
+  }
+</style>
