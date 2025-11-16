@@ -3,8 +3,6 @@
 
   // --- Variables: ---
 
-  const styledSpanClass = 'xrte';
-
   const rteRef = useTemplateRef('rte');
   const isCtxVisible = ref(false);
   const ctxStyle = reactive({
@@ -182,7 +180,7 @@
 
   function sanitizeNode(node: Node) {
     const allowedAttributes = ['src', 'class'];
-    const allowedClasses = ['selected-image', styledSpanClass];
+    const allowedClasses = ['selected-image'];
     const allowedStyles = [
       'font-weight',
       'font-style',
@@ -196,8 +194,8 @@
       const el = node as HTMLElement;
       for (const attr of el.attributes) {
         const name = attr.name.toLowerCase();
-        // Allow pasting only allowed styles, from the spans that were copied from the RTE itself.
-        if (name === 'style' && el.tagName === 'SPAN' && el.classList.contains(styledSpanClass)) {
+        // Allow pasting only allowed styles for spans.
+        if (name === 'style' && el.tagName === 'SPAN') {
           const style = el.getAttribute('style');
           if (style) {
             const styleMap = style
@@ -246,16 +244,6 @@
     node.childNodes.forEach(sanitizeNode);
   }
 
-  // --- Add identifier class to all spans before cut and copy: ---
-
-  function addClassToSpans() {
-    if (!rteRef.value) return;
-    const allSpans = rteRef.value.querySelectorAll('span');
-    allSpans.forEach((span) => {
-      span.classList.add(styledSpanClass);
-    });
-  }
-
   // --- Keydown: ---
 
   function keydown(e: KeyboardEvent) {
@@ -272,6 +260,7 @@
     // - CTRL + s: Toggle strikethrough.
     // - CTRL + <arrow_keys>: Jump whole words.
     // - CTRL + SHIFT + <arrow_keys>: Jump whole words selecting.
+    // - CTRL + SHIFT + v: Paste as plaintext.
     const key = e.key.toLowerCase();
     if (e.ctrlKey) {
       switch (key) {
@@ -322,8 +311,6 @@
       ref="rte"
       spellcheck="false"
       contenteditable="true"
-      @copy="addClassToSpans"
-      @cut="addClassToSpans"
       @keydown="keydown"
       @mousedown.right.prevent="openCtx"
       @mousedown.left="isCtxVisible = false"
