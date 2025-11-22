@@ -455,7 +455,7 @@
       {{ model || '' }}
     </div>
     <Toolbar
-      v-show="isToolbarVisible"
+      v-if="isToolbarVisible"
       @undo="undo"
       @redo="redo"
       @bold="bold"

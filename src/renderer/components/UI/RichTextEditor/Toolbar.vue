@@ -91,7 +91,9 @@
 <style scoped>
   .toolbar {
     position: sticky;
+    left: 0;
     bottom: 0;
+    margin-bottom: -33px;
     display: inline-flex;
     width: fit-content;
   }
@@ -103,9 +105,5 @@
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-  }
-  .toolbar.sticky .toolbox {
-    top: auto;
-    bottom: 100%;
   }
 </style>
