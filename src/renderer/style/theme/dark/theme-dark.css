@@ -15,6 +15,7 @@
 @import './components/treeView/contextMenu.css';
 @import './components/treeView/treeView.css';
 @import './components/richTextEditor/richTextEditor.css';
+@import './components/richTextEditor/toolbar.css';
 
 .theme-dark * {
   color: white;

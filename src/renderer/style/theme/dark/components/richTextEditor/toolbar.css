@@ -1,0 +1,61 @@
+.theme-dark .rte-root .toolbar {
+  background-color: #e4e4e4;
+  border: 1px solid #9c9c9c;
+  padding: 3px;
+}
+
+.theme-dark .rte-root .toolbar .toolbar-btn {
+  width: 25px;
+  height: 25px;
+  padding: 1px;
+  margin: 0 3px;
+  cursor: pointer;
+  background-size: cover;
+  position: relative;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-origin: content-box;
+}
+
+.theme-dark .rte-root .toolbar .toolbar-btn:hover,
+.theme-dark .rte-root .toolbar .toolbar-btn.active {
+  background-color: #fff;
+  outline: 2px dotted rgb(30, 144, 255, 0.6);
+}
+
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-undo {
+  background-image: url('@renderer/assets/images/toolbar/undo.png');
+}
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-redo {
+  background-image: url('@renderer/assets/images/toolbar/redo.png');
+}
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-bold {
+  background-image: url('@renderer/assets/images/toolbar/bold.png');
+}
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-italic {
+  background-image: url('@renderer/assets/images/toolbar/italic.png');
+}
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-underline {
+  background-image: url('@renderer/assets/images/toolbar/underline.png');
+}
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-strikeThrough {
+  background-image: url('@renderer/assets/images/toolbar/strikethrough.png');
+}
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-superscript {
+  background-image: url('@renderer/assets/images/toolbar/superscript.png');
+}
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-subscript {
+  background-image: url('@renderer/assets/images/toolbar/subscript.png');
+}
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-clear {
+  background-image: url('@renderer/assets/images/toolbar/clear.png');
+}
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-resize {
+  background-image: url('@renderer/assets/images/toolbar/resize.png');
+}
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-textcolor {
+  background-image: url('@renderer/assets/images/toolbar/textcolor.png');
+}
+.theme-dark .rte-root .toolbar .toolbar-btn.toolbar-backgroundcolor {
+  background-image: url('@renderer/assets/images/toolbar/backgroundcolor.png');
+}

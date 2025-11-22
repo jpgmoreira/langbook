@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div style="border: 3px solid red">
+  <div style="border: 3px solid red; padding-bottom: 500px">
     <RichTextEditor />
   </div>
 </template>

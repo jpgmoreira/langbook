@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import { ref, reactive, useTemplateRef, onMounted } from 'vue';
+  import Toolbar from './Toolbar.vue';
 
   // --- Variables: ---
 
@@ -12,9 +13,10 @@
     bottom: '',
   });
 
+  const isToolbarVisible = ref(false);
+
   // Class to identify spans that were styled inside of this component:
   const styledSpanClass = 'xrte';
-
   const selectedImageClass = 'selected-image';
 
   const allowedSpanStyles = Object.freeze([
@@ -345,7 +347,7 @@
 </script>
 
 <template>
-  <div class="rte-root">
+  <div class="rte-root" style="border: 3px solid salmon">
     <div v-if="isCtxVisible" :style="ctxStyle" class="context-menu">
       <div @mousedown.prevent="contextMenuCut">Cut</div>
       <div @mousedown.prevent="contextMenuCopy">Copy</div>
@@ -353,8 +355,11 @@
     </div>
     <div
       ref="rte"
+      style="border: 3px solid gold"
       spellcheck="false"
       contenteditable="true"
+      @focus="isToolbarVisible = true"
+      @blur="isToolbarVisible = false"
       @click="click"
       @copy="addClassToSpans"
       @cut="addClassToSpans"
@@ -365,6 +370,7 @@
       @paste="paste"
       @drop="drop"
     ></div>
+    <Toolbar v-if="true" />
   </div>
 </template>
 
