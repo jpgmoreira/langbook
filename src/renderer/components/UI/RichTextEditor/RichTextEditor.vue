@@ -27,6 +27,7 @@
     'color',
     'background-color',
     'font-size',
+    'vertical-align',
   ]);
 
   // --- Functions: ---
@@ -353,6 +354,43 @@
     }
   }
 
+  // -- Toolbar events: ---
+
+  function undo() {
+    document.execCommand('undo');
+  }
+
+  function redo() {
+    document.execCommand('redo');
+  }
+  function bold() {
+    document.execCommand('bold');
+  }
+
+  function italic() {
+    document.execCommand('italic');
+  }
+
+  function underline() {
+    document.execCommand('underline');
+  }
+
+  function strikeThrough() {
+    document.execCommand('strikeThrough');
+  }
+
+  function superscript() {
+    document.execCommand('superscript');
+  }
+
+  function subscript() {
+    document.execCommand('subscript');
+  }
+
+  function clear() {
+    document.execCommand('removeFormat');
+  }
+
   // -- Lifecycle hooks: ---
 
   onMounted(() => {
@@ -384,7 +422,18 @@
       @paste="paste"
       @drop="drop"
     ></div>
-    <Toolbar v-if="isToolbarVisible" />
+    <Toolbar
+      v-if="isToolbarVisible"
+      @undo="undo"
+      @redo="redo"
+      @bold="bold"
+      @italic="italic"
+      @underline="underline"
+      @strike-through="strikeThrough"
+      @superscript="superscript"
+      @subscript="subscript"
+      @clear="clear"
+    />
   </div>
 </template>
 

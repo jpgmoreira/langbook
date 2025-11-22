@@ -1,24 +1,32 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
 
-  const currentDropdown = ref('');
+  const emit = defineEmits<{
+    (e: 'undo'): void;
+    (e: 'redo'): void;
+    (e: 'bold'): void;
+    (e: 'italic'): void;
+    (e: 'underline'): void;
+    (e: 'strikeThrough'): void;
+    (e: 'superscript'): void;
+    (e: 'subscript'): void;
+    (e: 'clear'): void;
+  }>();
 
-  function mousedown(e: MouseEvent) {
-    e.preventDefault();
-  }
+  const currentDropdown = ref('');
 </script>
 
 <template>
-  <div class="toolbar" @mousedown="mousedown">
-    <div class="toolbar-btn toolbar-undo"></div>
-    <div class="toolbar-btn toolbar-redo"></div>
-    <div class="toolbar-btn toolbar-bold"></div>
-    <div class="toolbar-btn toolbar-italic"></div>
-    <div class="toolbar-btn toolbar-underline"></div>
-    <div class="toolbar-btn toolbar-strikeThrough"></div>
-    <div class="toolbar-btn toolbar-superscript"></div>
-    <div class="toolbar-btn toolbar-subscript"></div>
-    <div class="toolbar-btn toolbar-clear"></div>
+  <div class="toolbar">
+    <div class="toolbar-btn toolbar-undo" @mousedown.prevent="emit('undo')"></div>
+    <div class="toolbar-btn toolbar-redo" @mousedown.prevent="emit('redo')"></div>
+    <div class="toolbar-btn toolbar-bold" @mousedown.prevent="emit('bold')"></div>
+    <div class="toolbar-btn toolbar-italic" @mousedown.prevent="emit('italic')"></div>
+    <div class="toolbar-btn toolbar-underline" @mousedown.prevent="emit('underline')"></div>
+    <div class="toolbar-btn toolbar-strikeThrough" @mousedown.prevent="emit('strikeThrough')"></div>
+    <div class="toolbar-btn toolbar-superscript" @mousedown.prevent="emit('superscript')"></div>
+    <div class="toolbar-btn toolbar-subscript" @mousedown.prevent="emit('subscript')"></div>
+    <div class="toolbar-btn toolbar-clear" @mousedown.prevent="emit('clear')"></div>
     <div class="toolbar-btn toolbar-resize">
       <div class="font-sizes toolbox" v-if="currentDropdown === 'resize'">
         <div v-for="i in 7" :key="i" @click="">
