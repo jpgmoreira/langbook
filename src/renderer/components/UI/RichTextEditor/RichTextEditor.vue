@@ -2,9 +2,28 @@
   import { ref, reactive, useTemplateRef, onMounted } from 'vue';
   import Toolbar from './Toolbar.vue';
 
-  // --- v-model: ---
+  // --- Exposes: ---
 
-  const model = defineModel({ default: '' });
+  defineExpose({
+    focus,
+    getContent,
+  });
+
+  // --- Emits: ---
+
+  const emit = defineEmits<{
+    (e: 'blur'): void;
+  }>();
+
+  // --- Props: ---
+
+  const props = defineProps({
+    initial: {
+      type: String,
+      default: '',
+      required: false,
+    },
+  });
 
   // --- Variables: ---
 
@@ -46,7 +65,17 @@
   function blur() {
     isToolbarVisible.value = false;
     isCtxVisible.value = false;
+    emit('blur');
     clearSelectedImage();
+  }
+
+  function getContent() {
+    if (!rteRef.value) return;
+    const content = rteRef.value.innerHTML;
+    return content
+      .replace(/^(\s*(<div>)*\s*((\s*<br>\s*)|(\s*&nbsp;\s*))*\s*(<\/div>)*\s*)*/, '')
+      .replace(/(\s*(<div>)*\s*((\s*<br>\s*)|(\s*&nbsp;\s*))*\s*(<\/div>)*\s*)*$/, '')
+      .trim();
   }
 
   function clearSelectedImage() {
@@ -452,7 +481,7 @@
       @paste="paste"
       @drop="drop"
     >
-      {{ model || '' }}
+      {{ props.initial }}
     </div>
     <Toolbar
       v-if="isToolbarVisible"
