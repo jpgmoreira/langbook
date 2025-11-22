@@ -388,6 +388,18 @@
   }
 
   function clear() {
+    const selection = window.getSelection();
+    if (selection?.type === 'Caret') {
+      // the current selection is collapsed.
+      document.execCommand('insertText', false, ' ');
+      selection.modify('extend', 'left', 'character');
+    }
+    // trick to remove subscript and superscript.
+    document.execCommand('superscript');
+    document.execCommand('subscript');
+    document.execCommand('subscript');
+    // necessary to call twice because of a bug with clearing the text background color.
+    document.execCommand('removeFormat');
     document.execCommand('removeFormat');
   }
 
