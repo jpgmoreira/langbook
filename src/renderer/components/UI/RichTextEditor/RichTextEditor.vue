@@ -22,11 +22,11 @@
   const allowedSpanStyles = Object.freeze([
     'font-weight',
     'font-style',
+    'font-size',
     'text-decoration',
     'text-decoration-line',
     'color',
     'background-color',
-    'font-size',
     'vertical-align',
   ]);
 
@@ -387,6 +387,10 @@
     document.execCommand('subscript');
   }
 
+  function resizeText(size: string) {
+    document.execCommand('fontSize', false, size);
+  }
+
   function clear() {
     const selection = window.getSelection();
     if (selection?.type === 'Caret') {
@@ -435,13 +439,14 @@
       @drop="drop"
     ></div>
     <Toolbar
-      v-if="isToolbarVisible"
+      v-show="isToolbarVisible"
       @undo="undo"
       @redo="redo"
       @bold="bold"
       @italic="italic"
       @underline="underline"
       @strike-through="strikeThrough"
+      @resize-text="resizeText"
       @superscript="superscript"
       @subscript="subscript"
       @clear="clear"

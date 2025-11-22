@@ -1,35 +1,61 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
 
+  // Toolbar actions that do not use parameters:
+  type SimpleToolbarAction =
+    | 'undo'
+    | 'redo'
+    | 'bold'
+    | 'italic'
+    | 'underline'
+    | 'strikeThrough'
+    | 'superscript'
+    | 'subscript'
+    | 'clear';
+
   const emit = defineEmits<{
-    (e: 'undo'): void;
-    (e: 'redo'): void;
-    (e: 'bold'): void;
-    (e: 'italic'): void;
-    (e: 'underline'): void;
-    (e: 'strikeThrough'): void;
-    (e: 'superscript'): void;
-    (e: 'subscript'): void;
-    (e: 'clear'): void;
+    (e: SimpleToolbarAction): void;
+    (e: 'resizeText', size: string): void;
   }>();
 
   const currentDropdown = ref('');
+
+  function updateCurrentDropdown(menu: string) {
+    currentDropdown.value = currentDropdown.value === menu ? '' : menu;
+  }
+
+  function toolbarAction(action: SimpleToolbarAction) {
+    updateCurrentDropdown('');
+    emit(action);
+  }
 </script>
 
 <template>
   <div class="toolbar">
-    <div class="toolbar-btn toolbar-undo" @mousedown.prevent="emit('undo')"></div>
-    <div class="toolbar-btn toolbar-redo" @mousedown.prevent="emit('redo')"></div>
-    <div class="toolbar-btn toolbar-bold" @mousedown.prevent="emit('bold')"></div>
-    <div class="toolbar-btn toolbar-italic" @mousedown.prevent="emit('italic')"></div>
-    <div class="toolbar-btn toolbar-underline" @mousedown.prevent="emit('underline')"></div>
-    <div class="toolbar-btn toolbar-strikeThrough" @mousedown.prevent="emit('strikeThrough')"></div>
-    <div class="toolbar-btn toolbar-superscript" @mousedown.prevent="emit('superscript')"></div>
-    <div class="toolbar-btn toolbar-subscript" @mousedown.prevent="emit('subscript')"></div>
-    <div class="toolbar-btn toolbar-clear" @mousedown.prevent="emit('clear')"></div>
-    <div class="toolbar-btn toolbar-resize">
+    <div class="toolbar-btn toolbar-undo" @mousedown.prevent="toolbarAction('undo')"></div>
+    <div class="toolbar-btn toolbar-redo" @mousedown.prevent="toolbarAction('redo')"></div>
+    <div class="toolbar-btn toolbar-bold" @mousedown.prevent="toolbarAction('bold')"></div>
+    <div class="toolbar-btn toolbar-italic" @mousedown.prevent="toolbarAction('italic')"></div>
+    <div
+      class="toolbar-btn toolbar-underline"
+      @mousedown.prevent="toolbarAction('underline')"
+    ></div>
+    <div
+      class="toolbar-btn toolbar-strikeThrough"
+      @mousedown.prevent="toolbarAction('strikeThrough')"
+    ></div>
+    <div
+      class="toolbar-btn toolbar-superscript"
+      @mousedown.prevent="toolbarAction('superscript')"
+    ></div>
+    <div
+      class="toolbar-btn toolbar-subscript"
+      @mousedown.prevent="toolbarAction('subscript')"
+    ></div>
+    <div class="toolbar-btn toolbar-clear" @mousedown.prevent="toolbarAction('clear')"></div>
+    <div class="toolbar-btn toolbar-resize" @mousedown.prevent="updateCurrentDropdown('resize')">
       <div class="font-sizes toolbox" v-if="currentDropdown === 'resize'">
-        <div v-for="i in 7" :key="i" @click="">
+        <div v-for="i in 7" :key="i" @mousedown.prevent.stop="emit('resizeText', i.toString())">
           {{ i }}
         </div>
       </div>
@@ -48,5 +74,14 @@
     position: sticky;
     bottom: 0;
     display: inline-flex;
+  }
+  .toolbar-btn {
+    position: relative;
+  }
+  .toolbox {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
   }
 </style>
