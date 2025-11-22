@@ -32,7 +32,20 @@
   // --- Functions: ---
 
   function focus() {
+    isToolbarVisible.value = true;
     rteRef.value?.focus();
+  }
+
+  function blur() {
+    isToolbarVisible.value = false;
+    isCtxVisible.value = false;
+    clearSelectedImage();
+  }
+
+  function clearSelectedImage() {
+    if (!rteRef.value) return;
+    const si = [...rteRef.value.querySelectorAll(`.${selectedImageClass}`)];
+    si.forEach((element) => element.classList.remove(selectedImageClass));
   }
 
   function openCtx(e: MouseEvent) {
@@ -321,7 +334,7 @@
     if (!rteRef.value) return;
     const element = e.target as HTMLElement;
     const si = [...rteRef.value.querySelectorAll(`.${selectedImageClass}`)];
-    si.forEach((element) => element.classList.remove(selectedImageClass));
+    clearSelectedImage();
     if (element.tagName === 'IMG' && !si.includes(element)) {
       element.classList.add(selectedImageClass);
     }
@@ -341,6 +354,7 @@
   }
 
   // -- Lifecycle hooks: ---
+
   onMounted(() => {
     document.execCommand('styleWithCSS');
   });
@@ -358,8 +372,8 @@
       style="border: 3px solid gold"
       spellcheck="false"
       contenteditable="true"
-      @focus="isToolbarVisible = true"
-      @blur="isToolbarVisible = false"
+      @focus="focus"
+      @blur="blur"
       @click="click"
       @copy="addClassToSpans"
       @cut="addClassToSpans"
@@ -370,7 +384,7 @@
       @paste="paste"
       @drop="drop"
     ></div>
-    <Toolbar v-if="true" />
+    <Toolbar v-if="isToolbarVisible" />
   </div>
 </template>
 

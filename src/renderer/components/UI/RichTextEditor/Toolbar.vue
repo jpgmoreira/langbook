@@ -2,10 +2,14 @@
   import { ref } from 'vue';
 
   const currentDropdown = ref('');
+
+  function mousedown(e: MouseEvent) {
+    e.preventDefault();
+  }
 </script>
 
 <template>
-  <div class="toolbar">
+  <div class="toolbar" @mousedown="mousedown">
     <div class="toolbar-btn toolbar-undo"></div>
     <div class="toolbar-btn toolbar-redo"></div>
     <div class="toolbar-btn toolbar-bold"></div>
@@ -23,10 +27,10 @@
       </div>
     </div>
     <div class="toolbar-btn toolbar-textcolor">
-      <ColorPicker class="toolbox" @select="" v-if="currentDropdown === 'textcolor'" />
+      <!-- <ColorPicker class="toolbox" @select="" v-if="currentDropdown === 'textcolor'" /> -->
     </div>
     <div class="toolbar-btn toolbar-backgroundcolor">
-      <ColorPicker class="toolbox" @select="" v-if="currentDropdown === 'backgroundcolor'" />
+      <!-- <ColorPicker class="toolbox" @select="" v-if="currentDropdown === 'backgroundcolor'" /> -->
     </div>
   </div>
 </template>
