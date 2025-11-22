@@ -82,7 +82,7 @@
         v-for="color in group"
         :key="color"
         :style="{ background: color }"
-        @click="emit('select', color)"
+        @mousedown.prevent.stop="emit('select', color)"
       ></div>
     </div>
   </div>

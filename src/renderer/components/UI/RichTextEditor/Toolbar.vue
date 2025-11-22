@@ -19,6 +19,8 @@
   const emit = defineEmits<{
     (e: SimpleToolbarAction): void;
     (e: 'resizeText', size: string): void;
+    (e: 'textColor', color: string): void;
+    (e: 'backgroundColor', color: string): void;
   }>();
 
   const currentDropdown = ref<ToolboxType>('');
@@ -67,13 +69,21 @@
       class="toolbar-btn toolbar-textcolor"
       @mousedown.prevent="updateCurrentDropdown('textcolor')"
     >
-      <ColorPicker class="toolbox" @select="" v-if="currentDropdown === 'textcolor'" />
+      <ColorPicker
+        class="toolbox"
+        @select="emit('textColor', $event)"
+        v-if="currentDropdown === 'textcolor'"
+      />
     </div>
     <div
       class="toolbar-btn toolbar-backgroundcolor"
       @mousedown.prevent="updateCurrentDropdown('backgroundcolor')"
     >
-      <ColorPicker class="toolbox" @select="" v-if="currentDropdown === 'backgroundcolor'" />
+      <ColorPicker
+        class="toolbox"
+        @select="emit('backgroundColor', $event)"
+        v-if="currentDropdown === 'backgroundcolor'"
+      />
     </div>
   </div>
 </template>

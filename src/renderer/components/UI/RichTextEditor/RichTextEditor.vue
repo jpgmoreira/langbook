@@ -17,6 +17,8 @@
 
   // Class to identify spans that were styled inside of this component:
   const styledSpanClass = 'xrte';
+
+  // Current image selected for resizing:
   const selectedImageClass = 'selected-image';
 
   const allowedSpanStyles = Object.freeze([
@@ -407,6 +409,14 @@
     document.execCommand('removeFormat');
   }
 
+  function changeTextColor(color: string) {
+    document.execCommand('foreColor', false, color);
+  }
+
+  function changeBackgroundColor(color: string) {
+    document.execCommand('backColor', false, color);
+  }
+
   // -- Lifecycle hooks: ---
 
   onMounted(() => {
@@ -451,6 +461,8 @@
       @superscript="superscript"
       @subscript="subscript"
       @clear="clear"
+      @text-color="changeTextColor"
+      @background-color="changeBackgroundColor"
     />
   </div>
 </template>
@@ -458,6 +470,9 @@
 <style scoped>
   .rte-root {
     position: relative;
+  }
+  :deep(.rte img) {
+    display: inline-block;
   }
   .context-menu {
     position: absolute;

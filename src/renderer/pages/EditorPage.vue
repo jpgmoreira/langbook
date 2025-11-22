@@ -11,7 +11,7 @@
     lastScroll.value = now;
     document.querySelectorAll('.toolbar').forEach((toolbar) => {
       const bottom = window.innerHeight - toolbar.getBoundingClientRect().bottom;
-      const tolerance = 160;
+      const tolerance = 205;
       if (bottom < tolerance) toolbar.classList.add('sticky');
       else toolbar.classList.remove('sticky');
     });
