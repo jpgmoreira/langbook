@@ -84,4 +84,8 @@
     left: 50%;
     transform: translateX(-50%);
   }
+  .toolbar.sticky .toolbox {
+    top: auto;
+    bottom: 100%;
+  }
 </style>

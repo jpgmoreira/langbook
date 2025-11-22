@@ -423,6 +423,7 @@
     </div>
     <div
       ref="rte"
+      class="rte"
       style="border: 3px solid gold"
       spellcheck="false"
       contenteditable="true"

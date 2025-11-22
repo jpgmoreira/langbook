@@ -1,3 +1,8 @@
 .theme-dark .rte-root .selected-image {
   outline: 4px solid rgb(30, 144, 255, 0.6);
 }
+
+.theme-dark .rte {
+  /* max-height: 500px; */
+  overflow: auto;
+}
