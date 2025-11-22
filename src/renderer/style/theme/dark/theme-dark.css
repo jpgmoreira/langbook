@@ -14,6 +14,7 @@
 @import './components/treeView/checkbox.css';
 @import './components/treeView/contextMenu.css';
 @import './components/treeView/treeView.css';
+@import './components/richTextEditor/richTextEditor.css';
 
 .theme-dark * {
   color: white;

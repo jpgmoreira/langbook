@@ -15,6 +15,8 @@
   // Class to identify spans that were styled inside of this component:
   const styledSpanClass = 'xrte';
 
+  const selectedImageClass = 'selected-image';
+
   const allowedSpanStyles = Object.freeze([
     'font-weight',
     'font-style',
@@ -168,6 +170,7 @@
     // FIX: Allow pasting of content that comes from inside the RTE, including styles and images.
     const html = data.getData('text/html').trim();
     if (html) {
+      console.log('-> paste as html');
       const cleaned = cleanPastedHTML(html);
       setTimeout(() => {
         document.execCommand('insertHTML', false, cleaned);
@@ -211,8 +214,8 @@
   }
 
   function sanitizeNode(node: Node) {
-    const allowedAttributes = ['src', 'class'];
-    const allowedClasses = ['selected-image', styledSpanClass];
+    const allowedAttributes = ['src', 'class', 'width'];
+    const allowedClasses = [styledSpanClass];
     if (node.nodeType === Node.ELEMENT_NODE) {
       const el = node as HTMLElement;
       for (const attr of el.attributes) {
@@ -262,7 +265,7 @@
     });
   }
 
-  // --- Keydown: ---
+  // --- Other user events: ---
 
   function keydown(e: KeyboardEvent) {
     // Allowed keyboard hotkeys:
@@ -312,6 +315,29 @@
     }
   }
 
+  function click(e: MouseEvent) {
+    if (!rteRef.value) return;
+    const element = e.target as HTMLElement;
+    const si = [...rteRef.value.querySelectorAll(`.${selectedImageClass}`)];
+    si.forEach((element) => element.classList.remove(selectedImageClass));
+    if (element.tagName === 'IMG' && !si.includes(element)) {
+      element.classList.add(selectedImageClass);
+    }
+  }
+
+  function wheel(e: WheelEvent) {
+    isCtxVisible.value = false;
+    const el = e.target as HTMLElement;
+    if (el.tagName === 'IMG' && el.classList.contains(selectedImageClass)) {
+      e.preventDefault();
+      const img = el as HTMLImageElement;
+      const factor = e.ctrlKey ? 60 : 6;
+      let scale = img.width ? Math.max(img.width / factor, 3) : 3;
+      if (e.deltaY > 0) scale *= -1;
+      img.width += scale;
+    }
+  }
+
   // -- Lifecycle hooks: ---
   onMounted(() => {
     document.execCommand('styleWithCSS');
@@ -329,12 +355,13 @@
       ref="rte"
       spellcheck="false"
       contenteditable="true"
+      @click="click"
       @copy="addClassToSpans"
       @cut="addClassToSpans"
       @keydown="keydown"
       @mousedown.right.prevent="openCtx"
       @mousedown.left="isCtxVisible = false"
-      @wheel="isCtxVisible = false"
+      @wheel="wheel"
       @paste="paste"
       @drop="drop"
     ></div>
