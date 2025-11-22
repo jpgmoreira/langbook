@@ -20,7 +20,12 @@ window.api.on(Channels.loadStartupData, (data: StartupData) => {
 window.api.on(Channels.openEditor, (card: null) => {
   document.documentElement.classList.add('theme-dark');
   document.title = card ? 'Edit Card' : 'Add Card';
-  router.replace('/editor');
+  router.replace({
+    path: '/editor',
+    query: {
+      card,
+    },
+  });
 });
 
 window.api.on(Channels.closeEditor, (card: null) => {

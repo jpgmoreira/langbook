@@ -2,7 +2,13 @@
   outline: 4px solid rgb(30, 144, 255, 0.6);
 }
 
-.theme-dark .context-menu {
+.theme-dark .rte-root .rte {
+  background-color: #292a2b;
+  padding: 3px;
+  border: 1px solid #464b53;
+}
+
+.theme-dark .rte-root .context-menu {
   background: #1e1e1e;
   border: 1px solid #3b3b3b;
   border-radius: 6px;
@@ -14,17 +20,17 @@
   z-index: 9999;
 }
 
-.theme-dark .context-menu > div {
+.theme-dark .rte-root .context-menu > div {
   padding: 7px 12px;
   cursor: pointer;
   user-select: none;
   transition: background 0.15s ease;
 }
 
-.theme-dark .context-menu > div:hover {
+.theme-dark .rte-root .context-menu > div:hover {
   background: #2a2a2a;
 }
 
-.theme-dark .context-menu > div:active {
+.theme-dark .rte-root .context-menu > div:active {
   background: #333;
 }

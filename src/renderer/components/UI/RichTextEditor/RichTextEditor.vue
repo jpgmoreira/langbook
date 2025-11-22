@@ -2,6 +2,10 @@
   import { ref, reactive, useTemplateRef, onMounted } from 'vue';
   import Toolbar from './Toolbar.vue';
 
+  // --- v-model: ---
+
+  const model = defineModel({ default: '' });
+
   // --- Variables: ---
 
   const rteRef = useTemplateRef('rte');
@@ -447,7 +451,9 @@
       @wheel="wheel"
       @paste="paste"
       @drop="drop"
-    ></div>
+    >
+      {{ model || '' }}
+    </div>
     <Toolbar
       v-show="isToolbarVisible"
       @undo="undo"
@@ -469,6 +475,11 @@
 <style scoped>
   .rte-root {
     position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .rte {
+    flex-grow: 1;
   }
   :deep(.rte img) {
     display: inline-block;

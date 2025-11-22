@@ -93,6 +93,7 @@
     position: sticky;
     bottom: 0;
     display: inline-flex;
+    width: fit-content;
   }
   .toolbar-btn {
     position: relative;
