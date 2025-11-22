@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
+  import ColorPicker from './ColorPicker.vue';
 
   // Toolbar actions that do not use parameters:
   type SimpleToolbarAction =
@@ -13,14 +14,16 @@
     | 'subscript'
     | 'clear';
 
+  type ToolboxType = '' | 'resize' | 'backgroundcolor' | 'textcolor';
+
   const emit = defineEmits<{
     (e: SimpleToolbarAction): void;
     (e: 'resizeText', size: string): void;
   }>();
 
-  const currentDropdown = ref('');
+  const currentDropdown = ref<ToolboxType>('');
 
-  function updateCurrentDropdown(menu: string) {
+  function updateCurrentDropdown(menu: ToolboxType) {
     currentDropdown.value = currentDropdown.value === menu ? '' : menu;
   }
 
@@ -60,11 +63,17 @@
         </div>
       </div>
     </div>
-    <div class="toolbar-btn toolbar-textcolor">
-      <!-- <ColorPicker class="toolbox" @select="" v-if="currentDropdown === 'textcolor'" /> -->
+    <div
+      class="toolbar-btn toolbar-textcolor"
+      @mousedown.prevent="updateCurrentDropdown('textcolor')"
+    >
+      <ColorPicker class="toolbox" @select="" v-if="currentDropdown === 'textcolor'" />
     </div>
-    <div class="toolbar-btn toolbar-backgroundcolor">
-      <!-- <ColorPicker class="toolbox" @select="" v-if="currentDropdown === 'backgroundcolor'" /> -->
+    <div
+      class="toolbar-btn toolbar-backgroundcolor"
+      @mousedown.prevent="updateCurrentDropdown('backgroundcolor')"
+    >
+      <ColorPicker class="toolbox" @select="" v-if="currentDropdown === 'backgroundcolor'" />
     </div>
   </div>
 </template>
