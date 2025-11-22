@@ -425,7 +425,7 @@
 </script>
 
 <template>
-  <div class="rte-root" style="border: 3px solid salmon">
+  <div class="rte-root">
     <div v-if="isCtxVisible" :style="ctxStyle" class="context-menu">
       <div @mousedown.prevent="contextMenuCut">Cut</div>
       <div @mousedown.prevent="contextMenuCopy">Copy</div>
@@ -434,7 +434,6 @@
     <div
       ref="rte"
       class="rte"
-      style="border: 3px solid gold"
       spellcheck="false"
       contenteditable="true"
       @focus="focus"
