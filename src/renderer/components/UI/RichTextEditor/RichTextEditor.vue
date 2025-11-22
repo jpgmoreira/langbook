@@ -474,6 +474,9 @@
   :deep(.rte img) {
     display: inline-block;
   }
+  :deep(.rte span) {
+    color: inherit;
+  }
   .context-menu {
     position: absolute;
   }
