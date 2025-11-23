@@ -36,9 +36,6 @@
   const tags = reactive(editorStore.data.tags);
   const sessions = reactive(editorStore.data.sessions);
 
-  const selectedTags = reactive(card.tags);
-  const selectedSessions = reactive(card.sessions);
-
   const tagsOptions = computed(() =>
     Object.entries(tags).map(([key, value]) => ({
       text: `${key} (${value})`,
@@ -92,6 +89,8 @@
     showCardFields[field] = Boolean(content);
   }
 
+  // --- Media: ---
+
   function addMedia(items: MediaFile[]) {
     for (const file of items) {
       if (!file.type.includes('audio') && !file.type.includes('image')) {
@@ -99,7 +98,7 @@
         continue;
       }
       if (card.media.some((f) => f.name.trim() === file.name.trim())) {
-        uiStore.showToast('Cannot have two media files with the same name!', 'error');
+        uiStore.showToast('Cannot have two media files with the same name!', 'info');
         continue;
       }
       card.media.push(file);
@@ -113,21 +112,21 @@
   // --- Manage sessions: ---
 
   function selectSession(sessionId: string) {
-    selectedSessions.push(sessionId);
+    card.sessions.push(sessionId);
   }
 
   function deselectSession(sessionId: string) {
-    arrayRemove(selectedSessions, sessionId);
+    arrayRemove(card.sessions, sessionId);
   }
 
   // --- Manage tags: ---
 
   function selectTag(tag: string) {
-    selectedTags.push(tag);
+    card.tags.push(tag);
   }
 
   function deselectTag(tag: string) {
-    arrayRemove(selectedTags, tag);
+    arrayRemove(card.tags, tag);
     if (tags[tag] === 0) {
       delete tags[tag];
     }
@@ -135,7 +134,21 @@
 
   function createTag(name: string) {
     tags[name] = 0;
-    selectedTags.push(name);
+    card.tags.push(name);
+  }
+
+  // --- Actions: ---
+
+  function addCardClick() {
+    const front = refs.front.value?.getContent();
+    if (!front) {
+      uiStore.showToast('A card must at least have a front field!', 'info');
+      return;
+    }
+    card.front = front;
+    card.back = refs.back.value?.getContent() || '';
+    card.extra = refs.extra.value?.getContent() || '';
+    console.log(card);
   }
 
   // --- Lifecycle hooks: ---
@@ -211,7 +224,7 @@
     <hr />
     <Multiselect
       :options="tagsOptions"
-      :selected="selectedTags"
+      :selected="card.tags"
       placeholder="Tags"
       direction="up"
       create
@@ -222,7 +235,7 @@
     />
     <Multiselect
       :options="sessionsOptions"
-      :selected="selectedSessions"
+      :selected="card.sessions"
       placeholder="Sessions"
       direction="up"
       close
@@ -232,9 +245,14 @@
     <footer class="flex justify-around mt-auto">
       <div class="flex items-center">
         <label class="whitespace-nowrap mr-1" for="allow-reversed">Allow reversed</label>
-        <input type="checkbox" id="allow-reversed" name="allow-reversed" />
+        <input
+          type="checkbox"
+          id="allow-reversed"
+          name="allow-reversed"
+          v-model="card.allowReversed"
+        />
       </div>
-      <button v-if="isNewCard" type="button" class="btn-primary">Add</button>
+      <button v-if="isNewCard" type="button" class="btn-primary" @click="addCardClick">Add</button>
       <button v-else type="button" class="btn-primary">Save</button>
       <button type="button" class="btn-warning">Cancel</button>
     </footer>
