@@ -5,6 +5,7 @@
 @import './elements/controls.css';
 @import './elements/table.css';
 @import './elements/scrollbar.css';
+@import './elements/tooltip.css';
 @import './elements/text.css';
 @import './components/modal.css';
 @import './components/backdrop.css';

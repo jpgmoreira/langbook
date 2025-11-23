@@ -1,0 +1,43 @@
+.theme-dark .tooltip {
+  font-size: 0.85rem;
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  border-radius: 6px;
+
+  background-color: #232323;
+  color: #d0d0d0;
+  border: 1px solid #464b53;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  pointer-events: none;
+}
+
+.theme-dark .tooltip-base {
+  position: relative;
+}
+
+.theme-dark .tooltip-base:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-3px);
+}
+
+.theme-dark .tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #232323 transparent transparent transparent;
+}

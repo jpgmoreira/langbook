@@ -89,11 +89,11 @@
   }
 
   function rteBlur(field: RTEField) {
-    const content = refs[field].value?.getContent();
-    showCardFields[field] = Boolean(content);
+    const hasContent = Boolean(refs[field].value?.getContent());
+    showCardFields[field] = hasContent;
     if (field === 'back') {
-      console.log(content);
-      disableAllowReversed.value = !Boolean(content);
+      disableAllowReversed.value = !hasContent;
+      if (!hasContent) card.allowReversed = false;
     }
   }
 
@@ -259,7 +259,12 @@
       @deselect-option="deselectSession"
     />
     <footer class="flex justify-around mt-auto">
-      <div class="flex items-center">
+      <div class="flex items-center tooltip-base">
+        <div class="tooltip" v-if="disableAllowReversed">
+          Allow reversed is only available
+          <br />
+          when the "back" field has content
+        </div>
         <label class="whitespace-nowrap mr-1" for="allow-reversed">Allow reversed</label>
         <input
           type="checkbox"

@@ -51,11 +51,11 @@
       multiple
     />
     <div class="media-item-parent">
-      <span class="media-item" v-for="item in props.items" :key="item.name">
+      <span class="media-item tooltip-base" v-for="item in props.items" :key="item.name">
         <span class="media-name">{{ item.name }}</span>
         <button type="button" class="media-item-remove" @dblclick="removeFile(item)">
           ❌
-          <div class="media-item-remove-tooltip">Double-click to remove</div>
+          <div class="tooltip">Double-click to remove</div>
         </button>
       </span>
     </div>
