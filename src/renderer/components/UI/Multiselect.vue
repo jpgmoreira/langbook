@@ -26,6 +26,7 @@
    *    - select-option   (passes an option value);
    *    - deselect-option (passes an option value);
    *    - create-option   (passes an option name);
+   *    - change-mode     (passes a mode value);
    *
    * Optional props:
    *   - placeholder     <string>         A placeholder for the text input;

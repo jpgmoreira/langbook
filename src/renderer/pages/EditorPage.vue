@@ -30,11 +30,11 @@
     extra: 'cc',
     media: [] as FileRecord[],
   });
-  const tags: Tags = {
+  const tags: Tags = reactive({
     tag1: 10,
     tag2: 20,
     tag3: 30,
-  };
+  });
   const sessions: Sessions = {
     s1: {
       id: 's1',
@@ -75,6 +75,8 @@
       value: value.id,
     }))
   );
+
+  const selectedTags = ref<string[]>([]);
 
   const refs = {
     front: useTemplateRef('front-ref'),
@@ -132,6 +134,26 @@
   function removeMedia(item: FileRecord) {
     card.value.media = card.value.media.filter((i) => i !== item);
   }
+
+  // --- Manage tags: ---
+
+  function selectTag(tag: string) {
+    selectedTags.value.push(tag);
+  }
+
+  function deselectTag(tag: string) {
+    selectedTags.value = selectedTags.value.filter((t) => t !== tag);
+    if (tags[tag] === 0) {
+      delete tags[tag];
+    }
+  }
+
+  function createTag(name: string) {
+    tags[name] = 0;
+    selectedTags.value.push(name);
+  }
+
+  // --- Lifecycle hooks: ---
 
   onMounted(() => {
     window.addEventListener('scroll', onWindowScroll);
@@ -202,7 +224,17 @@
       </span>
     </div>
     <hr />
-    <Multiselect :options="tagsOptions" />
+    <Multiselect
+      :options="tagsOptions"
+      :selected="selectedTags"
+      placeholder="Tags"
+      direction="up"
+      create
+      close
+      @select-option="selectTag"
+      @deselect-option="deselectTag"
+      @create-option="createTag"
+    />
   </div>
 </template>
 
