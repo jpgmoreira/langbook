@@ -1,24 +1,57 @@
 <script lang="ts" setup>
   import { ref, reactive, onMounted, onBeforeUnmount, useTemplateRef, nextTick } from 'vue';
-  import { useRoute } from 'vue-router';
+  import { useEditorStore } from '@renderer/store/editorStore';
   import { useUIStore } from '@renderer/store/ui';
   import RichTextEditor from '@renderer/components/UI/RichTextEditor/RichTextEditor.vue';
   import MediaInput, { type FileRecord } from '@renderer/components/UI/MediaInput.vue';
+  import { Tags } from '@common/schemas/tags';
+  import { Sessions } from '@common/schemas/sessions';
 
   type RTEField = 'front' | 'back' | 'extra';
-
-  const route = useRoute();
 
   const uiStore = useUIStore();
 
   const lastScroll = ref(0);
-  //const inputCard = ref(route.query.card as null);
+
+  // initialize from editor store.
+
   const card = ref({
     front: '',
     back: 'bb',
     extra: 'cc',
     media: [] as FileRecord[],
   });
+  const tags: Tags = {
+    tag1: 10,
+    tag2: 20,
+    tag3: 30,
+  };
+  const sessions: Sessions = {
+    s1: {
+      id: 's1',
+      name: 'Morning Routine',
+      count: 3,
+      createdAt: 1732250000000,
+    },
+    s2: {
+      id: 's2',
+      name: 'Workout',
+      count: 1,
+      createdAt: 1732253600000,
+    },
+    s3: {
+      id: 's3',
+      name: 'Reading Session',
+      count: 5,
+      createdAt: 1732257200000,
+    },
+    s4: {
+      id: 's4',
+      name: 'Learning Vue',
+      count: 2,
+      createdAt: 1732260800000,
+    },
+  };
 
   const refs = {
     front: useTemplateRef('front-ref'),
@@ -145,6 +178,7 @@
         <div class>(Click or drop files here)</div>
       </span>
     </div>
+    <hr />
   </div>
 </template>
 

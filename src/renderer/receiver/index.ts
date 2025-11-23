@@ -5,6 +5,7 @@ import { StartupData } from '@common/schemas/startup';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
 import { useUIStore } from '@renderer/store/ui';
+import { EditorPageDTO } from '@common/dto/editorPageDTO';
 
 window.api.on(Channels.loadStartupData, (data: StartupData) => {
   EventEmitter.instance.emit(Events.loadInitialData, data);
@@ -17,15 +18,11 @@ window.api.on(Channels.loadStartupData, (data: StartupData) => {
   return router.replace('/home');
 });
 
-window.api.on(Channels.openEditor, (card: null) => {
+window.api.on(Channels.openEditor, (data: EditorPageDTO) => {
+  EventEmitter.instance.emit(Events.loadEditorData, data);
   document.documentElement.classList.add('theme-dark');
-  document.title = card ? 'Edit Card' : 'Add Card';
-  router.replace({
-    path: '/editor',
-    query: {
-      card,
-    },
-  });
+  document.title = data.card ? 'Edit Card' : 'Add Card';
+  router.replace('/editor');
 });
 
 window.api.on(Channels.closeEditor, (card: null) => {
