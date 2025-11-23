@@ -78,6 +78,8 @@
 
   const selectedTags = ref<string[]>([]);
 
+  const selectedSessions = ref<string[]>([]);
+
   const refs = {
     front: useTemplateRef('front-ref'),
     back: useTemplateRef('back-ref'),
@@ -133,6 +135,16 @@
 
   function removeMedia(item: FileRecord) {
     card.value.media = card.value.media.filter((i) => i !== item);
+  }
+
+  // --- Manage sessions: ---
+
+  function selectSession(sessionId: string) {
+    selectedSessions.value.push(sessionId);
+  }
+
+  function deselectSession(sessionId: string) {
+    selectedSessions.value = selectedSessions.value.filter((s) => s !== sessionId);
   }
 
   // --- Manage tags: ---
@@ -234,6 +246,15 @@
       @select-option="selectTag"
       @deselect-option="deselectTag"
       @create-option="createTag"
+    />
+    <Multiselect
+      :options="sessionsOptions"
+      :selected="selectedSessions"
+      placeholder="Sessions"
+      direction="up"
+      close
+      @select-option="selectSession"
+      @deselect-option="deselectSession"
     />
   </div>
 </template>
