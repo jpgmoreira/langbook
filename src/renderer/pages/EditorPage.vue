@@ -10,57 +10,34 @@
   } from 'vue';
   import { useEditorStore } from '@renderer/store/editorStore';
   import { useUIStore } from '@renderer/store/ui';
+  import { getEmptyCard, MediaFile, type Card } from '@common/schemas/card';
   import RichTextEditor from '@renderer/components/UI/RichTextEditor/RichTextEditor.vue';
-  import MediaInput, { type FileRecord } from '@renderer/components/UI/MediaInput.vue';
+  import MediaInput from '@renderer/components/UI/MediaInput.vue';
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
-  import { Tags } from '@common/schemas/tags';
-  import { Sessions } from '@common/schemas/sessions';
+  import { arrayRemove, randomId } from '@common/utils/utils';
 
   type RTEField = 'front' | 'back' | 'extra';
 
   const uiStore = useUIStore();
+  const editorStore = useEditorStore();
+  const now = Date.now();
 
   const lastScroll = ref(0);
+  const isNewCard = ref(!editorStore.data.card);
 
-  // initialize from editor store.
+  let card: Card;
+  if (isNewCard) {
+    const newCardId = randomId();
+    card = reactive(getEmptyCard(newCardId, now));
+  } else {
+    card = reactive(editorStore.data.card as Card);
+  }
 
-  const card = ref({
-    front: '',
-    back: 'bb',
-    extra: 'cc',
-    media: [] as FileRecord[],
-  });
-  const tags: Tags = reactive({
-    tag1: 10,
-    tag2: 20,
-    tag3: 30,
-  });
-  const sessions: Sessions = {
-    s1: {
-      id: 's1',
-      name: 'Morning Routine',
-      count: 3,
-      createdAt: 1732250000000,
-    },
-    s2: {
-      id: 's2',
-      name: 'Workout',
-      count: 1,
-      createdAt: 1732253600000,
-    },
-    s3: {
-      id: 's3',
-      name: 'Reading Session',
-      count: 5,
-      createdAt: 1732257200000,
-    },
-    s4: {
-      id: 's4',
-      name: 'Learning Vue',
-      count: 2,
-      createdAt: 1732260800000,
-    },
-  };
+  const tags = reactive(editorStore.data.tags);
+  const sessions = reactive(editorStore.data.sessions);
+
+  const selectedTags = reactive(card.tags);
+  const selectedSessions = reactive(card.sessions);
 
   const tagsOptions = computed(() =>
     Object.entries(tags).map(([key, value]) => ({
@@ -70,15 +47,11 @@
   );
 
   const sessionsOptions = computed(() =>
-    Object.entries(sessions).map(([key, value]) => ({
+    Object.values(sessions).map((value) => ({
       text: `${value.name} (${value.count})`,
       value: value.id,
     }))
   );
-
-  const selectedTags = ref<string[]>([]);
-
-  const selectedSessions = ref<string[]>([]);
 
   const refs = {
     front: useTemplateRef('front-ref'),
@@ -89,9 +62,9 @@
   const mediaInput = useTemplateRef('media-input');
 
   const showCardFields = reactive({
-    front: Boolean(card.value.front),
-    back: Boolean(card.value.back),
-    extra: Boolean(card.value.extra),
+    front: Boolean(card.front),
+    back: Boolean(card.back),
+    extra: Boolean(card.extra),
   });
 
   // Fix rte toolbar toolbox position:
@@ -119,42 +92,42 @@
     showCardFields[field] = Boolean(content);
   }
 
-  function addMedia(items: FileRecord[]) {
+  function addMedia(items: MediaFile[]) {
     for (const file of items) {
       if (!file.type.includes('audio') && !file.type.includes('image')) {
         uiStore.showToast('Only images and audio can be added as media!', 'info');
         continue;
       }
-      if (card.value.media.some((f) => f.name.trim() === file.name.trim())) {
+      if (card.media.some((f) => f.name.trim() === file.name.trim())) {
         uiStore.showToast('Cannot have two media files with the same name!', 'error');
         continue;
       }
-      card.value.media.push(file);
+      card.media.push(file);
     }
   }
 
-  function removeMedia(item: FileRecord) {
-    card.value.media = card.value.media.filter((i) => i !== item);
+  function removeMedia(item: MediaFile) {
+    card.media = card.media.filter((i) => i !== item);
   }
 
   // --- Manage sessions: ---
 
   function selectSession(sessionId: string) {
-    selectedSessions.value.push(sessionId);
+    selectedSessions.push(sessionId);
   }
 
   function deselectSession(sessionId: string) {
-    selectedSessions.value = selectedSessions.value.filter((s) => s !== sessionId);
+    arrayRemove(selectedSessions, sessionId);
   }
 
   // --- Manage tags: ---
 
   function selectTag(tag: string) {
-    selectedTags.value.push(tag);
+    selectedTags.push(tag);
   }
 
   function deselectTag(tag: string) {
-    selectedTags.value = selectedTags.value.filter((t) => t !== tag);
+    arrayRemove(selectedTags, tag);
     if (tags[tag] === 0) {
       delete tags[tag];
     }
@@ -162,7 +135,7 @@
 
   function createTag(name: string) {
     tags[name] = 0;
-    selectedTags.value.push(name);
+    selectedTags.push(name);
   }
 
   // --- Lifecycle hooks: ---
@@ -261,7 +234,8 @@
         <label class="whitespace-nowrap mr-1" for="allow-reversed">Allow reversed</label>
         <input type="checkbox" id="allow-reversed" name="allow-reversed" />
       </div>
-      <button type="button" class="btn-primary">Add</button>
+      <button v-if="isNewCard" type="button" class="btn-primary">Add</button>
+      <button v-else type="button" class="btn-primary">Save</button>
       <button type="button" class="btn-warning">Cancel</button>
     </footer>
   </div>

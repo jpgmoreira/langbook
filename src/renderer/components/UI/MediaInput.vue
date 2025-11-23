@@ -7,23 +7,19 @@
    *      type: 'image' | 'audio'
    * }
    */
+  import { type MediaFile } from '@common/schemas/card';
   import { useTemplateRef } from 'vue';
   type ElectronFile = File & {
-    path: string;
-  };
-  export type FileRecord = {
-    name: string;
-    type: string;
     path: string;
   };
   defineExpose({
     triggerInput,
   });
   const emit = defineEmits<{
-    (e: 'add', files: FileRecord[]): void;
-    (e: 'remove', item: FileRecord): void;
+    (e: 'add', files: MediaFile[]): void;
+    (e: 'remove', item: MediaFile): void;
   }>();
-  const props = withDefaults(defineProps<{ items: FileRecord[] }>(), { items: () => [] });
+  const props = withDefaults(defineProps<{ items: MediaFile[] }>(), { items: () => [] });
   const inputRef = useTemplateRef('input-ref');
   function triggerInput() {
     inputRef.value?.click();
@@ -38,7 +34,7 @@
     target.value = ''; // Necessary. Comment this line and try to add a file, remove it, then add it again to see why.
     emit('add', files);
   }
-  function removeFile(item: FileRecord) {
+  function removeFile(item: MediaFile) {
     emit('remove', item);
   }
 </script>

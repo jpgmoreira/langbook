@@ -38,6 +38,16 @@ export function throttle<T extends (...args: any[]) => void>(fn: T, wait: number
 }
 
 /**
+ * Removes an element from an array in-place.
+ */
+export function arrayRemove<T>(array: T[], element: T) {
+  const index = array.indexOf(element);
+  if (index !== -1) {
+    array.splice(index, 1);
+  }
+}
+
+/**
  * Returns a random alphanumeric ID with ~17 characters.
  */
 export function randomId() {
