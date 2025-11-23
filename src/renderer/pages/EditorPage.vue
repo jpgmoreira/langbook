@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-  import { ref, reactive, onMounted, onBeforeUnmount, useTemplateRef, nextTick, watch } from 'vue';
+  import { ref, reactive, onMounted, onBeforeUnmount, useTemplateRef, nextTick } from 'vue';
   import { useRoute } from 'vue-router';
+  import { useUIStore } from '@renderer/store/ui';
   import RichTextEditor from '@renderer/components/UI/RichTextEditor/RichTextEditor.vue';
   import MediaInput, { type FileRecord } from '@renderer/components/UI/MediaInput.vue';
 
   type RTEField = 'front' | 'back' | 'extra';
 
   const route = useRoute();
+
+  const uiStore = useUIStore();
 
   const lastScroll = ref(0);
   //const inputCard = ref(route.query.card as null);
@@ -22,6 +25,8 @@
     back: useTemplateRef('back-ref'),
     extra: useTemplateRef('extra-ref'),
   };
+
+  const mediaInput = useTemplateRef('media-input');
 
   const showCardFields = reactive({
     front: Boolean(card.value.front),
@@ -55,7 +60,17 @@
   }
 
   function addMedia(items: FileRecord[]) {
-    card.value.media.push(...items);
+    for (const file of items) {
+      if (!file.type.includes('audio') && !file.type.includes('image')) {
+        uiStore.showToast('Only images and audio can be added as media!', 'info');
+        continue;
+      }
+      if (card.value.media.some((f) => f.name.trim() === file.name.trim())) {
+        uiStore.showToast('Cannot have two media files with the same name!', 'error');
+        continue;
+      }
+      card.value.media.push(file);
+    }
   }
 
   function removeMedia(item: FileRecord) {
@@ -80,8 +95,12 @@
         @blur="rteBlur('front')"
         ref="front-ref"
       />
-      <div v-else class="rte-placeholder w-full text-lg" @mousedown.prevent="rteClick('front')">
-        FRONT
+      <div
+        v-else
+        class="rte-placeholder w-full text-xl font-bold"
+        @mousedown.prevent="rteClick('front')"
+      >
+        <span>FRONT</span>
       </div>
     </div>
     <div class="rte-parent">
@@ -92,7 +111,9 @@
         @blur="rteBlur('back')"
         ref="back-ref"
       />
-      <div v-else class="rte-placeholder w-full text-lg" @mousedown="rteClick('back')">BACK</div>
+      <div v-else class="rte-placeholder w-full text-xl font-bold" @mousedown="rteClick('back')">
+        <span>BACK</span>
+      </div>
     </div>
     <div class="rte-parent">
       <RichTextEditor
@@ -102,10 +123,27 @@
         @blur="rteBlur('extra')"
         ref="extra-ref"
       />
-      <div v-else class="rte-placeholder w-full text-lg" @mousedown="rteClick('extra')">EXTRA</div>
+      <div v-else class="rte-placeholder w-full text-xl font-bold" @mousedown="rteClick('extra')">
+        <span>EXTRA</span>
+      </div>
     </div>
-    <div class="rte-parent">
-      <MediaInput class="grow" :items="card.media" @add="addMedia" @remove="removeMedia" />
+    <div class="media-parent relative">
+      <MediaInput
+        ref="media-input"
+        class="grow"
+        :class="{ 'opacity-0': !card.media.length }"
+        :items="card.media"
+        @add="addMedia"
+        @remove="removeMedia"
+      />
+      <span
+        v-if="!card.media.length"
+        class="absolute-center cursor-default font-bold opacity-70 text-center"
+        @click="mediaInput?.triggerInput()"
+      >
+        <div class="text-xl">MEDIA</div>
+        <div class>(Click or drop files here)</div>
+      </span>
     </div>
   </div>
 </template>
@@ -114,5 +152,9 @@
   .rte-parent {
     display: flex;
     min-height: 132px;
+  }
+  .media-parent {
+    display: flex;
+    height: 100px;
   }
 </style>

@@ -3,6 +3,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 70%;
   cursor: pointer;
+}
+
+.theme-dark .editor-page .media-parent {
+  background-color: #303133;
+}
+
+.theme-dark .editor-page .rte-placeholder span {
+  opacity: 70%;
 }

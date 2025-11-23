@@ -7,6 +7,7 @@
    *      type: 'image' | 'audio'
    * }
    */
+  import { useTemplateRef } from 'vue';
   type ElectronFile = File & {
     path: string;
   };
@@ -15,11 +16,18 @@
     type: string;
     path: string;
   };
+  defineExpose({
+    triggerInput,
+  });
   const emit = defineEmits<{
     (e: 'add', files: FileRecord[]): void;
     (e: 'remove', item: FileRecord): void;
   }>();
   const props = withDefaults(defineProps<{ items: FileRecord[] }>(), { items: () => [] });
+  const inputRef = useTemplateRef('input-ref');
+  function triggerInput() {
+    inputRef.value?.click();
+  }
   function addFiles(event: Event) {
     const target = event.target as HTMLInputElement;
     if (!target || !target.files) return;
@@ -38,6 +46,7 @@
 <template>
   <div class="media-input-root">
     <input
+      ref="input-ref"
       type="file"
       class="media-input"
       accept="image/*,audio/*"
