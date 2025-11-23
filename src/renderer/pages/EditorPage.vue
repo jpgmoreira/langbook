@@ -33,6 +33,8 @@
     card = reactive(editorStore.data.card as Card);
   }
 
+  const disableAllowReversed = ref(!Boolean(card.back));
+
   const tags = reactive(editorStore.data.tags);
   const sessions = reactive(editorStore.data.sessions);
 
@@ -77,6 +79,8 @@
     });
   }
 
+  // --- Editor events: ---
+
   function rteClick(field: RTEField) {
     showCardFields[field] = true;
     nextTick(() => {
@@ -87,6 +91,10 @@
   function rteBlur(field: RTEField) {
     const content = refs[field].value?.getContent();
     showCardFields[field] = Boolean(content);
+    if (field === 'back') {
+      console.log(content);
+      disableAllowReversed.value = !Boolean(content);
+    }
   }
 
   // --- Media: ---
@@ -165,14 +173,14 @@
   <div class="editor-page p-1 flex flex-col gap-1 grow">
     <div class="rte-parent">
       <RichTextEditor
-        v-if="showCardFields.front"
+        v-show="showCardFields.front"
         :initial="card.front"
         class="grow"
         @blur="rteBlur('front')"
         ref="front-ref"
       />
       <div
-        v-else
+        v-if="!showCardFields.front"
         class="rte-placeholder w-full text-xl font-bold"
         @mousedown.prevent="rteClick('front')"
       >
@@ -181,25 +189,33 @@
     </div>
     <div class="rte-parent">
       <RichTextEditor
-        v-if="showCardFields.back"
+        v-show="showCardFields.back"
         :initial="card.back"
         class="grow"
         @blur="rteBlur('back')"
         ref="back-ref"
       />
-      <div v-else class="rte-placeholder w-full text-xl font-bold" @mousedown="rteClick('back')">
+      <div
+        v-if="!showCardFields.back"
+        class="rte-placeholder w-full text-xl font-bold"
+        @mousedown.prevent="rteClick('back')"
+      >
         <span>BACK</span>
       </div>
     </div>
     <div class="rte-parent">
       <RichTextEditor
-        v-if="showCardFields.extra"
+        v-show="showCardFields.extra"
         :initial="card.extra"
         class="grow"
         @blur="rteBlur('extra')"
         ref="extra-ref"
       />
-      <div v-else class="rte-placeholder w-full text-xl font-bold" @mousedown="rteClick('extra')">
+      <div
+        v-if="!showCardFields.extra"
+        class="rte-placeholder w-full text-xl font-bold"
+        @mousedown.prevent="rteClick('extra')"
+      >
         <span>EXTRA</span>
       </div>
     </div>
@@ -249,6 +265,7 @@
           type="checkbox"
           id="allow-reversed"
           name="allow-reversed"
+          :disabled="disableAllowReversed"
           v-model="card.allowReversed"
         />
       </div>
