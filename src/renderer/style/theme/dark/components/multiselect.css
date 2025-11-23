@@ -1,5 +1,6 @@
 .theme-dark .multiselect {
   background-color: #3e444b;
+  border: 1px solid #30343a;
 }
 
 .theme-dark .multiselect .context-menu {

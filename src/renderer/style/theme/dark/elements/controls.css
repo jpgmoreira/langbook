@@ -10,3 +10,8 @@
   padding: 4px 5px;
   border-radius: 5px;
 }
+
+.theme-dark input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+}

@@ -61,7 +61,7 @@ export class WindowManager {
     this.editorWindow = new BrowserWindow({
       ...this.commonWindowConfig,
       width: 1000,
-      height: 680,
+      height: 710,
       parent: this.mainWindow,
       modal: true,
     });

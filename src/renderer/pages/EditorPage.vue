@@ -176,7 +176,7 @@
 </script>
 
 <template>
-  <div class="editor-page p-1 flex flex-col gap-1">
+  <div class="editor-page p-1 flex flex-col gap-1 grow">
     <div class="rte-parent">
       <RichTextEditor
         v-if="showCardFields.front"
@@ -256,6 +256,14 @@
       @select-option="selectSession"
       @deselect-option="deselectSession"
     />
+    <footer class="flex justify-around mt-auto">
+      <div class="flex items-center">
+        <label class="whitespace-nowrap mr-1" for="allow-reversed">Allow reversed</label>
+        <input type="checkbox" id="allow-reversed" name="allow-reversed" />
+      </div>
+      <button type="button" class="btn-primary">Add</button>
+      <button type="button" class="btn-warning">Cancel</button>
+    </footer>
   </div>
 </template>
 
