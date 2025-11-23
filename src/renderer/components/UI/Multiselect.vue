@@ -17,7 +17,7 @@
    *
    *  - Pass the "options" prop as an array of objects in the form:
    *    {
-   *      text: <string>
+   *      text: string,
    *      value: string
    *    }
    *    You should not have duplicate values in the options.
@@ -35,6 +35,9 @@
    *   - direction:      <"up" | "down">  The opening direction for the context menu. Default is down.
    *   - badgeNumbers:   <boolean>        Show a small index in front of the badge text. Default is false.
    *   - optionNumbers:  <boolean>        Show a small index in front of the option text. Default is false.
+   *   - mode:           <boolean>        Show a select component that allows switching between all or any mode.
+   *   - allText:        <string>         Text for the "all" option, when "mode" is true. Default to "All".
+   *   - anyText:        <string>         Text for the "any" option, when "mode" is true. Default to "Any".
    *
    * Styling:
    *   - You can apply the styling for this component's elements using the
@@ -54,9 +57,9 @@
    *        .multiselect .badges-container
    *        .multiselect .editor
    */
-  import { TagsMode } from '@common/schemas/filters';
   import { toLocaleNumber } from '@common/utils/utils';
   import { computed, reactive, useTemplateRef, ref, watch } from 'vue';
+  export type Mode = 'all' | 'any';
   export type MultiselectOption = {
     text: string;
     value: string;
@@ -67,24 +70,30 @@
     selected?: string[];
     create?: boolean;
     close?: boolean;
-    tagsMode: TagsMode;
+    mode?: Mode;
+    allText?: string;
+    anyText?: string;
     direction?: 'up' | 'down';
     badgeNumbers?: boolean;
     optionNumbers?: boolean;
   };
+  const props = withDefaults(defineProps<MultiselectProps>(), {
+    allText: 'All',
+    anyText: 'Any',
+  });
+
   type SearchSegment = { text: string; match: boolean };
   const emit = defineEmits<{
     (e: 'selectOption', optionValue: string): void;
     (e: 'createOption', optionText: string): void;
     (e: 'deselectOption', optionValue: string): void;
-    (e: 'changeTagsMode', newMode: TagsMode);
+    (e: 'changeMode', newMode: Mode);
   }>();
   const optionHeight = 30;
   const pageSize = 100;
   const anchor = ref(0);
   const scrollOffset = ref(0);
   const scrollTimer = ref<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const props = defineProps<MultiselectProps>();
   const editor = useTemplateRef('editor');
   const contextMenu = useTemplateRef('context-menu');
   const optionsContainer = useTemplateRef('options-container');
@@ -232,9 +241,9 @@
     }
     return result;
   }
-  function changeTagsMode(event: Event) {
+  function changeMode(event: Event) {
     const target = event.target as HTMLSelectElement;
-    emit('changeTagsMode', target.value as TagsMode);
+    emit('changeMode', target.value as Mode);
   }
   watch(showContextMenu, () => {
     anchor.value = 0;
@@ -322,9 +331,9 @@
         @keydown.enter.prevent="editorEnter"
         @keydown.escape.prevent="clear"
       />
-      <select :value="tagsMode" @change="changeTagsMode">
-        <option value="all">All tags</option>
-        <option value="any">Any tag</option>
+      <select v-if="props.mode" :value="props.mode" @change="changeMode">
+        <option value="all">{{ props.allText }}</option>
+        <option value="any">{{ props.anyText }}</option>
       </select>
     </div>
   </div>

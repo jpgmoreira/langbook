@@ -4,6 +4,8 @@ import { BrowserWindow, Menu } from 'electron';
 import { installExtension, VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { loadStartupData } from '../startup';
 import { is } from '@electron-toolkit/utils';
+import { TagsManager } from './tagsManager';
+import { SessionsManager } from './sessionsManager';
 
 /**
  * Singleton for managing application windows.
@@ -88,7 +90,12 @@ export class WindowManager {
   }
 
   public openEditor(card: null) {
-    this.editorWindow.webContents.send(Channels.openEditor, card);
+    const data = {
+      card,
+      tags: TagsManager.instance.getTags(),
+      sessions: SessionsManager.instance.getSessions(),
+    };
+    this.editorWindow.webContents.send(Channels.openEditor, data);
     this.editorWindow.show();
   }
 }

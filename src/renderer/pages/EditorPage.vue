@@ -1,9 +1,18 @@
 <script lang="ts" setup>
-  import { ref, reactive, onMounted, onBeforeUnmount, useTemplateRef, nextTick } from 'vue';
+  import {
+    ref,
+    reactive,
+    onMounted,
+    onBeforeUnmount,
+    useTemplateRef,
+    nextTick,
+    computed,
+  } from 'vue';
   import { useEditorStore } from '@renderer/store/editorStore';
   import { useUIStore } from '@renderer/store/ui';
   import RichTextEditor from '@renderer/components/UI/RichTextEditor/RichTextEditor.vue';
   import MediaInput, { type FileRecord } from '@renderer/components/UI/MediaInput.vue';
+  import Multiselect from '@renderer/components/UI/Multiselect.vue';
   import { Tags } from '@common/schemas/tags';
   import { Sessions } from '@common/schemas/sessions';
 
@@ -52,6 +61,20 @@
       createdAt: 1732260800000,
     },
   };
+
+  const tagsOptions = computed(() =>
+    Object.entries(tags).map(([key, value]) => ({
+      text: `${key} (${value})`,
+      value: key,
+    }))
+  );
+
+  const sessionsOptions = computed(() =>
+    Object.entries(sessions).map(([key, value]) => ({
+      text: `${value.name} (${value.count})`,
+      value: value.id,
+    }))
+  );
 
   const refs = {
     front: useTemplateRef('front-ref'),
@@ -179,6 +202,7 @@
       </span>
     </div>
     <hr />
+    <Multiselect :options="tagsOptions" />
   </div>
 </template>
 
