@@ -2,6 +2,7 @@
   import { ref, reactive, onMounted, onBeforeUnmount, useTemplateRef, nextTick, watch } from 'vue';
   import { useRoute } from 'vue-router';
   import RichTextEditor from '@renderer/components/UI/RichTextEditor/RichTextEditor.vue';
+  import MediaInput, { type FileRecord } from '@renderer/components/UI/MediaInput.vue';
 
   type RTEField = 'front' | 'back' | 'extra';
 
@@ -13,6 +14,7 @@
     front: '',
     back: 'bb',
     extra: 'cc',
+    media: [] as FileRecord[],
   });
 
   const refs = {
@@ -52,6 +54,14 @@
     showCardFields[field] = Boolean(content);
   }
 
+  function addMedia(items: FileRecord[]) {
+    card.value.media.push(...items);
+  }
+
+  function removeMedia(item: FileRecord) {
+    card.value.media = card.value.media.filter((i) => i !== item);
+  }
+
   onMounted(() => {
     window.addEventListener('scroll', onWindowScroll);
   });
@@ -61,7 +71,7 @@
 </script>
 
 <template>
-  <div class="editor-page p-1.5 flex flex-col gap-1.5">
+  <div class="editor-page p-1 flex flex-col gap-1">
     <div class="rte-parent">
       <RichTextEditor
         v-if="showCardFields.front"
@@ -93,6 +103,9 @@
         ref="extra-ref"
       />
       <div v-else class="rte-placeholder w-full text-lg" @mousedown="rteClick('extra')">EXTRA</div>
+    </div>
+    <div class="rte-parent">
+      <MediaInput class="grow" :items="card.media" @add="addMedia" @remove="removeMedia" />
     </div>
   </div>
 </template>
