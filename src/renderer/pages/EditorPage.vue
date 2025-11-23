@@ -7,8 +7,9 @@
     useTemplateRef,
     nextTick,
     computed,
+    watch,
   } from 'vue';
-  import { useEditorStore } from '@renderer/store/editorStore';
+  import { useEditorStore } from '@renderer/store/editor';
   import { useUIStore } from '@renderer/store/ui';
   import { getEmptyCard, MediaFile, type Card } from '@common/schemas/card';
   import RichTextEditor from '@renderer/components/UI/RichTextEditor/RichTextEditor.vue';
@@ -21,6 +22,17 @@
 
   const uiStore = useUIStore();
   const editorStore = useEditorStore();
+
+  watch(
+    () => editorStore.data,
+    (newData, oldData) => {
+      console.log('Editor data mudou!', newData, oldData);
+    },
+    { deep: true }
+  );
+
+  // --- Dynamic data: ---
+
   const now = Date.now();
 
   const lastScroll = ref(0);
@@ -53,32 +65,20 @@
     }))
   );
 
-  const refs = {
-    front: useTemplateRef('front-ref'),
-    back: useTemplateRef('back-ref'),
-    extra: useTemplateRef('extra-ref'),
-  };
-
-  const mediaInput = useTemplateRef('media-input');
-
   const showCardFields = reactive({
     front: Boolean(card.front),
     back: Boolean(card.back),
     extra: Boolean(card.extra),
   });
 
-  // Fix rte toolbar toolbox position:
-  function onWindowScroll() {
-    const now = Date.now();
-    if (now - lastScroll.value < 100) return;
-    lastScroll.value = now;
-    document.querySelectorAll('.toolbar').forEach((toolbar) => {
-      const bottom = window.innerHeight - toolbar.getBoundingClientRect().bottom;
-      const tolerance = 205;
-      if (bottom < tolerance) toolbar.classList.add('sticky');
-      else toolbar.classList.remove('sticky');
-    });
-  }
+  // --- Static data: ---
+
+  const refs = {
+    front: useTemplateRef('front-ref'),
+    back: useTemplateRef('back-ref'),
+    extra: useTemplateRef('extra-ref'),
+    media: useTemplateRef('media-input'),
+  };
 
   // --- Editor events: ---
 
@@ -166,6 +166,19 @@
 
   // --- Lifecycle hooks: ---
 
+  // Fix rte toolbar toolbox position:
+  function onWindowScroll() {
+    const now = Date.now();
+    if (now - lastScroll.value < 100) return;
+    lastScroll.value = now;
+    document.querySelectorAll('.toolbar').forEach((toolbar) => {
+      const bottom = window.innerHeight - toolbar.getBoundingClientRect().bottom;
+      const tolerance = 205;
+      if (bottom < tolerance) toolbar.classList.add('sticky');
+      else toolbar.classList.remove('sticky');
+    });
+  }
+
   onMounted(() => {
     window.addEventListener('scroll', onWindowScroll);
   });
@@ -236,7 +249,7 @@
       <span
         v-if="!card.media.length"
         class="absolute-center cursor-default font-bold opacity-70 text-center"
-        @click="mediaInput?.triggerInput()"
+        @click="refs.media.value?.triggerInput()"
       >
         <div class="text-xl">MEDIA</div>
         <div class>(Click or drop files here)</div>
