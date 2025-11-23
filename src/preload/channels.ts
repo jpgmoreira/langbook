@@ -6,4 +6,5 @@ export enum Channels {
   login = 'login',
   openEditor = 'open-editor',
   closeEditor = 'close-editor',
+  cancelCardEdit = 'cancel-card-edit',
 }

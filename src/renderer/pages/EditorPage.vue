@@ -15,6 +15,7 @@
   import MediaInput from '@renderer/components/UI/MediaInput.vue';
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
   import { arrayRemove, randomId } from '@common/utils/utils';
+  import { Channels } from '@preload/channels';
 
   type RTEField = 'front' | 'back' | 'extra';
 
@@ -159,6 +160,10 @@
     console.log(card);
   }
 
+  function cancel() {
+    window.api.send(Channels.cancelCardEdit);
+  }
+
   // --- Lifecycle hooks: ---
 
   onMounted(() => {
@@ -276,7 +281,7 @@
       </div>
       <button v-if="isNewCard" type="button" class="btn-primary" @click="addCardClick">Add</button>
       <button v-else type="button" class="btn-primary">Save</button>
-      <button type="button" class="btn-warning">Cancel</button>
+      <button type="button" class="btn-warning" @click="cancel">Cancel</button>
     </footer>
   </div>
 </template>

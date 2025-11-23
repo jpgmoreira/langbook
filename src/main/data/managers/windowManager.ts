@@ -98,4 +98,8 @@ export class WindowManager {
     this.editorWindow.webContents.send(Channels.openEditor, data);
     this.editorWindow.show();
   }
+
+  public cancelCardEdit() {
+    this.editorWindow.close();
+  }
 }
