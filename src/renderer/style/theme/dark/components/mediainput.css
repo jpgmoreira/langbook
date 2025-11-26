@@ -1,26 +1,21 @@
 .theme-dark .media-input-root {
   background-color: #292a2b;
-  padding: 3px;
-  border: 1px solid #464b53;
-  position: relative;
+  /* border: 1px solid #464b53; */
+  border: 1px solid azure;
+  display: flex;
 }
 
 .theme-dark .media-input {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
+  display: none;
 }
 
 .theme-dark .media-item-parent {
+  border: 1px solid red;
   display: flex;
   flex-wrap: wrap;
   column-gap: 6px;
   row-gap: 4px;
-  overflow: auto;
-  height: 100%;
+  flex-grow: 1;
 }
 
 .theme-dark .media-item {

@@ -37,6 +37,16 @@
   function removeFile(item: MediaFile) {
     emit('remove', item);
   }
+  function drop(event: DragEvent) {
+    const files = Array.from(event.dataTransfer?.files || []);
+    if (!files.length) return;
+    const dt = new DataTransfer();
+    files.forEach((f) => dt.items.add(f));
+    const fakeEvent = {
+      target: { files: dt.files },
+    } as unknown as Event;
+    addFiles(fakeEvent);
+  }
 </script>
 
 <template>
@@ -50,10 +60,15 @@
       title=""
       multiple
     />
-    <div class="media-item-parent">
-      <span class="media-item tooltip-base" v-for="item in props.items" :key="item.name">
+    <div class="media-item-parent" @click="triggerInput" @drop="drop" @dragover.prevent>
+      <span class="media-item" v-for="item in props.items" :key="item.name">
         <span class="media-name">{{ item.name }}</span>
-        <button type="button" class="media-item-remove" @dblclick="removeFile(item)">
+        <button
+          type="button"
+          class="media-item-remove tooltip-base"
+          @dblclick="removeFile(item)"
+          @click.stop
+        >
           ❌
           <div class="tooltip">Double-click to remove</div>
         </button>
