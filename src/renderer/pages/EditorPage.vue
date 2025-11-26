@@ -241,7 +241,6 @@
       <MediaInput
         ref="media-input"
         class="grow"
-        :class="{ 'opacity-1': !card.media.length }"
         :items="card.media"
         @add="addMedia"
         @remove="removeMedia"
