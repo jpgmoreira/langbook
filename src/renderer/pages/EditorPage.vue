@@ -247,6 +247,7 @@
       <MediaInput
         ref="media-input"
         class="grow"
+        :class="{ 'opacity-0': !card.media.length }"
         :items="card.media"
         @add="addMedia"
         @remove="removeMedia"
@@ -255,6 +256,8 @@
         v-if="!card.media.length"
         class="absolute-center cursor-default font-bold opacity-70 text-center"
         @click="refs.media.value?.triggerInput()"
+        @dragover.prevent
+        @drop="refs.media.value?.drop"
       >
         <div class="text-xl">MEDIA</div>
         <div class>(Click or drop files here)</div>

@@ -14,6 +14,7 @@
   };
   defineExpose({
     triggerInput,
+    drop,
   });
   const emit = defineEmits<{
     (e: 'add', files: MediaFile[]): void;

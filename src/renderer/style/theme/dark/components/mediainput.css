@@ -1,7 +1,6 @@
 .theme-dark .media-input-root {
   background-color: #292a2b;
-  /* border: 1px solid #464b53; */
-  border: 1px solid azure;
+  border: 1px solid #464b53;
   display: flex;
 }
 
@@ -10,22 +9,20 @@
 }
 
 .theme-dark .media-item-parent {
-  border: 1px solid red;
+  padding: 3px;
   display: flex;
   flex-wrap: wrap;
-  column-gap: 6px;
-  row-gap: 4px;
+  gap: 3px;
   flex-grow: 1;
-  align-items: flex-start;
+  align-content: flex-start;
   overflow: auto;
 }
 
 .theme-dark .media-item {
-  display: flex;
   align-items: center;
   font-size: 0.9rem;
   border: 1px solid #464b53;
-  padding: 1px 3px;
+  padding: 0 3px;
 }
 
 .theme-dark .media-name {
