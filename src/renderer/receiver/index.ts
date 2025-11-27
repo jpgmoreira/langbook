@@ -18,11 +18,11 @@ window.api.on(Channels.loadStartupData, (data: StartupData) => {
   return router.replace('/home');
 });
 
-window.api.on(Channels.openEditor, (data: EditorPageDTO) => {
-  EventEmitter.instance.emit(Events.loadEditorData, data);
+window.api.on(Channels.openEditor, async (data: EditorPageDTO) => {
   document.documentElement.classList.add('theme-dark');
   document.title = data.card ? 'Edit Card' : 'Add Card';
-  router.replace('/editor');
+  await router.replace('/editor');
+  EventEmitter.instance.emit(Events.loadEditorData, data);
 });
 
 window.api.on(Channels.closeEditor, () => {
