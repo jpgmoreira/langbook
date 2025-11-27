@@ -8,6 +8,7 @@ export const allowedInvokeChannels = Object.freeze([
   Channels.deleteProfile,
   Channels.login,
   Channels.openEditor,
+  Channels.upsertCard,
   // Channels to perform treeview operations:
   TreeChannels.createNode,
   TreeChannels.createNodeAbove,

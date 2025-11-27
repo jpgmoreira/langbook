@@ -150,7 +150,7 @@
 
   // --- Actions: ---
 
-  function addCardClick() {
+  async function addCardClick() {
     const front = refs.front.value?.getContent();
     if (!front) {
       uiStore.showToast('A card must at least have a front field!', 'info');
@@ -159,6 +159,7 @@
     card.value.front = front;
     card.value.back = refs.back.value?.getContent() || '';
     card.value.extra = refs.extra.value?.getContent() || '';
+    await window.api.invoke(Channels.upsertCard, card);
   }
 
   function cancel() {

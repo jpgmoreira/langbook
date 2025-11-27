@@ -6,6 +6,7 @@ import { loadStartupData } from '../startup';
 import { is } from '@electron-toolkit/utils';
 import { TagsManager } from './tagsManager';
 import { SessionsManager } from './sessionsManager';
+import { Card } from '@common/schemas/card';
 
 /**
  * Singleton for managing application windows.
@@ -89,7 +90,7 @@ export class WindowManager {
     this.createEditorWindow();
   }
 
-  public openEditor(card: null) {
+  public openEditor(card: Card | null) {
     const data = {
       card,
       tags: TagsManager.instance.getTags(),

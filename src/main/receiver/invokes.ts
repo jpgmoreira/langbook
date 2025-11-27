@@ -1,5 +1,6 @@
 import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
+import { Card } from '@common/schemas/card';
 import { StartupData } from '@common/schemas/startup';
 import { ProfileManager } from '@main/data/managers/profileManager';
 import { WindowManager } from '@main/data/managers/windowManager';
@@ -42,6 +43,10 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle(Channels.openEditor, async (_: IpcMainInvokeEvent, card: null) => {
+ipcMain.handle(Channels.openEditor, async (_: IpcMainInvokeEvent, card: Card | null) => {
   WindowManager.instance.openEditor(card);
+});
+
+ipcMain.handle(Channels.upsertCard, async (_: IpcMainInvokeEvent, card: Card) => {
+  // ...
 });

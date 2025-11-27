@@ -7,4 +7,5 @@ export enum Channels {
   openEditor = 'open-editor',
   closeEditor = 'close-editor',
   cancelCardEdit = 'cancel-card-edit',
+  upsertCard = 'upsert-card',
 }
