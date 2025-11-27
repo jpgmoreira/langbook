@@ -7,7 +7,6 @@
     useTemplateRef,
     nextTick,
     computed,
-    watch,
   } from 'vue';
   import { useEditorStore } from '@renderer/store/editor';
   import { useUIStore } from '@renderer/store/ui';
@@ -22,14 +21,6 @@
 
   const uiStore = useUIStore();
   const editorStore = useEditorStore();
-
-  watch(
-    () => editorStore.data,
-    (newData, oldData) => {
-      console.log('Editor data mudou!', newData, oldData);
-    },
-    { deep: true }
-  );
 
   // --- Dynamic data: ---
 

@@ -68,7 +68,7 @@ export class WindowManager {
     this.editorWindow.on('close', (e) => {
       e.preventDefault();
       this.editorWindow.hide();
-      this.mainWindow.webContents.send(Channels.closeEditor, null);
+      this.mainWindow.webContents.send(Channels.closeEditor);
     });
     this.initWindow(this.editorWindow);
   }

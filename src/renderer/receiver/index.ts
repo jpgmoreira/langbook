@@ -25,7 +25,6 @@ window.api.on(Channels.openEditor, (data: EditorPageDTO) => {
   router.replace('/editor');
 });
 
-window.api.on(Channels.closeEditor, (card: null) => {
+window.api.on(Channels.closeEditor, () => {
   useUIStore().backdropVisible = false;
-  // handle card...
 });
