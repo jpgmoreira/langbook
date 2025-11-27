@@ -1,6 +1,5 @@
 <script setup lang="ts">
   interface Props {
-    multiple?: boolean;
     selected?: number[];
   }
   const props = defineProps<Props>();
@@ -22,7 +21,7 @@
 </script>
 
 <template>
-  <div class="numeric-selector">
+  <div class="frequencymeter">
     <div v-for="i in maxVal - minVal + 1" @click="toggle(i - 1)" :class="valueClass(i - 1)">
       {{ minVal + i - 1 }}
     </div>

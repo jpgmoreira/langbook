@@ -20,6 +20,7 @@
   import { Sessions } from '@common/schemas/sessions';
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
   import { Channels } from '@preload/channels';
+  import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
 
   type RTEField = 'front' | 'back' | 'extra';
 
@@ -63,6 +64,7 @@
       return 'Allow reversed is only available when the back field has content';
     return undefined;
   });
+  const selectedFrequency = computed(() => [card.value.frequency]);
 
   // --- Initialization: ---
 
@@ -163,6 +165,10 @@
     window.api.send(Channels.cancelCardEdit);
   }
 
+  function setFrequency(value: number) {
+    card.value.frequency = value;
+  }
+
   // --- Lifecycle hooks: ---
 
   // Fix rte toolbar toolbox position:
@@ -186,7 +192,7 @@
 </script>
 
 <template>
-  <div class="editor-page flex flex-col gap-1 grow" style="border: 1px solid red">
+  <div class="editor-page flex flex-col gap-1 grow p-1">
     <div class="rte-parent">
       <RichTextEditor
         v-show="showCardFields.front"
@@ -276,6 +282,10 @@
       @select-option="selectSession"
       @deselect-option="deselectSession"
     />
+    <div>
+      Frequency:
+      <Frequencymeter :selected="selectedFrequency" @toggle="setFrequency" />
+    </div>
     <footer class="flex justify-around mt-auto">
       <div class="flex items-center" v-tooltip="allowReversedTooltip">
         <label class="whitespace-nowrap mr-1" for="allow-reversed">Allow reversed</label>

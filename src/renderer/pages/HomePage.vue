@@ -6,7 +6,7 @@
   import Header from '@renderer/components/Header.vue';
   import TreeView from '@renderer/components/UI/TreeView/TreeView.vue';
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
-  import NumericSelector from '@renderer/components/UI/NumericSelector.vue';
+  import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
   import { Channels } from '@preload/channels';
   const tagsStore = useTagsStore();
   const filtersStore = useFiltersStore();
@@ -87,7 +87,7 @@
           />
           <div class="flex items-center">
             <span class="mr-1">Frequency:</span>
-            <NumericSelector
+            <Frequencymeter
               :selected="filtersStore.filters.frequencies"
               @toggle="filtersStore.toggleFrequency"
             />

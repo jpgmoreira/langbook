@@ -1,9 +1,10 @@
-.theme-dark .numeric-selector {
+.theme-dark .frequencymeter {
   display: inline-flex;
+  width: fit-content;
   border: 1px solid #30343a;
 }
 
-.theme-dark .numeric-selector > div {
+.theme-dark .frequencymeter > div {
   background-color: #3f444b;
   padding: 1px 4px;
   cursor: pointer;
@@ -11,13 +12,13 @@
   transition: background 0.2s ease;
 }
 
-.theme-dark .numeric-selector > div:first-child {
+.theme-dark .frequencymeter > div:first-child {
   border-left: none;
 }
 
-.theme-dark .numeric-selector > div:hover {
+.theme-dark .frequencymeter > div:hover {
   background-color: #2f6097;
 }
-.theme-dark .numeric-selector > div.selected {
+.theme-dark .frequencymeter > div.selected {
   background-color: #448ee4;
 }
