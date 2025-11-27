@@ -5,11 +5,12 @@
 
 .theme-dark .multiselect .context-menu {
   background-color: #3f444b;
+  z-index: 2;
 }
 .theme-dark .multiselect .context-menu .highlight {
   background-color: #525a63;
 }
-.theme-dark .context-menu .option .option-index {
+.theme-dark .multiselect .context-menu .option .option-index {
   margin-right: 10px;
   font-weight: 500;
   opacity: 0.5;
