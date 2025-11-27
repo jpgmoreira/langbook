@@ -7,6 +7,7 @@
   defineExpose({
     focus,
     getContent,
+    refresh,
   });
 
   // --- Emits: ---
@@ -60,6 +61,11 @@
   function focus() {
     isToolbarVisible.value = true;
     rteRef.value?.focus();
+  }
+
+  function refresh() {
+    if (!rteRef.value) return;
+    rteRef.value.innerHTML = props.initial;
   }
 
   function blur() {
