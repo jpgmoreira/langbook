@@ -7,15 +7,16 @@
   import { useUIStore } from '@renderer/store/ui';
   import { computed, ref, reactive, useTemplateRef, nextTick } from 'vue';
   import { Card, getEmptyCard, MediaFile } from '@common/schemas/card';
-  import { randomId } from '@common/utils/utils';
+  import { arrayRemove, randomId } from '@common/utils/utils';
   import { Tags } from '@common/schemas/tags';
   import { Sessions } from '@common/schemas/sessions';
+  import Multiselect from '@renderer/components/UI/Multiselect.vue';
   type RTEField = 'front' | 'back' | 'extra';
   EventEmitter.instance.on(Events.loadEditorData, (data: EditorPageDTO) => initData(data));
   const uiStore = useUIStore();
   const card = ref<Card>(null!);
-  const allTags = ref<Tags>(null!);
-  const allSessions = ref<Sessions>(null!);
+  const allTags = ref<Tags>({});
+  const allSessions = ref<Sessions>({});
   const isNewCard = ref(true);
   const isAllowReversedDisabled = ref(true);
   const showCardFields = reactive({
@@ -42,13 +43,13 @@
     showCardFields.extra = Boolean(data.card?.extra);
   }
   const tagsOptions = computed(() =>
-    Object.entries(allTags).map(([key, value]) => ({
+    Object.entries(allTags.value).map(([key, value]) => ({
       text: `${key} (${value})`,
       value: key,
     }))
   );
   const sessionsOptions = computed(() =>
-    Object.values(allSessions).map((value) => ({
+    Object.values(allSessions.value).map((value) => ({
       text: `${value.name} (${value.count})`,
       value: value.id,
     }))
@@ -82,6 +83,33 @@
   }
   function removeMedia(item: MediaFile) {
     card.value.media = card.value.media.filter((i) => i !== item);
+  }
+  // --- Manage sessions: ---
+
+  function selectSession(sessionId: string) {
+    card.value.sessions.push(sessionId);
+  }
+
+  function deselectSession(sessionId: string) {
+    arrayRemove(card.value.sessions, sessionId);
+  }
+
+  // --- Manage tags: ---
+
+  function selectTag(tag: string) {
+    card.value.tags.push(tag);
+  }
+
+  function deselectTag(tag: string) {
+    arrayRemove(card.value.tags, tag);
+    if (allTags.value[tag] === 0) {
+      delete allTags.value[tag];
+    }
+  }
+
+  function createTag(name: string) {
+    allTags.value[name] = 0;
+    card.value.tags.push(name);
   }
 </script>
 
@@ -155,6 +183,27 @@
         <div class>(Click or drop files here)</div>
       </span>
     </div>
+    <hr />
+    <Multiselect
+      :options="tagsOptions"
+      :selected="card?.tags || []"
+      placeholder="Tags"
+      direction="up"
+      create
+      close
+      @select-option="selectTag"
+      @deselect-option="deselectTag"
+      @create-option="createTag"
+    />
+    <Multiselect
+      :options="sessionsOptions"
+      :selected="card?.sessions || []"
+      placeholder="Sessions"
+      direction="up"
+      close
+      @select-option="selectSession"
+      @deselect-option="deselectSession"
+    />
   </div>
 </template>
 
