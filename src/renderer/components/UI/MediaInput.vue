@@ -65,12 +65,12 @@
         <span class="media-name">{{ item.name }}</span>
         <button
           type="button"
-          class="media-item-remove tooltip-base"
+          class="media-item-remove"
           @dblclick="removeFile(item)"
           @click.stop
+          v-tooltip="'Double-click to remove'"
         >
           ❌
-          <div class="tooltip">Double-click to remove</div>
         </button>
       </span>
     </div>

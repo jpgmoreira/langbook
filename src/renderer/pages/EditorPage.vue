@@ -51,6 +51,12 @@
   const tags = reactive(editorStore.data.tags);
   const sessions = reactive(editorStore.data.sessions);
 
+  const allowReversedTooltip = computed(() => {
+    if (disableAllowReversed.value)
+      return 'Allow reversed is only available when the back field has content';
+    return undefined;
+  });
+
   const tagsOptions = computed(() =>
     Object.entries(tags).map(([key, value]) => ({
       text: `${key} (${value})`,
@@ -276,12 +282,7 @@
       @deselect-option="deselectSession"
     />
     <footer class="flex justify-around mt-auto">
-      <div class="flex items-center tooltip-base">
-        <div class="tooltip" v-if="disableAllowReversed">
-          Allow reversed is only available
-          <br />
-          when the "back" field has content
-        </div>
+      <div class="flex items-center" v-tooltip="allowReversedTooltip">
         <label class="whitespace-nowrap mr-1" for="allow-reversed">Allow reversed</label>
         <input
           type="checkbox"
