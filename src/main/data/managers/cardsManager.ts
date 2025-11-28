@@ -57,5 +57,7 @@ export class CardsManager {
     }
   }
 
+  public upsertCard(card: Card) {}
+
   public clear() {}
 }
