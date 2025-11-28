@@ -197,6 +197,16 @@ export class TreeManager {
     }
   }
 
+  public getSelectedSessions(): string[] {
+    const result: string[] = [];
+    for (const node of this.expandedFlat) {
+      if (node.type === 'file' && node.selected) {
+        result.push(node.sessionId);
+      }
+    }
+    return result;
+  }
+
   // --- Helpers: ---
 
   private getHead(headAndTail: HeadAndTail, asProxy: boolean) {

@@ -40,8 +40,8 @@ export class DbManager {
 
   public async loadAllCards(): Promise<Card[]> {
     if (!this.db) return [];
-    const result = (await this.db.all('SELECT * FROM cards')) as Card[];
-    return result;
+    const result = (await this.db.all('SELECT * FROM cards')) as DBCard[];
+    return result.map(this.deserializeCard);
   }
 
   public async deleteCard(cardId: string) {
@@ -82,6 +82,16 @@ export class DbManager {
       tags: JSON.stringify(card.tags),
       sessions: JSON.stringify(card.sessions),
       media: JSON.stringify(card.media),
+    };
+    return result;
+  }
+
+  private deserializeCard(card: DBCard): Card {
+    const result = {
+      ...card,
+      tags: JSON.parse(card.tags),
+      sessions: JSON.parse(card.sessions),
+      media: JSON.parse(card.media),
     };
     return result;
   }

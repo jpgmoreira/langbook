@@ -6,6 +6,7 @@ import { Events } from '@main/events/events';
 import { Filters, getEmptyFilters } from '@common/schemas/filters';
 import { Card } from '@common/schemas/card';
 import { arrayContainsAll, arrayContainsAny, isSubstring } from '@common/utils/utils';
+import { TreeManager } from './treeManager';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   FiltersManager.instance.clear();
@@ -20,9 +21,9 @@ export class FiltersManager {
 
   private _proxy: FileProxy<Filters> | null = null;
 
-  private get proxy() {
-    return this._proxy!.proxy;
-  }
+  // private get proxy() {
+  //   return this._proxy!.proxy;
+  // }
 
   private get target() {
     return this._proxy!.target;
@@ -47,6 +48,10 @@ export class FiltersManager {
   }
 
   public satisfyCurrentFilters(card: Card): boolean {
+    // - Frequency matching:
+    if (this.target.frequencies.length && !this.target.frequencies.includes(card.frequency)) {
+      return false;
+    }
     // - Text matching:
     if (
       this.target.text.trim() &&
@@ -70,8 +75,9 @@ export class FiltersManager {
         }
       }
     }
-    // - Frequency matching:
-    if (this.target.frequencies.length && !this.target.frequencies.includes(card.frequency)) {
+    // - Sessions matching:
+    const selectedSessions = TreeManager.instance.getSelectedSessions();
+    if (!arrayContainsAny(selectedSessions, card.sessions)) {
       return false;
     }
     return true;
