@@ -108,7 +108,7 @@
       top: '',
       bottom: '',
     });
-    if (rb - cy < ctxHeight) {
+    if (false && rb - cy < ctxHeight) {
       ctxStyle.bottom = rb - cy + 'px';
     } else {
       ctxStyle.top = cy - rt + 'px';
