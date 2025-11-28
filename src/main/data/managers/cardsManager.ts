@@ -3,7 +3,7 @@ import { Card } from '@common/schemas/card';
 import { Events } from '@main/events/events';
 import { DbManager } from './dbManager';
 import { FiltersManager } from './filtersManager';
-import { genHash, shuffleArray } from '@common/utils/utils';
+import { extFromMime, genHash, shuffleArray } from '@common/utils/utils';
 import { SessionsManager } from './sessionsManager';
 import { TagsManager } from './tagsManager';
 import { ProfileManager } from './profileManager';
@@ -11,6 +11,7 @@ import { DATA_DIR } from '../constants';
 import * as cheerio from 'cheerio';
 import fs from 'node:fs';
 import path from 'node:path';
+import sharp from 'sharp';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -75,7 +76,8 @@ export class CardsManager {
       if (!path.relative(mediaDir, path.dirname(media.path.replace('safe-file://', '')))) continue;
       if (!fs.existsSync(media.path.replace('safe-file://', ''))) mediaDelete.push(media.name);
       else {
-        const mediaFile = `${card.createdAt}_${media.name}`;
+        const ext = path.extname(media.name) ? '' : extFromMime(media.type);
+        const mediaFile = `${card.createdAt}_${media.name}${ext}`;
         const newPath = path.join(mediaDir, mediaFile);
         fs.copyFileSync(media.path, newPath);
         media.path = `safe-file://${newPath}`;
@@ -94,17 +96,20 @@ export class CardsManager {
       const isUrl = src.startsWith('http');
       if (!isBase64 && !isUrl) continue;
       const hash = genHash(src, 10);
-      const fPath = path.join(mediaDir, `${card.createdAt}_${hash}`);
+      const fPath = path.join(mediaDir, `${card.createdAt}_${hash}.png`);
       image.attribs.src = `safe-file://${fPath}`;
       if (fs.existsSync(fPath)) continue;
+      let buffer: Buffer;
       if (isUrl) {
         const response = await fetch(src);
         const arrayBuffer = await response.arrayBuffer();
-        src = Buffer.from(arrayBuffer).toString('base64');
+        buffer = Buffer.from(arrayBuffer);
       } else {
-        src = src.slice(src.indexOf(';base64,') + ';base64,'.length);
+        const base64 = src.slice(src.indexOf(';base64,') + ';base64,'.length);
+        buffer = Buffer.from(base64, 'base64');
       }
-      fs.writeFileSync(fPath, src, 'base64');
+      const pngBuffer = await sharp(buffer).png().toBuffer();
+      fs.writeFileSync(fPath, pngBuffer);
     }
     // Necessary to update the src in the images in the fields:
     card.front = $front.html();
@@ -130,7 +135,6 @@ export class CardsManager {
     }
     // Update with new info.
     await this.updateCardMedia(card);
-    console.log(123);
   }
 
   public clear() {}

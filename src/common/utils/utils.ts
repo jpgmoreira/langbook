@@ -111,3 +111,16 @@ export function arrayContainsAll(base: string[], query: string[]) {
 export function arrayContainsAny(base: string[], query: string[]) {
   return query.some((q) => base.includes(q));
 }
+
+/**
+ * Extracts the file extension name from a mime type:
+ */
+export function extFromMime(mime: string): string {
+  if (!mime) return '';
+  const exceptions: Record<string, string> = {
+    'image/jpeg': '.jpg',
+    'audio/mpeg': '.mp3',
+  };
+  if (mime in exceptions) return exceptions[mime];
+  return `.${mime.split('/')[1]}`;
+}
