@@ -1,8 +1,10 @@
 import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { Card } from '@common/schemas/card';
+import { Filters } from '@common/schemas/filters';
 import { StartupData } from '@common/schemas/startup';
 import { CardsManager } from '@main/data/managers/cardsManager';
+import { FiltersManager } from '@main/data/managers/filtersManager';
 import { ProfileManager } from '@main/data/managers/profileManager';
 import { WindowManager } from '@main/data/managers/windowManager';
 import { loadStartupData } from '@main/data/startup';
@@ -50,4 +52,9 @@ ipcMain.handle(Channels.openEditor, async (_: IpcMainInvokeEvent, card: Card | n
 
 ipcMain.handle(Channels.upsertCard, async (_: IpcMainInvokeEvent, card: Card) => {
   CardsManager.instance.upsertCard(card);
+});
+
+ipcMain.handle(Channels.updateFilters, async (_: IpcMainInvokeEvent, filters: Filters) => {
+  FiltersManager.instance.updateFilters(filters);
+  CardsManager.instance.refreshCardsView(true);
 });

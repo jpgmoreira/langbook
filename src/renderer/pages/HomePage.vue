@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
+  import { ref, onMounted, onBeforeUnmount, computed, toRaw } from 'vue';
   import { useTagsStore } from '@renderer/store/tags';
   import { useFiltersStore } from '@renderer/store/filters';
   import { useUIStore } from '@renderer/store/ui';
@@ -7,10 +7,12 @@
   import TreeView from '@renderer/components/UI/TreeView/TreeView.vue';
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
+  import CardsView from '@renderer/components/CardsView.vue';
   import { Channels } from '@preload/channels';
   import { EventEmitter } from '@common/events/eventEmitter';
   import { Events } from '@renderer/events/events';
   import { RefreshCardsViewDTO } from '@common/dto/refreshCardsViewDTO';
+  import { Card } from '@common/schemas/card';
   EventEmitter.instance.on(Events.refreshCardsView, refreshCardsView);
   const tagsStore = useTagsStore();
   const filtersStore = useFiltersStore();
@@ -19,6 +21,9 @@
   const treeAreaWidth = ref(300);
   const contestsAreaWidth = ref(window.innerWidth - 300);
   const hideFilters = ref(false);
+  const page = ref<Card[]>([]);
+  const anchor = ref(0);
+  const height = ref(0);
   const tagsOptions = computed(() =>
     Object.keys(tagsStore.tags).map((t) => ({
       text: tagsStore.getTagWithCount(t),
@@ -29,15 +34,18 @@
     if (filtersStore.dirty) return 'btn-warning';
     return 'btn-primary';
   });
-  function filter() {
+  async function filter() {
     filtersStore.dirty = false;
+    await window.api.invoke(Channels.updateFilters, toRaw(filtersStore.filters));
   }
   function openEditor(card: null) {
     uiStore.backdropVisible = true;
     window.api.invoke(Channels.openEditor, card);
   }
   function refreshCardsView(data: RefreshCardsViewDTO) {
-    console.log(data);
+    page.value = data.page;
+    anchor.value = data.anchor;
+    height.value = data.height;
   }
   function windowMouseUp() {
     isResizing.value = false;
@@ -71,7 +79,9 @@
         @mousedown="isResizing = true"
       ></div>
       <div class="flex flex-col grow" :style="{ width: `${contestsAreaWidth}px` }">
-        <div class="grow" style="border: 0px solid lightgreen"></div>
+        <div class="grow" style="border: 0px solid lightgreen">
+          <CardsView :page="page" :anchor="anchor" :height="height" />
+        </div>
         <div v-if="!hideFilters" class="filters-container px-2 py-1.5 whitespace-nowrap">
           <div>Filters:</div>
           <Multiselect

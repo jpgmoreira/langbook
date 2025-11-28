@@ -69,18 +69,6 @@ export class CardsManager {
     }
   }
 
-  private preparePage() {
-    const result: Card[] = [];
-    for (
-      let i = this.anchor, j = 0;
-      i < this.filtered.length && j < this.CARDS_PAGE_SIZE;
-      i++, j++
-    ) {
-      result.push(this.filtered[i]);
-    }
-    return result;
-  }
-
   private async updateCardMedia(card: Card) {
     const profileId = ProfileManager.instance.getCurrProfile()!.id;
     const mediaDir = path.join(DATA_DIR, 'profileData', profileId, 'media');
@@ -155,11 +143,29 @@ export class CardsManager {
     SessionsManager.instance.cardCreated(card);
     TagsManager.instance.cardCreated(card);
     this.cardsMap[card.id] = card;
-    this.refresh();
-    const page = this.preparePage();
-    const totalHeight = this.filtered.reduce((prev: number, curr: Card) => prev + curr.height, 0);
-    WindowManager.instance.refreshCardsView(page, this.anchor, totalHeight);
+    this.refreshCardsView(false);
     // TODO: Check if flashcards window is open, and if it is, send newly updated card to it.
+  }
+
+  private preparePage() {
+    const page: Card[] = [];
+    for (
+      let i = this.anchor, j = 0;
+      i < this.filtered.length && j < this.CARDS_PAGE_SIZE;
+      i++, j++
+    ) {
+      page.push(this.filtered[i]);
+    }
+    const totalHeight = this.filtered.reduce((prev: number, curr: Card) => prev + curr.height, 0);
+    return { page, totalHeight };
+  }
+
+  public refreshCardsView(resetAnchor: boolean) {
+    this.refresh();
+    if (resetAnchor) this.anchor = 0;
+    const { page, totalHeight } = this.preparePage();
+    console.log(totalHeight);
+    WindowManager.instance.refreshCardsView(page, this.anchor, totalHeight);
   }
 
   public clear() {}

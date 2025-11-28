@@ -21,9 +21,9 @@ export class FiltersManager {
 
   private _proxy: FileProxy<Filters> | null = null;
 
-  // private get proxy() {
-  //   return this._proxy!.proxy;
-  // }
+  private get proxy() {
+    return this._proxy!.proxy;
+  }
 
   private get target() {
     return this._proxy!.target;
@@ -45,6 +45,10 @@ export class FiltersManager {
 
   public getFilters() {
     return structuredClone(this.target);
+  }
+
+  public updateFilters(filters: Filters) {
+    Object.assign(this.proxy, filters);
   }
 
   public satisfyCurrentFilters(card: Card): boolean {

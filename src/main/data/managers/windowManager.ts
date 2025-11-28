@@ -104,11 +104,11 @@ export class WindowManager {
     this.editorWindow.close();
   }
 
-  public refreshCardsView(page: Card[], anchor: number, totalHeight: number) {
+  public refreshCardsView(page: Card[], anchor: number, height: number) {
     const dto = {
       page,
       anchor,
-      totalHeight,
+      height,
     };
     this.mainWindow.webContents.send(Channels.refreshCardsView, dto);
   }
