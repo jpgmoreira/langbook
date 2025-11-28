@@ -103,4 +103,13 @@ export class WindowManager {
   public cancelCardEdit() {
     this.editorWindow.close();
   }
+
+  public refreshCardsView(page: Card[], anchor: number, totalHeight: number) {
+    const dto = {
+      page,
+      anchor,
+      totalHeight,
+    };
+    this.mainWindow.webContents.send(Channels.refreshCardsView, dto);
+  }
 }

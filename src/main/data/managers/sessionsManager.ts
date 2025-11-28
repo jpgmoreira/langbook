@@ -70,6 +70,12 @@ export class SessionsManager {
     }
   }
 
+  public cardCreated(card: Card) {
+    for (const session of card.sessions) {
+      this.proxy[session].count++;
+    }
+  }
+
   public clear() {
     this._proxy = null;
   }

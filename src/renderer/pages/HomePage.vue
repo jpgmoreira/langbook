@@ -8,6 +8,10 @@
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
   import { Channels } from '@preload/channels';
+  import { EventEmitter } from '@common/events/eventEmitter';
+  import { Events } from '@renderer/events/events';
+  import { RefreshCardsViewDTO } from '@common/dto/refreshCardsViewDTO';
+  EventEmitter.instance.on(Events.refreshCardsView, refreshCardsView);
   const tagsStore = useTagsStore();
   const filtersStore = useFiltersStore();
   const uiStore = useUIStore();
@@ -31,6 +35,9 @@
   function openEditor(card: null) {
     uiStore.backdropVisible = true;
     window.api.invoke(Channels.openEditor, card);
+  }
+  function refreshCardsView(data: RefreshCardsViewDTO) {
+    console.log(data);
   }
   function windowMouseUp() {
     isResizing.value = false;

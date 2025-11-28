@@ -50,6 +50,15 @@ export class TagsManager {
     }
   }
 
+  public cardCreated(card: Card) {
+    for (const tag of card.tags) {
+      if (!(tag in this.proxy)) {
+        this.proxy[tag] = 0;
+      }
+      this.proxy[tag]++;
+    }
+  }
+
   public clear() {
     this._proxy = null;
   }

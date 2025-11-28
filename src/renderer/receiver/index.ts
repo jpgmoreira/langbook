@@ -6,6 +6,7 @@ import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
 import { useUIStore } from '@renderer/store/ui';
 import { EditorPageDTO } from '@common/dto/editorPageDTO';
+import { RefreshCardsViewDTO } from '@common/dto/refreshCardsViewDTO';
 
 window.api.on(Channels.loadStartupData, (data: StartupData) => {
   EventEmitter.instance.emit(Events.loadInitialData, data);
@@ -27,4 +28,8 @@ window.api.on(Channels.openEditor, async (data: EditorPageDTO) => {
 
 window.api.on(Channels.closeEditor, () => {
   useUIStore().backdropVisible = false;
+});
+
+window.api.on(Channels.refreshCardsView, (data: RefreshCardsViewDTO) => {
+  EventEmitter.instance.emit(Events.refreshCardsView, data);
 });

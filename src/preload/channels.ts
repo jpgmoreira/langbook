@@ -8,4 +8,5 @@ export enum Channels {
   closeEditor = 'close-editor',
   cancelCardEdit = 'cancel-card-edit',
   upsertCard = 'upsert-card',
+  refreshCardsView = 'refresh-cards-view',
 }

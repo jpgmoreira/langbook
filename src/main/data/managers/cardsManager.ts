@@ -12,6 +12,7 @@ import * as cheerio from 'cheerio';
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
+import { WindowManager } from './windowManager';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -24,10 +25,13 @@ EventEmitter.instance.on(Events.clearProfileData, () => {
 export class CardsManager {
   static #instance: CardsManager;
 
+  private readonly CARDS_PAGE_SIZE = 100;
+
   private cardsMap: Record<string, Card> = {};
   private filtered: Card[] = [];
   private frequency: Record<number, Card[]> = {};
   private frequencyIndex: Record<number, number> = {};
+  private anchor = 0;
 
   private constructor() {}
 
@@ -63,6 +67,18 @@ export class CardsManager {
     for (let i = 0; i <= 10; i++) {
       shuffleArray(this.frequency[i]);
     }
+  }
+
+  private preparePage() {
+    const result: Card[] = [];
+    for (
+      let i = this.anchor, j = 0;
+      i < this.filtered.length && j < this.CARDS_PAGE_SIZE;
+      i++, j++
+    ) {
+      result.push(this.filtered[i]);
+    }
+    return result;
   }
 
   private async updateCardMedia(card: Card) {
@@ -136,6 +152,14 @@ export class CardsManager {
     // Update with new info.
     await this.updateCardMedia(card);
     await DbManager.instance.insertCard(card);
+    SessionsManager.instance.cardCreated(card);
+    TagsManager.instance.cardCreated(card);
+    this.cardsMap[card.id] = card;
+    this.refresh();
+    const page = this.preparePage();
+    const totalHeight = this.filtered.reduce((prev: number, curr: Card) => prev + curr.height, 0);
+    WindowManager.instance.refreshCardsView(page, this.anchor, totalHeight);
+    // TODO: Check if flashcards window is open, and if it is, send newly updated card to it.
   }
 
   public clear() {}

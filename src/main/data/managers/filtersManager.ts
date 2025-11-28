@@ -49,7 +49,7 @@ export class FiltersManager {
   public satisfyCurrentFilters(card: Card): boolean {
     // - Text matching:
     if (
-      this.proxy.text.trim() &&
+      this.target.text.trim() &&
       !(
         isSubstring(card.front, this.target.text) ||
         isSubstring(card.back, this.target.text) ||
@@ -71,7 +71,7 @@ export class FiltersManager {
       }
     }
     // - Frequency matching:
-    if (!this.target.frequencies.includes(card.frequency)) {
+    if (this.target.frequencies.length && !this.target.frequencies.includes(card.frequency)) {
       return false;
     }
     return true;
