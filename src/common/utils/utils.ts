@@ -82,3 +82,27 @@ export function deepFreeze<T extends object>(obj: T): Readonly<T> {
   });
   return obj;
 }
+
+/**
+ * Verifies if a string (query) is a substring of a larger text (text),
+ * ignoring leading and trailing whitespaces, and ignoring case.
+ */
+export function isSubstring(text: string, query: string) {
+  return text.trim().toLowerCase().includes(query.trim().toLowerCase());
+}
+
+/**
+ * Returns true if *every* string in query is contained in base
+ * (match ALL).
+ */
+export function arrayContainsAll(base: string[], query: string[]) {
+  return query.every((q) => base.includes(q));
+}
+
+/**
+ * Returns true if *any* string in query is contained in base
+ * (match ANY).
+ */
+export function arrayContainsAny(base: string[], query: string[]) {
+  return query.some((q) => base.includes(q));
+}

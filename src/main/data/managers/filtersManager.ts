@@ -4,6 +4,8 @@ import { DATA_DIR } from '../constants';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@main/events/events';
 import { Filters, getEmptyFilters } from '@common/schemas/filters';
+import { Card } from '@common/schemas/card';
+import { arrayContainsAll, arrayContainsAny, isSubstring } from '@common/utils/utils';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   FiltersManager.instance.clear();
@@ -18,9 +20,13 @@ export class FiltersManager {
 
   private _proxy: FileProxy<Filters> | null = null;
 
-  // private get proxy() {
-  //   return this._proxy!.proxy;
-  // }
+  private get proxy() {
+    return this._proxy!.proxy;
+  }
+
+  private get target() {
+    return this._proxy!.target;
+  }
 
   private constructor() {}
 
@@ -37,7 +43,38 @@ export class FiltersManager {
   }
 
   public getFilters() {
-    return structuredClone(this._proxy!.target);
+    return structuredClone(this.target);
+  }
+
+  public satisfyCurrentFilters(card: Card): boolean {
+    // - Text matching:
+    if (
+      this.proxy.text.trim() &&
+      !(
+        isSubstring(card.front, this.target.text) ||
+        isSubstring(card.back, this.target.text) ||
+        isSubstring(card.extra, this.target.text)
+      )
+    ) {
+      return false;
+    }
+    // - Tags matching:
+    if (this.target.tags.length) {
+      if (this.target.tagsMode === 'all') {
+        if (!arrayContainsAll(card.tags, this.target.tags)) {
+          return false;
+        }
+      } else if (this.target.tagsMode === 'any') {
+        if (!arrayContainsAny(card.tags, this.target.tags)) {
+          return false;
+        }
+      }
+    }
+    // - Frequency matching:
+    if (!this.target.frequencies.includes(card.frequency)) {
+      return false;
+    }
+    return true;
   }
 
   public clear() {

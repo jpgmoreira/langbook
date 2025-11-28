@@ -2,6 +2,7 @@ import { EventEmitter } from '@common/events/eventEmitter';
 import { Card } from '@common/schemas/card';
 import { Events } from '@main/events/events';
 import { DbManager } from './dbManager';
+import { FiltersManager } from './filtersManager';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -33,6 +34,11 @@ export class CardsManager {
     for (const card of allCards) {
       this.cardsMap[card.id] = card;
     }
+    this.refresh();
+  }
+
+  private refresh() {
+    Object.values(this.cardsMap).forEach((card: Card) => {});
   }
 
   public clear() {}
