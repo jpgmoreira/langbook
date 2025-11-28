@@ -4,6 +4,7 @@ import { DATA_DIR } from '../constants';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@main/events/events';
 import { Tags } from '@common/schemas/tags';
+import { Card } from '@common/schemas/card';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   TagsManager.instance.clear();
@@ -18,9 +19,9 @@ export class TagsManager {
 
   private _proxy: FileProxy<Tags> | null = null;
 
-  // private get proxy() {
-  //   return this._proxy!.proxy;
-  // }
+  private get proxy() {
+    return this._proxy!.proxy;
+  }
 
   private constructor() {}
 
@@ -38,6 +39,15 @@ export class TagsManager {
 
   public getTags() {
     return structuredClone(this._proxy!.target);
+  }
+
+  public cardDeleted(card: Card) {
+    for (const tag of card.tags) {
+      this.proxy[tag]--;
+      if (this.proxy[tag] === 0) {
+        delete this.proxy[tag];
+      }
+    }
   }
 
   public clear() {

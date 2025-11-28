@@ -19,7 +19,6 @@ export class DbManager {
   static #instance: DbManager;
 
   private db: Database | null = null;
-
   private constructor() {}
 
   public static get instance(): DbManager {
@@ -40,9 +39,14 @@ export class DbManager {
   }
 
   public async loadAllCards(): Promise<Card[]> {
-    if (!this.db) return [] as Card[];
+    if (!this.db) return [];
     const result = (await this.db.all('SELECT * FROM cards')) as Card[];
     return result;
+  }
+
+  public async deleteCard(cardId: string) {
+    if (!this.db) return;
+    await this.db.run('DELETE FROM cards WHERE id = ?', cardId);
   }
 
   public async clear() {

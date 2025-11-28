@@ -9,9 +9,6 @@
    */
   import { type MediaFile } from '@common/schemas/card';
   import { useTemplateRef } from 'vue';
-  type ElectronFile = File & {
-    path: string;
-  };
   defineExpose({
     triggerInput,
     drop,
@@ -25,13 +22,14 @@
   function triggerInput() {
     inputRef.value?.click();
   }
-  function addFiles(event: Event) {
+  async function addFiles(event: Event) {
     const target = event.target as HTMLInputElement;
     if (!target || !target.files) return;
-    const files = [...target.files].map((f) => {
-      const file = f as ElectronFile;
-      return { name: file.name, type: file.type, path: file.path };
-    });
+    const files: MediaFile[] = [];
+    for (const file of target.files) {
+      const path = window.api.resolveFilePath(file);
+      files.push({ name: file.name, type: file.type, path });
+    }
     target.value = ''; // Necessary. Comment this line and try to add a file, remove it, then add it again to see why.
     emit('add', files);
   }

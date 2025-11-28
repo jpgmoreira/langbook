@@ -11,6 +11,7 @@ import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@main/events/events';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { buildId, sleep } from '@common/utils/utils';
+import { ensureDirExists } from '../utils';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   ProfileManager.instance.clear();
@@ -127,6 +128,8 @@ export class ProfileManager {
     const filePath = path.join(DATA_DIR, 'profileData', profileId, 'profile.json');
     this._currProfileProxy = new FileProxy(filePath, getEmptyProfile(profileId, record.name));
     this.registry.currProfileId = profileId;
+    const mediaDir = path.join(DATA_DIR, 'profileData', profileId, 'media');
+    ensureDirExists(mediaDir);
   }
 
   public addSessions(n: 1 | -1) {
@@ -134,6 +137,13 @@ export class ProfileManager {
     if (!profileId) return;
     const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
     record.sessions += n;
+  }
+
+  public addCards(n: 1 | -1) {
+    const profileId = this.profile?.id;
+    if (!profileId) return;
+    const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
+    record.cards += n;
   }
 
   public logout() {

@@ -39,4 +39,5 @@ export interface ElectronAPI {
   send: (channel: (typeof allowedSendChannels)[number], ...data: any[]) => void;
   invoke: <T = void>(channel: (typeof allowedInvokeChannels)[number], ...data: any[]) => Promise<T>;
   on: (channel: (typeof allowedOnChannels)[number], func: (...args: any[]) => void) => void;
+  resolveFilePath: (file: File) => string;
 }

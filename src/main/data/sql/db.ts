@@ -13,7 +13,7 @@ export async function createTables(db: Database) {
   await db.exec(`
     CREATE TABLE IF NOT EXISTS cards (
       id TEXT PRIMARY KEY,
-      front TEXT NOT NULL
+      front TEXT NOT NULL,
       back TEXT NOT NULL DEFAULT '',
       extra TEXT NOT NULL DEFAULT '',
       allowReversed BOOLEAN NOT NULL DEFAULT FALSE,

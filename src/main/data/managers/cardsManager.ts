@@ -3,7 +3,14 @@ import { Card } from '@common/schemas/card';
 import { Events } from '@main/events/events';
 import { DbManager } from './dbManager';
 import { FiltersManager } from './filtersManager';
-import { shuffleArray } from '@common/utils/utils';
+import { genHash, shuffleArray } from '@common/utils/utils';
+import { SessionsManager } from './sessionsManager';
+import { TagsManager } from './tagsManager';
+import { ProfileManager } from './profileManager';
+import { DATA_DIR } from '../constants';
+import * as cheerio from 'cheerio';
+import fs from 'node:fs';
+import path from 'node:path';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -57,7 +64,74 @@ export class CardsManager {
     }
   }
 
-  public upsertCard(card: Card) {}
+  private async updateCardMedia(card: Card) {
+    const profileId = ProfileManager.instance.getCurrProfile()!.id;
+    const mediaDir = path.join(DATA_DIR, 'profileData', profileId, 'media');
+    // 1. Update media from the media input:
+    const mediaDelete: string[] = [];
+    for (let i = 0; i < card.media.length; i++) {
+      const media = card.media[i];
+      // if the file path already points to mediaDir, ignore.
+      if (!path.relative(mediaDir, path.dirname(media.path.replace('safe-file://', '')))) continue;
+      if (!fs.existsSync(media.path.replace('safe-file://', ''))) mediaDelete.push(media.name);
+      else {
+        const mediaFile = `${card.createdAt}_${media.name}`;
+        const newPath = path.join(mediaDir, mediaFile);
+        fs.copyFileSync(media.path, newPath);
+        media.path = `safe-file://${newPath}`;
+      }
+    }
+    card.media = card.media.filter((m) => !mediaDelete.includes(m.name));
+    // 2. Update images from the rich-text editors:
+    const $front = cheerio.load(card.front, null, false),
+      $back = cheerio.load(card.back, null, false),
+      $extra = cheerio.load(card.extra, null, false);
+    const images = [...$front('img'), ...$back('img'), ...$extra('img')];
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      let src = image.attribs.src;
+      const isBase64 = src.startsWith('data:image');
+      const isUrl = src.startsWith('http');
+      if (!isBase64 && !isUrl) continue;
+      const hash = genHash(src, 10);
+      const fPath = path.join(mediaDir, `${card.createdAt}_${hash}`);
+      image.attribs.src = `safe-file://${fPath}`;
+      if (fs.existsSync(fPath)) continue;
+      if (isUrl) {
+        const response = await fetch(src);
+        const arrayBuffer = await response.arrayBuffer();
+        src = Buffer.from(arrayBuffer).toString('base64');
+      } else {
+        src = src.slice(src.indexOf(';base64,') + ';base64,'.length);
+      }
+      fs.writeFileSync(fPath, src, 'base64');
+    }
+    // Necessary to update the src in the images in the fields:
+    card.front = $front.html();
+    card.back = $back.html();
+    card.extra = $extra.html();
+  }
+
+  public async upsertCard(card: Card) {
+    // Delete old card info.
+    if (card.id in this.cardsMap) {
+      const oldCard = this.cardsMap[card.id];
+      DbManager.instance.deleteCard(card.id);
+      SessionsManager.instance.cardDeleted(card);
+      TagsManager.instance.cardDeleted(card);
+      for (const media of oldCard.media) {
+        if (!card.media.some((m) => m.path === media.path)) {
+          // TODO: make sure it works.
+          fs.unlinkSync(media.path);
+        }
+      }
+    } else {
+      ProfileManager.instance.addCards(1);
+    }
+    // Update with new info.
+    await this.updateCardMedia(card);
+    console.log(123);
+  }
 
   public clear() {}
 }

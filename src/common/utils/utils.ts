@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import slugify from 'slugify';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -54,6 +55,10 @@ export function randomId() {
   const timePart = toBase62(Date.now());
   const randomPart = toBase62(Math.floor(Math.random() * 1e15));
   return `${timePart}.${randomPart}`;
+}
+
+export function genHash(str: string, len: number) {
+  return crypto.createHash('sha256').update(str, 'binary').digest('hex').substring(0, len);
 }
 
 /**

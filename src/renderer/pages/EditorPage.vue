@@ -13,6 +13,7 @@
     nextTick,
     onMounted,
     onBeforeUnmount,
+    toRaw,
   } from 'vue';
   import { Card, getEmptyCard, MediaFile } from '@common/schemas/card';
   import { arrayRemove, randomId } from '@common/utils/utils';
@@ -159,7 +160,7 @@
     card.value.front = front;
     card.value.back = refs.back.value?.getContent() || '';
     card.value.extra = refs.extra.value?.getContent() || '';
-    await window.api.invoke(Channels.upsertCard, card);
+    await window.api.invoke(Channels.upsertCard, toRaw(card.value));
   }
 
   function cancel() {

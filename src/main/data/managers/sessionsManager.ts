@@ -6,6 +6,7 @@ import { Events } from '@main/events/events';
 import { getEmptySession, Session, Sessions } from '@common/schemas/sessions';
 import { randomId } from '@common/utils/utils';
 import { ProfileManager } from './profileManager';
+import { Card } from '@common/schemas/card';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   SessionsManager.instance.clear();
@@ -61,6 +62,12 @@ export class SessionsManager {
     if (!(sessionId in this.proxy)) return;
     delete this.proxy[sessionId];
     ProfileManager.instance.addSessions(-1);
+  }
+
+  public cardDeleted(card: Card) {
+    for (const session of card.sessions) {
+      this.proxy[session].count--;
+    }
   }
 
   public clear() {
