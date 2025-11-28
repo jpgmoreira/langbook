@@ -12,23 +12,16 @@ export async function setDbPragmas(db: Database) {
 export async function createTables(db: Database) {
   await db.exec(`
     CREATE TABLE IF NOT EXISTS cards (
+      id TEXT PRIMARY KEY,
       front TEXT NOT NULL
-      back TEXT,
-      extra TEXT,
+      back TEXT NOT NULL DEFAULT '',
+      extra TEXT NOT NULL DEFAULT '',
       allowReversed BOOLEAN NOT NULL DEFAULT FALSE,
       createdAt INTEGER NOT NULL,
-      
-
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      date INTEGER UNIQUE NOT NULL,
-      cf INTEGER NOT NULL,
-      neps INTEGER NOT NULL,
-      leetcode INTEGER NOT NULL,
-      timus INTEGER NOT NULL,
-      uva INTEGER NOT NULL,
-      kattis INTEGER NOT NULL,
-      contests INTEGER NOT NULL
+      frequency INTEGER NOT NULL,
+      tags TEXT NOT NULL,
+      sessions TEXT NOT NULL,
+      media TEXT NOT NULL
     );
   `);
-  await db.exec('CREATE INDEX IF NOT EXISTS idx_graph_date ON graph (date);');
 }

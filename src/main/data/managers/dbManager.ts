@@ -39,6 +39,12 @@ export class DbManager {
     await createTables(this.db);
   }
 
+  public async loadAllCards(): Promise<Card[]> {
+    if (!this.db) return [] as Card[];
+    const result = (await this.db.all('SELECT * FROM cards')) as Card[];
+    return result;
+  }
+
   public async clear() {
     if (this.db) {
       await this.db.close();
