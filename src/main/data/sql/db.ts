@@ -21,7 +21,8 @@ export async function createTables(db: Database) {
       frequency INTEGER NOT NULL,
       tags TEXT NOT NULL,
       sessions TEXT NOT NULL,
-      media TEXT NOT NULL
+      media TEXT NOT NULL,
+      height INTEGER NOT NULL
     );
   `);
 }

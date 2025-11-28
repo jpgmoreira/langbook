@@ -19,6 +19,12 @@ export type Card = {
   height: number;
 };
 
+export type DBCard = Omit<Card, 'tags' | 'sessions' | 'media'> & {
+  tags: string;
+  sessions: string;
+  media: string;
+};
+
 export function getEmptyCard(id: string, timestamp: number): Card {
   return {
     id,

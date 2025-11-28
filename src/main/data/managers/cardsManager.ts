@@ -135,6 +135,7 @@ export class CardsManager {
     }
     // Update with new info.
     await this.updateCardMedia(card);
+    await DbManager.instance.insertCard(card);
   }
 
   public clear() {}
