@@ -3,6 +3,7 @@ import { Card } from '@common/schemas/card';
 import { Events } from '@main/events/events';
 import { DbManager } from './dbManager';
 import { FiltersManager } from './filtersManager';
+import { shuffleArray } from '@common/utils/utils';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -18,6 +19,7 @@ export class CardsManager {
   private cardsMap: Record<string, Card> = {};
   private filtered: Card[] = [];
   private frequency: Record<number, Card[]> = {};
+  private frequencyIndex: Record<number, number> = {};
 
   private constructor() {}
 
@@ -38,7 +40,21 @@ export class CardsManager {
   }
 
   private refresh() {
-    Object.values(this.cardsMap).forEach((card: Card) => {});
+    this.filtered = [];
+    for (let i = 0; i <= 10; i++) {
+      this.frequency[i] = [];
+      this.frequencyIndex[i] = 0;
+    }
+    Object.values(this.cardsMap).forEach((card: Card) => {
+      if (FiltersManager.instance.satisfyCurrentFilters(card)) {
+        this.filtered.push(card);
+        this.frequency[card.frequency].push(card);
+      }
+    });
+    this.filtered.sort((a, b) => a.createdAt - b.createdAt);
+    for (let i = 0; i <= 10; i++) {
+      shuffleArray(this.frequency[i]);
+    }
   }
 
   public clear() {}
