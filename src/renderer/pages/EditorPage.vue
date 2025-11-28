@@ -102,6 +102,13 @@
     });
   }
 
+  function rteDrop(field: RTEField, event: DragEvent) {
+    const rte = refs[field]?.value;
+    if (!rte) return;
+    rte.drop(event);
+    rteClick(field);
+  }
+
   // --- Media: ---
 
   function addMedia(items: MediaFile[]) {
@@ -207,6 +214,8 @@
         v-if="!showCardFields.front"
         class="rte-placeholder w-full text-xl font-bold"
         @mousedown.prevent="rteClick('front')"
+        @dragover.prevent
+        @drop="rteDrop('front', $event)"
       >
         <span>FRONT</span>
       </div>
@@ -223,6 +232,8 @@
         v-if="!showCardFields.back"
         class="rte-placeholder w-full text-xl font-bold"
         @mousedown.prevent="rteClick('back')"
+        @dragover.prevent
+        @drop="rteDrop('back', $event)"
       >
         <span>BACK</span>
       </div>
@@ -239,6 +250,8 @@
         v-if="!showCardFields.extra"
         class="rte-placeholder w-full text-xl font-bold"
         @mousedown.prevent="rteClick('extra')"
+        @dragover.prevent
+        @drop="rteDrop('extra', $event)"
       >
         <span>EXTRA</span>
       </div>

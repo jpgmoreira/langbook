@@ -8,6 +8,7 @@
     focus,
     getContent,
     refresh,
+    drop,
   });
 
   // --- Emits: ---
