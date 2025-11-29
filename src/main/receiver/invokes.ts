@@ -55,12 +55,7 @@ ipcMain.handle(Channels.upsertCard, async (_: IpcMainInvokeEvent, card: Card) =>
   CardsManager.instance.upsertCard(card);
 });
 
-ipcMain.handle(Channels.updateFilters, async (_: IpcMainInvokeEvent, filters: Filters) => {
+ipcMain.handle(Channels.filter, async (_: IpcMainInvokeEvent, filters: Filters) => {
   FiltersManager.instance.updateFilters(filters);
   CardsManager.instance.refreshCardsView(true);
-});
-
-ipcMain.handle(Channels.readAudioFile, async (_: IpcMainInvokeEvent, path: string) => {
-  if (!path.startsWith('safe-file://')) return;
-  return fs.promises.readFile(path.replace('safe-file://', ''));
 });

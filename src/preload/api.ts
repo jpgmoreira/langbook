@@ -9,8 +9,7 @@ export const allowedInvokeChannels = Object.freeze([
   Channels.login,
   Channels.openEditor,
   Channels.upsertCard,
-  Channels.updateFilters,
-  Channels.readAudioFile,
+  Channels.filter,
   // Channels to perform treeview operations:
   TreeChannels.createNode,
   TreeChannels.createNodeAbove,

@@ -9,6 +9,5 @@ export enum Channels {
   cancelCardEdit = 'cancel-card-edit',
   upsertCard = 'upsert-card',
   refreshCardsView = 'refresh-cards-view',
-  updateFilters = 'update-filters',
-  readAudioFile = 'read-audio-file',
+  filter = 'filter',
 }

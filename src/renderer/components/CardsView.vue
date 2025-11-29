@@ -21,7 +21,7 @@
         <div v-for="(card, index) in props.page" class="w-fit min-w-full">
           <div class="card-number flex justify-between whitespace-nowrap mx-1">
             <span>{{ index + anchor + 1 }}</span>
-            <span>{{ parseTimestamp(card.createdAt) }}</span>
+            <span>Created: {{ parseTimestamp(card.createdAt) }}</span>
           </div>
           <HomeCard :card="card" :on-media-click="onMediaClick" />
         </div>

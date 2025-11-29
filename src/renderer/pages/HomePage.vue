@@ -38,7 +38,7 @@
   });
   async function filter() {
     filtersStore.dirty = false;
-    await window.api.invoke(Channels.updateFilters, toRaw(filtersStore.filters));
+    await window.api.invoke(Channels.filter, toRaw(filtersStore.filters));
   }
   function openEditor(card: null) {
     uiStore.backdropVisible = true;
@@ -72,6 +72,7 @@
     window.getSelection()?.removeAllRanges();
   }
   onMounted(() => {
+    filter();
     window.addEventListener('mouseup', windowMouseUp);
     window.addEventListener('mousemove', windowMouseMove);
   });

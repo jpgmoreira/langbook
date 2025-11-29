@@ -165,7 +165,6 @@ export class CardsManager {
     this.refresh();
     if (resetAnchor) this.anchor = 0;
     const { page, totalHeight } = this.preparePage();
-    console.log(totalHeight);
     WindowManager.instance.refreshCardsView(page, this.anchor, totalHeight);
   }
 
