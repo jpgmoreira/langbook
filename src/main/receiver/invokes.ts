@@ -9,7 +9,7 @@ import { ProfileManager } from '@main/data/managers/profileManager';
 import { WindowManager } from '@main/data/managers/windowManager';
 import { loadStartupData } from '@main/data/startup';
 import { Channels } from '@preload/channels';
-import { ipcMain, IpcMainInvokeEvent, webUtils } from 'electron';
+import { ipcMain, IpcMainInvokeEvent } from 'electron';
 
 ipcMain.handle(
   Channels.createProfile,

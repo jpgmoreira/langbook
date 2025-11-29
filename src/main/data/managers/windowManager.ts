@@ -100,7 +100,7 @@ export class WindowManager {
     this.editorWindow.show();
   }
 
-  public cancelCardEdit() {
+  public closeEditor() {
     this.editorWindow.close();
   }
 

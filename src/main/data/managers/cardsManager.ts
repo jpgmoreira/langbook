@@ -145,6 +145,7 @@ export class CardsManager {
     this.cardsMap[card.id] = card;
     this.refreshCardsView(false);
     // TODO: Check if flashcards window is open, and if it is, send newly updated card to it.
+    WindowManager.instance.closeEditor();
   }
 
   private preparePage() {

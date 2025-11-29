@@ -164,6 +164,10 @@
       uiStore.showToast('A card must at least have a front field!', 'info');
       return;
     }
+    if (!card.value.sessions.length) {
+      uiStore.showToast('A card must be on at least one session!', 'info');
+      return;
+    }
     card.value.front = front;
     card.value.back = refs.back.value?.getContent() || '';
     card.value.extra = refs.extra.value?.getContent() || '';
