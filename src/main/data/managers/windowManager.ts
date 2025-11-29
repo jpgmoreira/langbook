@@ -108,4 +108,9 @@ export class WindowManager {
   public sendPageToRenderer(data: RequestPageDTO) {
     this.mainWindow.webContents.send(Channels.refreshCardsView, data);
   }
+
+  public sendTagsToRenderer() {
+    const tags = TagsManager.instance.getTags();
+    this.mainWindow.webContents.send(Channels.refreshTags, tags);
+  }
 }

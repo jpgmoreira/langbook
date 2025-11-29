@@ -158,6 +158,7 @@ export class CardsManager {
     this.refresh();
     const data = this.getPage(this.anchor);
     WindowManager.instance.sendPageToRenderer(data);
+    WindowManager.instance.sendTagsToRenderer();
     // TODO: Check if flashcards window is open, and if it is, send newly updated card to it.
     WindowManager.instance.closeEditor();
   }

@@ -3,4 +3,5 @@ export enum Events {
   clearProfileData = 'clear-profile-data',
   loadEditorData = 'load-editor-data',
   refreshCardsView = 'refresh-cards-view',
+  refreshTags = 'refresh-tags',
 }

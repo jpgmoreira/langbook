@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import { ref, onMounted, onBeforeUnmount, computed, toRaw } from 'vue';
-  import { useTagsStore } from '@renderer/store/tags';
   import { useFiltersStore } from '@renderer/store/filters';
   import { useUIStore } from '@renderer/store/ui';
   import Header from '@renderer/components/Header.vue';
@@ -14,8 +13,9 @@
   import { Events } from '@renderer/events/events';
   import { RequestPageDTO } from '@common/dto/requestPageDTO';
   import { Card, MediaFile } from '@common/schemas/card';
+  import { Tags } from '@common/schemas/tags';
   EventEmitter.instance.on(Events.refreshCardsView, refreshCardsView);
-  const tagsStore = useTagsStore();
+  EventEmitter.instance.on(Events.refreshTags, refreshTags);
   const filtersStore = useFiltersStore();
   const uiStore = useUIStore();
   const isResizing = ref(false);
@@ -26,10 +26,11 @@
   const anchor = ref(0);
   const height = ref(0);
   const selectedMedia = ref<MediaFile | undefined>(undefined);
+  const allTags = ref<Tags>({});
   const tagsOptions = computed(() =>
-    Object.keys(tagsStore.tags).map((t) => ({
-      text: tagsStore.getTagWithCount(t),
-      value: t,
+    Object.entries(allTags.value).map(([tag, count]) => ({
+      text: `${tag} (${count})`,
+      value: tag,
     }))
   );
   const filterButtonClass = computed(() => {
@@ -52,6 +53,9 @@
     page.value = data.page;
     anchor.value = data.anchor;
     height.value = data.height;
+  }
+  function refreshTags(tags: Tags) {
+    allTags.value = tags;
   }
   async function mediaClick(media: MediaFile) {
     if (media.type.startsWith('audio')) {

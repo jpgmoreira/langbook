@@ -7,6 +7,7 @@ import { Events } from '@renderer/events/events';
 import { useUIStore } from '@renderer/store/ui';
 import { EditorPageDTO } from '@common/dto/editorPageDTO';
 import { RequestPageDTO } from '@common/dto/requestPageDTO';
+import { Tags } from '@common/schemas/tags';
 
 window.api.on(Channels.loadStartupData, async (data: StartupData) => {
   EventEmitter.instance.emit(Events.loadInitialData, data);
@@ -18,6 +19,7 @@ window.api.on(Channels.loadStartupData, async (data: StartupData) => {
   document.title = `${data.currProfile.name}@${APP_NAME}`;
   await router.replace('/home');
   EventEmitter.instance.emit(Events.refreshCardsView, data.firstPage);
+  EventEmitter.instance.emit(Events.refreshTags, data.tags);
 });
 
 window.api.on(Channels.openEditor, async (data: EditorPageDTO) => {
@@ -33,4 +35,8 @@ window.api.on(Channels.closeEditor, () => {
 
 window.api.on(Channels.refreshCardsView, (data: RequestPageDTO) => {
   EventEmitter.instance.emit(Events.refreshCardsView, data);
+});
+
+window.api.on(Channels.refreshTags, (tags: Tags) => {
+  EventEmitter.instance.emit(Events.refreshTags, tags);
 });
