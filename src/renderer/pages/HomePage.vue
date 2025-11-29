@@ -44,9 +44,9 @@
     );
     refreshCardsView(result);
   }
-  function openEditor(card: null) {
+  function openEditor(card: Card | null) {
     uiStore.backdropVisible = true;
-    window.api.invoke(Channels.openEditor, card);
+    window.api.invoke(Channels.openEditor, toRaw(card));
   }
   function refreshCardsView(data: RequestPageDTO) {
     page.value = data.page;
@@ -100,7 +100,13 @@
       ></div>
       <div class="flex flex-col grow" :style="{ width: `${contestsAreaWidth}px` }">
         <div class="grow" style="border: 0px solid lightgreen">
-          <CardsView :page="page" :anchor="anchor" :height="height" :onMediaClick="mediaClick" />
+          <CardsView
+            :page="page"
+            :anchor="anchor"
+            :height="height"
+            :onMediaClick="mediaClick"
+            :openEditor="openEditor"
+          />
         </div>
         <div v-if="!hideFilters" class="filters-container px-2 py-1.5 whitespace-nowrap">
           <div>Filters:</div>

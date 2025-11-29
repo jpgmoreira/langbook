@@ -158,7 +158,7 @@
 
   // --- Actions: ---
 
-  async function addCardClick() {
+  async function addOrSaveClick() {
     const front = refs.front.value?.getContent();
     if (!front) {
       uiStore.showToast('A card must at least have a front field!', 'info');
@@ -316,8 +316,10 @@
           v-model="card.allowReversed"
         />
       </div>
-      <button v-if="isNewCard" type="button" class="btn-primary" @click="addCardClick">Add</button>
-      <button v-else type="button" class="btn-primary">Save</button>
+      <button v-if="isNewCard" type="button" class="btn-primary" @click="addOrSaveClick">
+        Add
+      </button>
+      <button v-else type="button" class="btn-primary" @click="addOrSaveClick">Save</button>
       <button type="button" class="btn-warning" @click="cancel">Cancel</button>
     </footer>
   </div>

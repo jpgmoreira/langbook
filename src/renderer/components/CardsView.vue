@@ -8,6 +8,7 @@
     anchor: number;
     height: number;
     onMediaClick: (media: MediaFile) => void;
+    openEditor: (card: Card | null) => void;
   }>();
   const contextMenu = reactive({
     visible: false,
@@ -50,7 +51,7 @@
     <div v-if="!props.page.length" class="text-xl opacity-70 absolute-center">No cards to show</div>
     <div v-else class="overflow-auto relative h-full" @scroll="hideContextMenu">
       <div class="context-menu fixed" v-if="contextMenu.visible" :style="contextStyle">
-        <div class="option px-2 py-0.5">Edit</div>
+        <div class="option px-2 py-0.5" @click="openEditor(contextMenu.card)">Edit</div>
         <div class="option text-danger px-2 py-0.5">Delete</div>
       </div>
       <div

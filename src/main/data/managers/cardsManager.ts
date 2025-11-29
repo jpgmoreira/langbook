@@ -136,7 +136,7 @@ export class CardsManager {
     // Delete old card info.
     if (card.id in this.cardsMap) {
       const oldCard = this.cardsMap[card.id];
-      DbManager.instance.deleteCard(card.id);
+      await DbManager.instance.deleteCard(card.id);
       SessionsManager.instance.cardDeleted(card);
       TagsManager.instance.cardDeleted(card);
       for (const media of oldCard.media) {
