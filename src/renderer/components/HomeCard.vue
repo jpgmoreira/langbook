@@ -18,13 +18,13 @@
 
 <template>
   <div class="home-card flex flex-col">
-    <div v-html="card.front"></div>
-    <div v-if="card.back" v-html="card.back"></div>
-    <div v-if="card.extra" v-html="card.extra"></div>
-    <div v-if="card.media.length" class="flex gap-1.5">
+    <div v-html="card.front" class="mx-1"></div>
+    <div v-if="card.back" v-html="card.back" class="mx-1"></div>
+    <div v-if="card.extra" v-html="card.extra" class="mx-1"></div>
+    <div v-if="card.media.length" class="flex">
       <button
         v-for="media in card.media"
-        class="media-button"
+        class="media-button m-1"
         :class="mediaButtonClass(media.type)"
         @click="mediaClick(media)"
         v-tooltip="media.name"

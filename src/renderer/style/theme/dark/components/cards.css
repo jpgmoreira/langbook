@@ -1,5 +1,11 @@
 .theme-dark .cards-view .card-number {
+  height: 40px; /* This height must be accounted in the scroll virtual size. */
+}
+
+.theme-dark .cards-view .card-number * {
   color: #7d7f83;
+  display: flex;
+  align-items: end;
 }
 
 .theme-dark .home-card {
@@ -13,11 +19,14 @@
 }
 
 .theme-dark .home-card > div {
-  padding: 0.5rem 0;
+  padding: 3px 0;
 }
 
 .theme-dark .home-card > div + div {
-  border-top: 2px dashed #424446;
+  background-image: repeating-linear-gradient(to right, #424446 0 10px, transparent 10px 15px);
+  background-size: 100% 1px;
+  background-repeat: repeat-x;
+  background-position: top left;
 }
 
 .theme-dark .home-card .media-button {
@@ -63,6 +72,35 @@
     transform 0.15s ease,
     border-color 0.2s ease,
     box-shadow 0.2s ease;
+}
+
+.theme-dark .media-modal-parent {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+}
+
+.theme-dark .media-modal {
+  position: absolute;
+  max-width: 90%;
+  max-height: 90%;
+  top: 50%;
+  left: 50%;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  background-color: #1e1e1e;
+  transition: transform 0.3s ease;
+}
+
+.theme-dark .media-modal img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border: 3px solid #444; /* borda sutil em tom escuro */
+  border-radius: 8px; /* cantos arredondados */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* sombra suave para destacar */
 }
 
 .theme-dark .home-card .media-button:hover {

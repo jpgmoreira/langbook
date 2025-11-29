@@ -8,6 +8,7 @@
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
   import CardsView from '@renderer/components/CardsView.vue';
+  import MediaModal from '@renderer/components/UI/MediaModal.vue';
   import { Channels } from '@preload/channels';
   import { EventEmitter } from '@common/events/eventEmitter';
   import { Events } from '@renderer/events/events';
@@ -24,6 +25,7 @@
   const page = ref<Card[]>([]);
   const anchor = ref(0);
   const height = ref(0);
+  const selectedMedia = ref<MediaFile | undefined>(undefined);
   const tagsOptions = computed(() =>
     Object.keys(tagsStore.tags).map((t) => ({
       text: tagsStore.getTagWithCount(t),
@@ -51,7 +53,14 @@
     if (media.type.startsWith('audio')) {
       const audio = new Audio(media.path);
       audio.play();
+    } else if (media.type.startsWith('image')) {
+      uiStore.backdropVisible = true;
+      selectedMedia.value = media;
     }
+  }
+  function mediaModalClick() {
+    selectedMedia.value = undefined;
+    uiStore.backdropVisible = false;
   }
   function windowMouseUp() {
     isResizing.value = false;
@@ -75,6 +84,7 @@
 <template>
   <div class="home-page h-screen flex flex-col overflow-hidden" :class="{ resizing: isResizing }">
     <Header />
+    <MediaModal :media="selectedMedia" @click="mediaModalClick" />
     <div class="flex grow">
       <div :style="{ width: `${treeAreaWidth}px` }">
         <TreeView class="select-none" files-hint file-icon checkbox />
