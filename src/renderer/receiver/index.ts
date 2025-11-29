@@ -6,9 +6,9 @@ import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
 import { useUIStore } from '@renderer/store/ui';
 import { EditorPageDTO } from '@common/dto/editorPageDTO';
-import { RefreshCardsViewDTO } from '@common/dto/refreshCardsViewDTO';
+import { RequestPageDTO } from '@common/dto/requestPageDTO';
 
-window.api.on(Channels.loadStartupData, (data: StartupData) => {
+window.api.on(Channels.loadStartupData, async (data: StartupData) => {
   EventEmitter.instance.emit(Events.loadInitialData, data);
   document.documentElement.classList.add('theme-dark');
   if (!data.currProfile) {
@@ -16,7 +16,8 @@ window.api.on(Channels.loadStartupData, (data: StartupData) => {
     return router.replace('/login');
   }
   document.title = `${data.currProfile.name}@${APP_NAME}`;
-  return router.replace('/home');
+  await router.replace('/home');
+  EventEmitter.instance.emit(Events.refreshCardsView, data.firstPage);
 });
 
 window.api.on(Channels.openEditor, async (data: EditorPageDTO) => {
@@ -30,6 +31,6 @@ window.api.on(Channels.closeEditor, () => {
   useUIStore().backdropVisible = false;
 });
 
-window.api.on(Channels.refreshCardsView, (data: RefreshCardsViewDTO) => {
+window.api.on(Channels.refreshCardsView, (data: RequestPageDTO) => {
   EventEmitter.instance.emit(Events.refreshCardsView, data);
 });

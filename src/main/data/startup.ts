@@ -9,6 +9,7 @@ import { SessionsManager } from './managers/sessionsManager';
 import { TreeManager } from './managers/treeManager';
 import { DbManager } from './managers/dbManager';
 import { CardsManager } from './managers/cardsManager';
+import { getEmptyRequestPageDTO, RequestPageDTO } from '@common/dto/requestPageDTO';
 
 export async function loadStartupData(): Promise<StartupData> {
   const currProfile = ProfileManager.instance.getCurrProfile();
@@ -16,13 +17,16 @@ export async function loadStartupData(): Promise<StartupData> {
   let tags: Tags = {};
   let filters: Filters = getEmptyFilters();
   let sessions: Sessions = {};
+  let firstPage: RequestPageDTO = getEmptyRequestPageDTO();
   if (currProfile) {
+    // The order of initialization below is extremely important.
     TagsManager.instance.loadProfile(currProfile.id);
     FiltersManager.instance.loadProfile(currProfile.id);
     SessionsManager.instance.loadProfile(currProfile.id);
+    TreeManager.instance.loadTree(currProfile.id);
     await DbManager.instance.loadProfile(currProfile.id);
     await CardsManager.instance.loadFromDb();
-    TreeManager.instance.loadTree(currProfile.id);
+    firstPage = CardsManager.instance.getPage(0);
     tags = TagsManager.instance.getTags();
     filters = FiltersManager.instance.getFilters();
     sessions = SessionsManager.instance.getSessions();
@@ -33,6 +37,7 @@ export async function loadStartupData(): Promise<StartupData> {
     tags,
     filters,
     sessions,
+    firstPage,
   };
   return result;
 }

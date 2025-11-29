@@ -1,3 +1,4 @@
+import { RequestPageDTO } from '@common/dto/requestPageDTO';
 import { Filters } from './filters';
 import { Profile, ProfileRegistry } from './profile';
 import { Sessions } from './sessions';
@@ -9,4 +10,5 @@ export type StartupData = {
   tags: Tags;
   filters: Filters;
   sessions: Sessions;
+  firstPage: RequestPageDTO;
 };

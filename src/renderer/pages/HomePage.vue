@@ -12,7 +12,7 @@
   import { Channels } from '@preload/channels';
   import { EventEmitter } from '@common/events/eventEmitter';
   import { Events } from '@renderer/events/events';
-  import { RefreshCardsViewDTO } from '@common/dto/refreshCardsViewDTO';
+  import { RequestPageDTO } from '@common/dto/requestPageDTO';
   import { Card, MediaFile } from '@common/schemas/card';
   EventEmitter.instance.on(Events.refreshCardsView, refreshCardsView);
   const tagsStore = useTagsStore();
@@ -38,13 +38,17 @@
   });
   async function filter() {
     filtersStore.dirty = false;
-    await window.api.invoke(Channels.filter, toRaw(filtersStore.filters));
+    const result = await window.api.invoke<RequestPageDTO>(
+      Channels.filter,
+      toRaw(filtersStore.filters)
+    );
+    refreshCardsView(result);
   }
   function openEditor(card: null) {
     uiStore.backdropVisible = true;
     window.api.invoke(Channels.openEditor, card);
   }
-  function refreshCardsView(data: RefreshCardsViewDTO) {
+  function refreshCardsView(data: RequestPageDTO) {
     page.value = data.page;
     anchor.value = data.anchor;
     height.value = data.height;
@@ -72,7 +76,6 @@
     window.getSelection()?.removeAllRanges();
   }
   onMounted(() => {
-    filter();
     window.addEventListener('mouseup', windowMouseUp);
     window.addEventListener('mousemove', windowMouseMove);
   });

@@ -7,6 +7,7 @@ import { is } from '@electron-toolkit/utils';
 import { TagsManager } from './tagsManager';
 import { SessionsManager } from './sessionsManager';
 import { Card } from '@common/schemas/card';
+import { RequestPageDTO } from '@common/dto/requestPageDTO';
 
 /**
  * Singleton for managing application windows.
@@ -104,12 +105,7 @@ export class WindowManager {
     this.editorWindow.close();
   }
 
-  public refreshCardsView(page: Card[], anchor: number, height: number) {
-    const dto = {
-      page,
-      anchor,
-      height,
-    };
-    this.mainWindow.webContents.send(Channels.refreshCardsView, dto);
+  public sendPageToRenderer(data: RequestPageDTO) {
+    this.mainWindow.webContents.send(Channels.refreshCardsView, data);
   }
 }

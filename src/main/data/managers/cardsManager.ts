@@ -13,6 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 import { WindowManager } from './windowManager';
+import { RequestPageDTO } from '@common/dto/requestPageDTO';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -27,10 +28,18 @@ export class CardsManager {
 
   private readonly CARDS_PAGE_SIZE = 100;
 
+  // Maps card ids to actual card objects:
   private cardsMap: Record<string, Card> = {};
+
+  // All cards that satisfy the current filters:
   private filtered: Card[] = [];
+
+  // Maps frequency numbers to all filtered cards that have that frequency:
   private frequency: Record<number, Card[]> = {};
-  private frequencyIndex: Record<number, number> = {};
+
+  // Current cards view anchor.
+  // Necessary because when editing, adding or deleting a card I need to notify
+  //   the main window about the change, so I need to store the anchor here.
   private anchor = 0;
 
   private constructor() {}
@@ -51,11 +60,13 @@ export class CardsManager {
     this.refresh();
   }
 
-  private refresh() {
+  /**
+   * Recompute "filtered" and "frequency" based on "cardsMap" and the current filters.
+   */
+  public refresh() {
     this.filtered = [];
     for (let i = 0; i <= 10; i++) {
       this.frequency[i] = [];
-      this.frequencyIndex[i] = 0;
     }
     Object.values(this.cardsMap).forEach((card: Card) => {
       if (FiltersManager.instance.satisfyCurrentFilters(card)) {
@@ -63,7 +74,7 @@ export class CardsManager {
         this.frequency[card.frequency].push(card);
       }
     });
-    this.filtered.sort((a, b) => a.createdAt - b.createdAt);
+    this.filtered.sort((a, b) => a.createdAt - b.createdAt); // Ascending.
     for (let i = 0; i <= 10; i++) {
       shuffleArray(this.frequency[i]);
     }
@@ -130,7 +141,7 @@ export class CardsManager {
       TagsManager.instance.cardDeleted(card);
       for (const media of oldCard.media) {
         if (!card.media.some((m) => m.path === media.path)) {
-          // TODO: make sure it works.
+          // TODO: make sure this works.
           fs.unlinkSync(media.path);
         }
       }
@@ -143,30 +154,32 @@ export class CardsManager {
     SessionsManager.instance.cardCreated(card);
     TagsManager.instance.cardCreated(card);
     this.cardsMap[card.id] = card;
-    this.refreshCardsView(false);
+    // Send updated page to renderer:
+    this.refresh();
+    const data = this.getPage(this.anchor);
+    WindowManager.instance.sendPageToRenderer(data);
     // TODO: Check if flashcards window is open, and if it is, send newly updated card to it.
     WindowManager.instance.closeEditor();
   }
 
-  private preparePage() {
+  /**
+   * This method is used both when sending a notification to the renderer without previous
+   *   request, or when responding an invoke that was initiated by the renderer.
+   */
+  public getPage(anchor: number): RequestPageDTO {
+    this.anchor = anchor;
     const page: Card[] = [];
-    for (
-      let i = this.anchor, j = 0;
-      i < this.filtered.length && j < this.CARDS_PAGE_SIZE;
-      i++, j++
-    ) {
+    for (let i = anchor, j = 0; i < this.filtered.length && j < this.CARDS_PAGE_SIZE; i++, j++) {
       page.push(this.filtered[i]);
     }
-    const totalHeight = this.filtered.reduce((prev: number, curr: Card) => prev + curr.height, 0);
-    return { page, totalHeight };
+    const height = this.filtered.reduce((prev: number, curr: Card) => prev + curr.height, 0);
+    return { page, height, anchor };
   }
 
-  public refreshCardsView(resetAnchor: boolean) {
-    this.refresh();
-    if (resetAnchor) this.anchor = 0;
-    const { page, totalHeight } = this.preparePage();
-    WindowManager.instance.refreshCardsView(page, this.anchor, totalHeight);
+  public clear() {
+    this.anchor = 0;
+    this.cardsMap = {};
+    this.filtered = [];
+    this.frequency = {};
   }
-
-  public clear() {}
 }

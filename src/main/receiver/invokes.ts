@@ -1,5 +1,6 @@
 import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
+import { RequestPageDTO } from '@common/dto/requestPageDTO';
 import { Card } from '@common/schemas/card';
 import { Filters } from '@common/schemas/filters';
 import { StartupData } from '@common/schemas/startup';
@@ -10,7 +11,6 @@ import { WindowManager } from '@main/data/managers/windowManager';
 import { loadStartupData } from '@main/data/startup';
 import { Channels } from '@preload/channels';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
-import fs from 'node:fs';
 
 ipcMain.handle(
   Channels.createProfile,
@@ -55,7 +55,11 @@ ipcMain.handle(Channels.upsertCard, async (_: IpcMainInvokeEvent, card: Card) =>
   CardsManager.instance.upsertCard(card);
 });
 
-ipcMain.handle(Channels.filter, async (_: IpcMainInvokeEvent, filters: Filters) => {
-  FiltersManager.instance.updateFilters(filters);
-  CardsManager.instance.refreshCardsView(true);
-});
+ipcMain.handle(
+  Channels.filter,
+  async (_: IpcMainInvokeEvent, filters: Filters): Promise<RequestPageDTO> => {
+    FiltersManager.instance.updateFilters(filters);
+    CardsManager.instance.refresh();
+    return CardsManager.instance.getPage(0);
+  }
+);
