@@ -52,7 +52,9 @@ export const useFiltersStore = defineStore('filters', {
       this.dirty = true;
     },
     clearFilters() {
-      this.dirty = true;
+      if (this.filters.tags.length || this.filters.text.trim() || this.filters.frequencies.length) {
+        this.dirty = true;
+      }
       this.filters.tags = [];
       this.filters.text = '';
       this.filters.frequencies = [];

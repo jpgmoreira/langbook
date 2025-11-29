@@ -50,6 +50,7 @@ export class TreeManager {
 
   private nSelectedNodes = 0;
   private nSelectedFiles = 0;
+  private nFiles = 0;
   private nOpenDirs = 0;
   private expandedFlat: Node[] = []; // Entire tree flattened into an array.
 
@@ -98,6 +99,8 @@ export class TreeManager {
           curr.selected = !!curr.nDesc && curr.nDesc === curr.nSelDesc;
         }
         this.nOpenDirs += curr.open ? 1 : 0;
+      } else {
+        this.nFiles++;
       }
       curr.depth = depth;
       const sel = curr.selected ? 1 : 0;
@@ -177,6 +180,7 @@ export class TreeManager {
    *  - this.nSelectedNodes;
    *  - this.nSelectedFiles;
    *  - this.nOpenDirs;
+   *  - this.nFiles;
    * For every node, updates:
    *  - depth;
    *  - nDesc;
@@ -190,6 +194,7 @@ export class TreeManager {
     this.nSelectedNodes = 0;
     this.nSelectedFiles = 0;
     this.nOpenDirs = 0;
+    this.nFiles = 0;
     this.flatten(dirHead, 0, this.expandedFlat);
     this.flatten(fileHead, 0, this.expandedFlat);
     if (flush) {
@@ -205,6 +210,10 @@ export class TreeManager {
       }
     }
     return result;
+  }
+
+  public getNFiles(): number {
+    return this.nFiles;
   }
 
   // --- Helpers: ---

@@ -137,8 +137,8 @@ export class CardsManager {
     if (card.id in this.cardsMap) {
       const oldCard = this.cardsMap[card.id];
       await DbManager.instance.deleteCard(card.id);
-      SessionsManager.instance.cardDeleted(card);
-      TagsManager.instance.cardDeleted(card);
+      SessionsManager.instance.cardDeleted(oldCard);
+      TagsManager.instance.cardDeleted(oldCard);
       for (const media of oldCard.media) {
         if (!card.media.some((m) => m.path === media.path)) {
           // TODO: make sure this works.

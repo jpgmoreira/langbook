@@ -20,6 +20,7 @@ window.api.on(Channels.loadStartupData, async (data: StartupData) => {
   await router.replace('/home');
   EventEmitter.instance.emit(Events.refreshCardsView, data.firstPage);
   EventEmitter.instance.emit(Events.refreshTags, data.tags);
+  EventEmitter.instance.emit(Events.refreshHasSessions, Object.keys(data.sessions).length > 0);
 });
 
 window.api.on(Channels.openEditor, async (data: EditorPageDTO) => {
@@ -39,4 +40,8 @@ window.api.on(Channels.refreshCardsView, (data: RequestPageDTO) => {
 
 window.api.on(Channels.refreshTags, (tags: Tags) => {
   EventEmitter.instance.emit(Events.refreshTags, tags);
+});
+
+window.api.on(Channels.refreshHasSessions, (has: boolean) => {
+  EventEmitter.instance.emit(Events.refreshHasSessions, has);
 });

@@ -10,5 +10,6 @@ export enum Channels {
   upsertCard = 'upsert-card',
   refreshCardsView = 'refresh-cards-view',
   refreshTags = 'refresh-tags',
+  refreshHasSessions = 'refresh-has-sessions',
   filter = 'filter',
 }

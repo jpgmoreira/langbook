@@ -8,6 +8,7 @@ import { TagsManager } from './tagsManager';
 import { SessionsManager } from './sessionsManager';
 import { Card } from '@common/schemas/card';
 import { RequestPageDTO } from '@common/dto/requestPageDTO';
+import { TreeManager } from './treeManager';
 
 /**
  * Singleton for managing application windows.
@@ -112,5 +113,10 @@ export class WindowManager {
   public sendTagsToRenderer() {
     const tags = TagsManager.instance.getTags();
     this.mainWindow.webContents.send(Channels.refreshTags, tags);
+  }
+
+  public sendHasSessionsToRenderer() {
+    const hasSessions = TreeManager.instance.getNFiles() > 0;
+    this.mainWindow.webContents.send(Channels.refreshHasSessions, hasSessions);
   }
 }

@@ -16,6 +16,7 @@
   import { Tags } from '@common/schemas/tags';
   EventEmitter.instance.on(Events.refreshCardsView, refreshCardsView);
   EventEmitter.instance.on(Events.refreshTags, refreshTags);
+  EventEmitter.instance.on(Events.refreshHasSessions, refreshHasSessions);
   const filtersStore = useFiltersStore();
   const uiStore = useUIStore();
   const isResizing = ref(false);
@@ -26,6 +27,7 @@
   const anchor = ref(0);
   const height = ref(0);
   const selectedMedia = ref<MediaFile | undefined>(undefined);
+  const hasSessions = ref(false);
   const allTags = ref<Tags>({});
   const tagsOptions = computed(() =>
     Object.entries(allTags.value).map(([tag, count]) => ({
@@ -36,6 +38,18 @@
   const filterButtonClass = computed(() => {
     if (filtersStore.dirty) return 'btn-warning';
     return 'btn-primary';
+  });
+  const addCardsTooltip = computed(() => {
+    if (hasSessions.value) return undefined;
+    return 'Can only create cards if there are sessions!';
+  });
+  const filterTooltip = computed(() => {
+    if (hasSessions.value) return undefined;
+    return 'Can only filter cards if there are sessions!';
+  });
+  const flashcardsTooltip = computed(() => {
+    if (page.value.length) return undefined;
+    return 'Can only use flashcards if there are cards!';
   });
   async function filter() {
     filtersStore.dirty = false;
@@ -56,6 +70,9 @@
   }
   function refreshTags(tags: Tags) {
     allTags.value = tags;
+  }
+  function refreshHasSessions(has: boolean) {
+    hasSessions.value = has;
   }
   async function mediaClick(media: MediaFile) {
     if (media.type.startsWith('audio')) {
@@ -147,14 +164,35 @@
             :class="{ rotated: hideFilters }"
             @click="hideFilters = !hideFilters"
           ></button>
-          <button type="button" :class="filterButtonClass" @click="filter">Filter</button>
+          <button
+            type="button"
+            :class="filterButtonClass"
+            @click="filter"
+            :disabled="!hasSessions"
+            v-tooltip="filterTooltip"
+          >
+            Filter
+          </button>
           <button type="button" class="btn-primary" @click="filtersStore.clearFilters">
             Clear
           </button>
-          <button type="button" class="btn-primary whitespace-nowrap" @click="openEditor(null)">
+          <button
+            type="button"
+            class="btn-primary whitespace-nowrap"
+            @click="openEditor(null)"
+            :disabled="!hasSessions"
+            v-tooltip="addCardsTooltip"
+          >
             Add card
           </button>
-          <button type="button" class="btn-primary">Flashcards</button>
+          <button
+            type="button"
+            class="btn-primary"
+            :disabled="!page.length"
+            v-tooltip="flashcardsTooltip"
+          >
+            Flashcards
+          </button>
         </footer>
       </div>
     </div>

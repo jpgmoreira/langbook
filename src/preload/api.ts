@@ -36,6 +36,7 @@ export const allowedOnChannels = Object.freeze([
   Channels.closeEditor,
   Channels.refreshCardsView,
   Channels.refreshTags,
+  Channels.refreshHasSessions,
 ] as const);
 
 export interface ElectronAPI {

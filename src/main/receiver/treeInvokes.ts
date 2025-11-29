@@ -7,6 +7,7 @@ import { TreeOperationResponseDTO } from '@common/dto/treeOperationResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { measure } from '@main/utils/performance';
 import { sleep } from '@common/utils/utils';
+import { WindowManager } from '@main/data/managers/windowManager';
 
 ipcMain.handle(
   TreeChannels.createNode,
@@ -19,6 +20,7 @@ ipcMain.handle(
   ): TreeOperationResponseDTO => {
     return measure('createNode', () => {
       TreeManager.instance.createNode(type, prefix, parentId);
+      WindowManager.instance.sendHasSessionsToRenderer();
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -35,6 +37,7 @@ ipcMain.handle(
   ): TreeOperationResponseDTO => {
     return measure('createNodeAbove', () => {
       TreeManager.instance.createNodeAbove(type, prefix, baseNodeId);
+      WindowManager.instance.sendHasSessionsToRenderer();
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -51,6 +54,7 @@ ipcMain.handle(
   ): TreeOperationResponseDTO => {
     return measure('createNodeBelow', () => {
       TreeManager.instance.createNodeBelow(type, prefix, baseNodeId);
+      WindowManager.instance.sendHasSessionsToRenderer();
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -105,6 +109,7 @@ ipcMain.handle(
     await sleep(2000);
     return measure('deleteNode', () => {
       TreeManager.instance.deleteNode(nodeId);
+      WindowManager.instance.sendHasSessionsToRenderer();
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -116,6 +121,7 @@ ipcMain.handle(
     await sleep(2000);
     return measure('deleteSelectedNodes', () => {
       TreeManager.instance.deleteSelectedNodes();
+      WindowManager.instance.sendHasSessionsToRenderer();
       return TreeManager.instance.buildResult(anchor);
     });
   }

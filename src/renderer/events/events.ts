@@ -4,4 +4,5 @@ export enum Events {
   loadEditorData = 'load-editor-data',
   refreshCardsView = 'refresh-cards-view',
   refreshTags = 'refresh-tags',
+  refreshHasSessions = 'refresh-has-sessions',
 }
