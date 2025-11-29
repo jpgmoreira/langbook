@@ -49,7 +49,10 @@
   <div class="cards-view h-full relative" @click="hideContextMenu" ref="root">
     <div v-if="!props.page.length" class="text-xl opacity-70 absolute-center">No cards to show</div>
     <div v-else class="overflow-auto relative h-full" @scroll="hideContextMenu">
-      <div class="context-menu fixed" v-if="contextMenu.visible" :style="contextStyle">AAAA</div>
+      <div class="context-menu fixed" v-if="contextMenu.visible" :style="contextStyle">
+        <div class="option px-2 py-0.5">Edit</div>
+        <div class="option text-danger px-2 py-0.5">Delete</div>
+      </div>
       <div
         class="absolute top-0 left-0 bottom-0 w-full flex flex-col"
         :style="{ height: '3000px' }"
@@ -57,7 +60,7 @@
         <div v-for="(card, index) in props.page" class="w-fit min-w-full">
           <div class="card-number flex justify-between whitespace-nowrap mx-1">
             <span>{{ index + anchor + 1 }}</span>
-            <span>Created: {{ parseTimestamp(card.createdAt) }}</span>
+            <span class="text-sm">Created: {{ parseTimestamp(card.createdAt) }}</span>
           </div>
           <HomeCard
             :card="card"

@@ -15,9 +15,17 @@
   padding: 4px 0;
   width: 100px;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.45);
-  font-size: 14px;
   color: #e5e5e5;
   z-index: 2;
+}
+
+.theme-dark .cards-view .context-menu .option {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.theme-dark .cards-view .context-menu .option:hover {
+  background-color: #2a2d2f;
 }
 
 .theme-dark .home-card {
