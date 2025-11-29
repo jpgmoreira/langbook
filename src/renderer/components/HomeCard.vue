@@ -5,7 +5,7 @@
 
 <template>
   <div class="home-card flex flex-col">
-    <div>{{ card.front }}</div>
+    <div v-html="card.front"></div>
     <div v-if="card.back">{{ card.back }}</div>
     <div v-if="card.extra">{{ card.extra }}</div>
   </div>
