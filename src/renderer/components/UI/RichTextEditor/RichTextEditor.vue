@@ -510,12 +510,17 @@
 
 <style scoped>
   .rte-root {
+    max-width: 100%;
     position: relative;
     display: flex;
     flex-direction: column;
   }
   .rte {
     flex-grow: 1;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: normal;
+    word-break: normal;
   }
   :deep(.rte img) {
     display: inline-block;
