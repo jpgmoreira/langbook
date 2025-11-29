@@ -1,6 +1,6 @@
 export type MediaFile = {
   name: string;
-  type: string;
+  type: string; // Mime type.
   path: string;
 };
 

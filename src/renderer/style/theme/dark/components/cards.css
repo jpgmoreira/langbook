@@ -7,11 +7,79 @@
   background-color: #292a2b;
 }
 
+.theme-dark .home-card img {
+  max-width: none;
+  max-height: none;
+}
+
 .theme-dark .home-card > div {
-  position: relative;
   padding: 0.5rem 0;
 }
 
 .theme-dark .home-card > div + div {
   border-top: 2px dashed #424446;
+}
+
+.theme-dark .home-card .media-button {
+  width: 28px;
+  height: 28px;
+  background-color: #3a3b3d;
+  background-size: 60%;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  border-radius: 6px;
+  border: 1px solid #4a4c4e;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    border-color 0.2s ease;
+}
+
+.theme-dark .home-card .media-button:hover {
+  background-color: #4a4c4e;
+  border-color: #ffffff30;
+  transform: scale(1.05);
+}
+
+.theme-dark .home-card .media-button {
+  width: 28px;
+  height: 28px;
+  background-color: #d3d3d3;
+  background-size: 75%;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 3px;
+  border: 1px solid #c8c8c8;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.theme-dark .home-card .media-button:hover {
+  background-color: #f2f2f2;
+  border-color: #bcbcbc;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+  transform: scale(1.09);
+}
+
+.theme-dark .home-card .media-button:active {
+  transform: scale(0.94);
+}
+
+.theme-dark .home-card .media-button.image {
+  background-image: url('@renderer/assets/images/picture.png');
+}
+
+.theme-dark .home-card .media-button.audio {
+  background-image: url('@renderer/assets/images/audio.png');
 }
