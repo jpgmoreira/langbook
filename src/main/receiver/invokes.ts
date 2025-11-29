@@ -10,6 +10,7 @@ import { WindowManager } from '@main/data/managers/windowManager';
 import { loadStartupData } from '@main/data/startup';
 import { Channels } from '@preload/channels';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
+import fs from 'node:fs';
 
 ipcMain.handle(
   Channels.createProfile,
@@ -57,4 +58,9 @@ ipcMain.handle(Channels.upsertCard, async (_: IpcMainInvokeEvent, card: Card) =>
 ipcMain.handle(Channels.updateFilters, async (_: IpcMainInvokeEvent, filters: Filters) => {
   FiltersManager.instance.updateFilters(filters);
   CardsManager.instance.refreshCardsView(true);
+});
+
+ipcMain.handle(Channels.readAudioFile, async (_: IpcMainInvokeEvent, path: string) => {
+  if (!path.startsWith('safe-file://')) return;
+  return fs.promises.readFile(path.replace('safe-file://', ''));
 });

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, globalShortcut, protocol, net } from 'electron';
+import { app, BrowserWindow, globalShortcut, protocol } from 'electron';
 import type { Event, WebContents, WebPreferences } from 'electron';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { WindowManager } from './data/managers/windowManager';
@@ -9,11 +9,11 @@ app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron');
   // Create a custom protocol for loading local files:
   // [https://stackoverflow.com/a/61623585/7974053]
-  protocol.handle('safe-file', async (request) => {
-    const urlPath = request.url.replace('safe-file://', '');
-    const fullPath = path.resolve(decodeURIComponent(urlPath));
-    return net.fetch(`file://${fullPath}`);
+  protocol.registerFileProtocol('safe-file', (request, callback) => {
+    const url = request.url.replace('safe-file://', '');
+    callback(decodeURIComponent(path.resolve(url)));
   });
+
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils

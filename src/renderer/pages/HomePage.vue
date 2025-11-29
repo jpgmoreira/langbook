@@ -12,7 +12,7 @@
   import { EventEmitter } from '@common/events/eventEmitter';
   import { Events } from '@renderer/events/events';
   import { RefreshCardsViewDTO } from '@common/dto/refreshCardsViewDTO';
-  import { Card } from '@common/schemas/card';
+  import { Card, MediaFile } from '@common/schemas/card';
   EventEmitter.instance.on(Events.refreshCardsView, refreshCardsView);
   const tagsStore = useTagsStore();
   const filtersStore = useFiltersStore();
@@ -47,6 +47,12 @@
     anchor.value = data.anchor;
     height.value = data.height;
   }
+  async function mediaClick(media: MediaFile) {
+    if (media.type.startsWith('audio')) {
+      const audio = new Audio(media.path);
+      audio.play();
+    }
+  }
   function windowMouseUp() {
     isResizing.value = false;
   }
@@ -80,7 +86,7 @@
       ></div>
       <div class="flex flex-col grow" :style="{ width: `${contestsAreaWidth}px` }">
         <div class="grow" style="border: 0px solid lightgreen">
-          <CardsView :page="page" :anchor="anchor" :height="height" />
+          <CardsView :page="page" :anchor="anchor" :height="height" :onMediaClick="mediaClick" />
         </div>
         <div v-if="!hideFilters" class="filters-container px-2 py-1.5 whitespace-nowrap">
           <div>Filters:</div>

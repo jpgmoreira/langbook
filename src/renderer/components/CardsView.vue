@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-  import type { Card } from '@common/schemas/card';
+  import type { Card, MediaFile } from '@common/schemas/card';
   import HomeCard from './HomeCard.vue';
   const props = defineProps<{
     page: Card[];
     anchor: number;
     height: number;
+    onMediaClick: (media: MediaFile) => void;
   }>();
 </script>
 
@@ -18,7 +19,7 @@
       >
         <div v-for="(card, index) in props.page" class="w-fit min-w-full">
           <div class="card-number">{{ index + anchor + 1 }}</div>
-          <HomeCard :card="card" />
+          <HomeCard :card="card" :on-media-click="onMediaClick" />
         </div>
       </div>
     </div>
