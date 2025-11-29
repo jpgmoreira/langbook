@@ -1,0 +1,17 @@
+.theme-dark .cards-view .card-number {
+  color: #7d7f83;
+}
+
+.theme-dark .home-card {
+  border: 1px solid #424446;
+  background-color: #292a2b;
+}
+
+.theme-dark .home-card > div {
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.theme-dark .home-card > div + div {
+  border-top: 2px dashed #424446;
+}

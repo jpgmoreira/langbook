@@ -4,7 +4,9 @@
 </script>
 
 <template>
-  <div style="border: 1px solid orange">
-    {{ card.front }}
+  <div class="home-card flex flex-col">
+    <div>{{ card.front }}</div>
+    <div v-if="card.back">{{ card.back }}</div>
+    <div v-if="card.extra">{{ card.extra }}</div>
   </div>
 </template>
