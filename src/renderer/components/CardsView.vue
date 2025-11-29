@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import type { Card } from '@common/schemas/card';
+  import HomeCard from './HomeCard.vue';
   const props = defineProps<{
     page: Card[];
     anchor: number;
@@ -8,33 +9,13 @@
 </script>
 
 <template>
-  <div class="cards-info">
-    <div>
-      <strong>Anchor:</strong>
-      {{ props.anchor }}
-    </div>
-    <div>
-      <strong>Total Height:</strong>
-      {{ props.height }}
-    </div>
-    <div class="cards-list">
-      <strong>Cards:</strong>
-      <div v-for="card in props.page" :key="card.id" class="card-item">
-        <div>
-          <strong>ID:</strong>
-          {{ card.id }}
-        </div>
-        <div>
-          <strong>Front:</strong>
-          {{ card.front }}
-        </div>
-        <div>
-          <strong>Back:</strong>
-          {{ card.back }}
-        </div>
-        <div>
-          <strong>Height:</strong>
-          {{ card.height }}
+  <div class="cards-view h-full relative" style="border: 1px solid red">
+    <div v-if="!props.page.length" class="text-xl opacity-70 absolute-center">No cards to show</div>
+    <div v-else class="overflow-y-auto relative h-full" style="border: 1px solid orchid">
+      <div class="absolute top-0 left-0 w-full bottom-0" :style="{ height: '500px' }">
+        <div v-for="(card, index) in props.page">
+          <div class="card-number">{{ index + anchor + 1 }}</div>
+          <HomeCard :card="card" />
         </div>
       </div>
     </div>
