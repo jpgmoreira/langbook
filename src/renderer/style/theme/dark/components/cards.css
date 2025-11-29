@@ -8,9 +8,22 @@
   align-items: end;
 }
 
+.theme-dark .cards-view .context-menu {
+  background: #1e1e1e;
+  border: 1px solid #3b3b3b;
+  border-radius: 6px;
+  padding: 4px 0;
+  width: 100px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.45);
+  font-size: 14px;
+  color: #e5e5e5;
+  z-index: 2;
+}
+
 .theme-dark .home-card {
   border: 1px solid #424446;
   background-color: #292a2b;
+  z-index: 1;
 }
 
 .theme-dark .home-card img {
