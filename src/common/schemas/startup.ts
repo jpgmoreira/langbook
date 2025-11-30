@@ -1,14 +1,7 @@
-import { RequestPageDTO } from '@common/dto/requestPageDTO';
-import { Filters } from './filters';
+import { RendererRequestDTO } from '@common/dto/rendererRequestDTO';
 import { Profile, ProfileRegistry } from './profile';
-import { Sessions } from './sessions';
-import { Tags } from './tags';
 
-export type StartupData = {
+export type StartupData = RendererRequestDTO & {
   currProfile: Profile | null;
   profileRegistry: ProfileRegistry;
-  tags: Tags;
-  filters: Filters;
-  sessions: Sessions;
-  firstPage: RequestPageDTO;
 };

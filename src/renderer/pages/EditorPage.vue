@@ -3,7 +3,7 @@
   import MediaInput from '@renderer/components/UI/MediaInput.vue';
   import { EventEmitter } from '@common/events/eventEmitter';
   import { Events } from '@renderer/events/events';
-  import { EditorPageDTO } from '@common/dto/editorPageDTO';
+  import { EditorPageDTO } from '@common/dto/rendererRequestDTO';
   import { useUIStore } from '@renderer/store/ui';
   import {
     computed,
