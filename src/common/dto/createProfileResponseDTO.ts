@@ -1,4 +1,4 @@
-import { RendererRequestDTO } from './rendererRequestDTO';
+import { RendererResponseDTO } from './rendererResponseDTO';
 
 export type CreateProfileResponseDTO =
   | {
@@ -7,5 +7,5 @@ export type CreateProfileResponseDTO =
     }
   | {
       status: 'success';
-      data: RendererRequestDTO;
+      data: RendererResponseDTO;
     };

@@ -13,7 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 import { WindowManager } from './windowManager';
-import { RendererRequestDTO } from '@common/dto/rendererRequestDTO';
+import { RendererRequestDTO } from '@common/dto/rendererResponseDTO';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();

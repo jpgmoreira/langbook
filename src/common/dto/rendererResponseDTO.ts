@@ -7,7 +7,7 @@ import type { Profile, ProfileRegistry } from '@common/schemas/profile';
 /**
  * A generic DTO to represent application data sent to the renderer.
  */
-export type RendererRequestDTO = {
+export type RendererResponseDTO = {
   profile?: Profile;
   profileRegistry?: ProfileRegistry;
   card?: Card;
@@ -19,6 +19,6 @@ export type RendererRequestDTO = {
   height?: number;
 };
 
-export function getEmptyRendererRequestDTO(): RendererRequestDTO {
+export function getEmptyRendererResponseDTO(): RendererResponseDTO {
   return {};
 }

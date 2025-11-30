@@ -5,7 +5,7 @@ import { StartupData } from '@common/schemas/startup';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
 import { useUIStore } from '@renderer/store/ui';
-import { EditorPageDTO } from '@common/dto/rendererRequestDTO';
+import { EditorPageDTO } from '@common/dto/rendererResponseDTO';
 import { RequestPageDTO } from '@common/dto/requestPageDTO';
 import { Tags } from '@common/schemas/tags';
 
