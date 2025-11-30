@@ -3,9 +3,14 @@ import { StartupData } from '@common/schemas/startup';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
 import { getEmptyFilters, TagsMode } from '@common/schemas/filters';
+import { Tags } from '@common/schemas/tags';
 
 EventEmitter.instance.on(Events.loadInitialData, (data: StartupData) => {
   useFiltersStore().initFromStartupData(data);
+});
+
+EventEmitter.instance.on(Events.refreshTags, (tags: Tags) => {
+  useFiltersStore().refreshTags(tags);
 });
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
@@ -58,6 +63,12 @@ export const useFiltersStore = defineStore('filters', {
       this.filters.tags = [];
       this.filters.text = '';
       this.filters.frequencies = [];
+    },
+    refreshTags(tags: Tags) {
+      if (this.filters.tags.some((t) => !(t in tags))) {
+        this.dirty = true;
+      }
+      this.filters.tags = this.filters.tags.filter((t) => t in tags);
     },
   },
 });
