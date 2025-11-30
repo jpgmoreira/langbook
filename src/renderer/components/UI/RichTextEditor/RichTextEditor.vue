@@ -476,6 +476,7 @@
       class="rte"
       spellcheck="false"
       contenteditable="true"
+      v-html="props.initial"
       @focus="focus"
       @blur="blur"
       @click="click"
@@ -487,9 +488,7 @@
       @wheel="wheel"
       @paste="paste"
       @drop="drop"
-    >
-      {{ props.initial }}
-    </div>
+    ></div>
     <Toolbar
       v-if="isToolbarVisible"
       @undo="undo"

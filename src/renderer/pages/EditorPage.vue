@@ -171,6 +171,7 @@
     card.value.front = front;
     card.value.back = refs.back.value?.getContent() || '';
     card.value.extra = refs.extra.value?.getContent() || '';
+    card.value.media = card.value.media.map((m) => toRaw(m));
     await window.api.invoke(Channels.upsertCard, toRaw(card.value));
   }
 
