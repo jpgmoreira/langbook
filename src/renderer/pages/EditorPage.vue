@@ -22,6 +22,7 @@
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
   import { Channels } from '@preload/channels';
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
+  import { RefreshPlace } from '@common/types/refreshPlace';
 
   type RTEField = 'front' | 'back' | 'extra';
 
@@ -70,8 +71,9 @@
   // --- Initialization: ---
 
   function initData(data: RendererResponseDTO) {
+    if (!data.where.includes(RefreshPlace.EDITOR_PAGE)) return;
     lastScroll.value = 0;
-    card.value = data.card;
+    card.value = (data.card as Card) || null;
     allTags.value = data.tags || {};
     allSessions.value = data.sessions || {};
     isNewCard.value = !data.card;

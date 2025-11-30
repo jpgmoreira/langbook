@@ -3,9 +3,12 @@ import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
 import { getEmptyFilters, TagsMode } from '@common/schemas/filters';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
+import { RefreshPlace } from '@common/types/refreshPlace';
 
 EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
-  useFiltersStore().refreshData(data);
+  if (data.where.includes(RefreshPlace.FILTERS_STORE)) {
+    useFiltersStore().refreshData(data);
+  }
 });
 
 EventEmitter.instance.on(Events.clearProfileData, () => {

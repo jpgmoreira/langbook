@@ -3,6 +3,7 @@ import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { Card } from '@common/schemas/card';
 import { Filters } from '@common/schemas/filters';
+import { RefreshPlace } from '@common/types/refreshPlace';
 import { CardsManager } from '@main/data/managers/cardsManager';
 import { FiltersManager } from '@main/data/managers/filtersManager';
 import { ProfileManager } from '@main/data/managers/profileManager';
@@ -59,7 +60,14 @@ ipcMain.handle(
   async (_: IpcMainInvokeEvent, filters: Filters): Promise<RendererResponseDTO> => {
     FiltersManager.instance.updateFilters(filters);
     CardsManager.instance.refresh();
-    return CardsManager.instance.getPage(0);
+    const { page, height, anchor } = CardsManager.instance.getPage(0);
+    const data: RendererResponseDTO = {
+      where: [RefreshPlace.HOME_PAGE],
+      anchor,
+      height,
+      page,
+    };
+    return data;
   }
 );
 

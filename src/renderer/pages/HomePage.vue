@@ -14,6 +14,7 @@
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   import { Card, MediaFile } from '@common/schemas/card';
   import { Tags } from '@common/schemas/tags';
+  import { RefreshPlace } from '@common/types/refreshPlace';
   EventEmitter.instance.on(Events.refreshData, refreshData);
   const filtersStore = useFiltersStore();
   const uiStore = useUIStore();
@@ -66,6 +67,7 @@
     window.api.invoke(Channels.openEditor, toRaw(card));
   }
   function refreshData(data: RendererResponseDTO) {
+    if (!data.where.includes(RefreshPlace.HOME_PAGE)) return;
     page.value = data.page || [];
     anchor.value = data.anchor || 0;
     height.value = data.height || 0;

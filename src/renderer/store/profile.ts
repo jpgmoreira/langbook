@@ -6,9 +6,12 @@ import { Channels } from '@preload/channels';
 import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
+import { RefreshPlace } from '@common/types/refreshPlace';
 
 EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
-  useProfileStore().refreshData(data);
+  if (data.where.includes(RefreshPlace.PROFILE_STORE)) {
+    useProfileStore().refreshData(data);
+  }
 });
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
