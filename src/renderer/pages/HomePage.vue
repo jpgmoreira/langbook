@@ -68,11 +68,11 @@
   }
   function refreshData(data: RendererResponseDTO) {
     if (!data.where.includes(RefreshPlace.HOME_PAGE)) return;
-    page.value = data.page || [];
-    anchor.value = data.anchor || 0;
-    height.value = data.height || 0;
-    allTags.value = data.tags || {};
-    hasSessions.value = data.hasSessions || false;
+    if ('page' in data) page.value = data.page as Card[];
+    if ('anchor' in data) anchor.value = data.anchor as number;
+    if ('height' in data) height.value = data.height as number;
+    if ('tags' in data) allTags.value = data.tags as Tags;
+    if ('hasSessions' in data) hasSessions.value = data.hasSessions as boolean;
   }
   async function mediaClick(media: MediaFile) {
     if (media.type.startsWith('audio')) {

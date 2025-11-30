@@ -11,6 +11,8 @@ import { WindowManager } from '@main/data/managers/windowManager';
 import { CardsManager } from '@main/data/managers/cardsManager';
 import { TagsManager } from '@main/data/managers/tagsManager';
 import { RefreshPlace } from '@common/types/refreshPlace';
+import { FiltersManager } from '@main/data/managers/filtersManager';
+import { ProfileManager } from '@main/data/managers/profileManager';
 
 ipcMain.handle(
   TreeChannels.createNode,
@@ -133,6 +135,8 @@ ipcMain.handle(
       } = CardsManager.instance.getCurrentPageRefreshed();
       WindowManager.instance.sendDataToMainWindow({
         where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
+        filters: FiltersManager.instance.getFilters(),
+        profileRegistry: ProfileManager.instance.getProfileRegistry(),
         hasSessions,
         tags,
         page,
@@ -159,6 +163,8 @@ ipcMain.handle(
       } = CardsManager.instance.getCurrentPageRefreshed();
       WindowManager.instance.sendDataToMainWindow({
         where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
+        filters: FiltersManager.instance.getFilters(),
+        profileRegistry: ProfileManager.instance.getProfileRegistry(),
         hasSessions,
         tags,
         page,

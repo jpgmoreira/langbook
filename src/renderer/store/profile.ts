@@ -25,8 +25,10 @@ export const useProfileStore = defineStore('profile', {
   }),
   actions: {
     refreshData(data: RendererResponseDTO) {
-      this.currProfile = data.profile || null;
-      this.registry = data.profileRegistry || getEmptyProfileRegistry();
+      if ('profile' in data) this.currProfile = data.profile || null;
+      if ('profileRegistry' in data) {
+        this.registry = data.profileRegistry || getEmptyProfileRegistry();
+      }
     },
     async createProfile(name: string): Promise<CreateProfileResponseDTO> {
       const result = await window.api.invoke<CreateProfileResponseDTO>(

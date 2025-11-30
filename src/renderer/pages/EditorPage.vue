@@ -72,10 +72,11 @@
 
   function initData(data: RendererResponseDTO) {
     if (!data.where.includes(RefreshPlace.EDITOR_PAGE)) return;
+    if (!('card' in data && 'tags' in data && 'sessions' in data)) return;
     lastScroll.value = 0;
-    card.value = (data.card as Card) || null;
-    allTags.value = data.tags || {};
-    allSessions.value = data.sessions || {};
+    card.value = data.card || getEmptyCard(randomId(), Date.now());
+    allTags.value = data.tags as Tags;
+    allSessions.value = data.sessions as Sessions;
     isNewCard.value = !data.card;
     isAllowReversedDisabled.value = !data.card?.back;
     showCardFields.front = Boolean(data.card?.front);
