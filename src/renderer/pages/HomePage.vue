@@ -36,7 +36,7 @@
     }))
   );
   const filterButtonClass = computed(() => {
-    if (filtersStore.dirty) return 'btn-warning';
+    if (filtersStore.dirty && hasSessions.value) return 'btn-warning';
     return 'btn-primary';
   });
   const addCardsTooltip = computed(() => {
