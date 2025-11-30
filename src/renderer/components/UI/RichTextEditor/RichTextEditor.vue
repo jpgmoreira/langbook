@@ -368,7 +368,10 @@
     } else {
       if (key === 'tab') {
         e.preventDefault();
-        document.execCommand('insertText', false, ' '.repeat(8));
+        document.execCommand('insertHtml', false, '&nbsp;'.repeat(8));
+      } else if (key === ' ') {
+        e.preventDefault();
+        document.execCommand('insertHtml', false, '&nbsp;');
       }
     }
   }
