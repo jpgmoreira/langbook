@@ -34,7 +34,8 @@ export const allowedInvokeChannels = Object.freeze([
 export const allowedOnChannels = Object.freeze([
   Channels.openEditor,
   Channels.closeEditor,
-  Channels.refreshData,
+  Channels.startup,
+  Channels.refreshMainData,
 ] as const);
 
 export interface ElectronAPI {

@@ -84,7 +84,7 @@ export class WindowManager {
     });
     this.mainWindow.once('ready-to-show', async () => {
       const startupData = await loadStartupData();
-      this.mainWindow.webContents.send(Channels.refreshData, startupData);
+      this.mainWindow.webContents.send(Channels.startup, startupData);
       this.mainWindow.show();
     });
     this.initWindow(this.mainWindow);
@@ -106,6 +106,6 @@ export class WindowManager {
   }
 
   public sendDataToMainWindow(data: RendererResponseDTO) {
-    this.mainWindow.webContents.send(Channels.refreshData, data);
+    this.mainWindow.webContents.send(Channels.refreshMainData, data);
   }
 }

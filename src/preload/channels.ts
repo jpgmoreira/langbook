@@ -1,5 +1,6 @@
 export enum Channels {
-  refreshData = 'referesh-data',
+  startup = 'startup',
+  refreshMainData = 'refresh-main-data',
   createProfile = 'create-profile',
   renameProfile = 'rename-profile',
   deleteProfile = 'delete-profile',
