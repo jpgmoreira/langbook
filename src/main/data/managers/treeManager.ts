@@ -53,6 +53,7 @@ export class TreeManager {
   private nFiles = 0;
   private nOpenDirs = 0;
   private expandedFlat: Node[] = []; // Entire tree flattened into an array.
+  private selectedSessions: string[] = [];
 
   // --- Setup methods: ---
 
@@ -100,6 +101,9 @@ export class TreeManager {
         }
         this.nOpenDirs += curr.open ? 1 : 0;
       } else {
+        if (curr.selected) {
+          this.selectedSessions.push(curr.sessionId);
+        }
         this.nFiles++;
       }
       curr.depth = depth;
@@ -177,6 +181,7 @@ export class TreeManager {
   /**
    * Refreshes:
    *  - this.expandedFlat;
+   *  - this.selectedSessions;
    *  - this.nSelectedNodes;
    *  - this.nSelectedFiles;
    *  - this.nOpenDirs;
@@ -190,6 +195,7 @@ export class TreeManager {
   private refresh(flush: boolean) {
     const dirHead = this.getHead(this.target.root.dirs, false);
     const fileHead = this.getHead(this.target.root.files, false);
+    this.selectedSessions.length = 0;
     this.expandedFlat.length = 0;
     this.nSelectedNodes = 0;
     this.nSelectedFiles = 0;
@@ -203,13 +209,7 @@ export class TreeManager {
   }
 
   public getSelectedSessions(): string[] {
-    const result: string[] = [];
-    for (const node of this.expandedFlat) {
-      if (node.type === 'file' && node.selected) {
-        result.push(node.sessionId);
-      }
-    }
-    return result;
+    return this.selectedSessions;
   }
 
   public getNFiles(): number {
