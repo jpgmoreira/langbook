@@ -1,9 +1,8 @@
 import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
-import { RequestPageDTO } from '@common/dto/requestPageDTO';
+import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { Card } from '@common/schemas/card';
 import { Filters } from '@common/schemas/filters';
-import { StartupData } from '@common/schemas/startup';
 import { CardsManager } from '@main/data/managers/cardsManager';
 import { FiltersManager } from '@main/data/managers/filtersManager';
 import { ProfileManager } from '@main/data/managers/profileManager';
@@ -41,7 +40,7 @@ ipcMain.handle(
 
 ipcMain.handle(
   Channels.login,
-  async (_: IpcMainInvokeEvent, profileId: string): Promise<StartupData> => {
+  async (_: IpcMainInvokeEvent, profileId: string): Promise<RendererResponseDTO> => {
     ProfileManager.instance.login(profileId);
     return loadStartupData();
   }
@@ -57,11 +56,13 @@ ipcMain.handle(Channels.upsertCard, async (_: IpcMainInvokeEvent, card: Card) =>
 
 ipcMain.handle(
   Channels.filter,
-  async (_: IpcMainInvokeEvent, filters: Filters): Promise<RequestPageDTO> => {
+  async (_: IpcMainInvokeEvent, filters: Filters): Promise<RendererResponseDTO> => {
     FiltersManager.instance.updateFilters(filters);
     CardsManager.instance.refresh();
     return CardsManager.instance.getPage(0);
   }
 );
 
-ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) => {});
+ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) => {
+  // TODO
+});
