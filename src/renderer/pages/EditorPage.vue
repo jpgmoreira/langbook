@@ -18,7 +18,7 @@
   import { Card, getEmptyCard, MediaFile } from '@common/schemas/card';
   import { arrayRemove, randomId } from '@common/utils/utils';
   import { Tags } from '@common/schemas/tags';
-  import { Session, Sessions } from '@common/schemas/sessions';
+  import { Sessions } from '@common/schemas/sessions';
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
   import { Channels } from '@preload/channels';
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
