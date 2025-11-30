@@ -11,12 +11,10 @@
   import { Channels } from '@preload/channels';
   import { EventEmitter } from '@common/events/eventEmitter';
   import { Events } from '@renderer/events/events';
-  import { RequestPageDTO } from '@common/dto/requestPageDTO';
+  import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   import { Card, MediaFile } from '@common/schemas/card';
   import { Tags } from '@common/schemas/tags';
-  EventEmitter.instance.on(Events.refreshCardsView, refreshCardsView);
-  EventEmitter.instance.on(Events.refreshTags, refreshTags);
-  EventEmitter.instance.on(Events.refreshHasSessions, refreshHasSessions);
+  EventEmitter.instance.on(Events.refreshData, refreshData);
   const filtersStore = useFiltersStore();
   const uiStore = useUIStore();
   const isResizing = ref(false);
@@ -57,26 +55,22 @@
   });
   async function filter() {
     filtersStore.dirty = false;
-    const result = await window.api.invoke<RequestPageDTO>(
+    const result = await window.api.invoke<RendererResponseDTO>(
       Channels.filter,
       toRaw(filtersStore.filters)
     );
-    refreshCardsView(result);
+    refreshData(result);
   }
   function openEditor(card: Card | null) {
     uiStore.backdropVisible = true;
     window.api.invoke(Channels.openEditor, toRaw(card));
   }
-  function refreshCardsView(data: RequestPageDTO) {
-    page.value = data.page;
-    anchor.value = data.anchor;
-    height.value = data.height;
-  }
-  function refreshTags(tags: Tags) {
-    allTags.value = tags;
-  }
-  function refreshHasSessions(has: boolean) {
-    hasSessions.value = has;
+  function refreshData(data: RendererResponseDTO) {
+    page.value = data.page || [];
+    anchor.value = data.anchor || 0;
+    height.value = data.height || 0;
+    allTags.value = data.tags || {};
+    hasSessions.value = data.hasSessions || false;
   }
   async function mediaClick(media: MediaFile) {
     if (media.type.startsWith('audio')) {

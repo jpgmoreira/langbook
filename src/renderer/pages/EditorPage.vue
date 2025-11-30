@@ -3,7 +3,7 @@
   import MediaInput from '@renderer/components/UI/MediaInput.vue';
   import { EventEmitter } from '@common/events/eventEmitter';
   import { Events } from '@renderer/events/events';
-  import { EditorPageDTO } from '@common/dto/rendererResponseDTO';
+  import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   import { useUIStore } from '@renderer/store/ui';
   import {
     computed,
@@ -25,7 +25,7 @@
 
   type RTEField = 'front' | 'back' | 'extra';
 
-  EventEmitter.instance.on(Events.loadEditorData, (data: EditorPageDTO) => initData(data));
+  EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => initData(data));
 
   const uiStore = useUIStore();
 
@@ -69,11 +69,11 @@
 
   // --- Initialization: ---
 
-  function initData(data: EditorPageDTO) {
+  function initData(data: RendererResponseDTO) {
     lastScroll.value = 0;
     card.value = data.card || getEmptyCard(randomId(), Date.now());
-    allTags.value = data.tags;
-    allSessions.value = data.sessions;
+    allTags.value = data.tags || {};
+    allSessions.value = data.sessions || {};
     isNewCard.value = !data.card;
     isAllowReversedDisabled.value = !data.card?.back;
     showCardFields.front = Boolean(data.card?.front);
