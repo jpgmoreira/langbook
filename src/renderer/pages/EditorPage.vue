@@ -19,7 +19,7 @@
   import { arrayRemove, randomId } from '@common/utils/utils';
   import { Tags } from '@common/schemas/tags';
   import { Sessions } from '@common/schemas/sessions';
-  import Multiselect from '@renderer/components/UI/Multiselect.vue';
+  import Multiselect, { MultiselectOption } from '@renderer/components/UI/Multiselect.vue';
   import { Channels } from '@preload/channels';
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
   import { RefreshPlace } from '@common/types/refreshPlace';
@@ -49,12 +49,18 @@
     extra: useTemplateRef('extra-ref'),
     media: useTemplateRef('media-input'),
   };
-  const tagsOptions = computed(() =>
-    Object.entries(allTags.value).map(([key, value]) => ({
-      text: `${key} (${value})`,
-      value: key,
-    }))
-  );
+  const tagsOptions = computed(() => {
+    const entries = Object.entries(allTags.value);
+    const result: MultiselectOption[] = [];
+    for (const [tag, count] of entries) {
+      if (tag === 'audio' && !card.value.tags.includes('audio')) continue;
+      result.push({
+        text: `${tag} (${count})`,
+        value: tag,
+      });
+    }
+    return result;
+  });
   const sessionsOptions = computed(() =>
     Object.values(allSessions.value).map((value) => ({
       text: `${value.name} (${value.count})`,
@@ -142,12 +148,24 @@
         uiStore.showToast('Cannot have two media files with the same name!', 'info');
         continue;
       }
+      if (file.type.includes('audio')) {
+        const tag = 'audio';
+        if (!(tag in allTags.value)) {
+          allTags.value[tag] = 0;
+        }
+        if (!card.value.tags.includes(tag)) {
+          card.value.tags.push(tag);
+        }
+      }
       card.value.media.push(file);
     }
   }
 
   function removeMedia(item: MediaFile) {
     card.value.media = card.value.media.filter((i) => i !== item);
+    if (card.value.media.filter((m) => m.type.includes('audio')).length === 0) {
+      card.value.tags = card.value.tags.filter((t) => t !== 'audio');
+    }
   }
   // --- Manage sessions: ---
 
@@ -172,7 +190,11 @@
     }
   }
 
-  function createTag(name: string) {
+  function manuallyCreateTag(name: string) {
+    if (name === 'audio') {
+      uiStore.showToast('Cannot manually create the "audio" tag!', 'info');
+      return;
+    }
     allTags.value[name] = 0;
     card.value.tags.push(name);
   }
@@ -312,7 +334,7 @@
       close
       @select-option="selectTag"
       @deselect-option="deselectTag"
-      @create-option="createTag"
+      @create-option="manuallyCreateTag"
     />
     <Multiselect
       :options="sessionsOptions"
