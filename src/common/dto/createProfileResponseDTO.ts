@@ -1,4 +1,4 @@
-import { StartupData } from '@common/schemas/startup';
+import { RendererRequestDTO } from './rendererRequestDTO';
 
 export type CreateProfileResponseDTO =
   | {
@@ -7,5 +7,5 @@ export type CreateProfileResponseDTO =
     }
   | {
       status: 'success';
-      data: StartupData;
+      data: RendererRequestDTO;
     };
