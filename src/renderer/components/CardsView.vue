@@ -59,7 +59,7 @@
         :style="{ height: '3000px' }"
       >
         <div v-for="(card, index) in props.page" class="w-fit min-w-full">
-          <div class="card-number flex justify-between whitespace-nowrap mx-1">
+          <div class="card-number flex justify-between whitespace-nowrap">
             <span>{{ index + anchor + 1 }}</span>
             <span class="text-sm">Created: {{ parseTimestamp(card.createdAt) }}</span>
           </div>
