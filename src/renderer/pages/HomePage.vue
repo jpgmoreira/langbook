@@ -120,7 +120,7 @@
         @mousedown="isResizing = true"
       ></div>
       <div class="flex flex-col grow" :style="{ width: `${contestsAreaWidth}px` }">
-        <div class="grow" style="border: 0px solid lightgreen">
+        <div class="grow overflow-hidden">
           <CardsView
             :page="page"
             :anchor="anchor"

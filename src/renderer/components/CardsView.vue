@@ -101,7 +101,9 @@
         </div>
       </template>
     </Modal>
-    <div v-if="!props.page.length" class="text-xl opacity-70 absolute-center">No cards to show</div>
+    <div v-if="!props.page.length" class="text-xl opacity-70 absolute-center whitespace-nowrap">
+      No cards to show
+    </div>
     <div v-else class="overflow-auto relative h-full" @scroll="hideContextMenu">
       <div class="context-menu fixed" v-if="contextMenu.visible" :style="contextStyle">
         <div class="option px-2 py-0.5" @click="openEditor(contextMenu.card)">Edit</div>

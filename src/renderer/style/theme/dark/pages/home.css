@@ -11,7 +11,8 @@
 }
 
 .theme-dark .home-page .filters-container {
-  border-top: 1px solid #30343a;
+  background: linear-gradient(180deg, #282b2f 0%, #222427 100%);
+  border-top: 1px solid #2f3236;
 }
 
 /* --- chatgpt: --- */
