@@ -1,43 +1,39 @@
-import { StartupData } from '@common/schemas/startup';
+import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { ProfileManager } from './managers/profileManager';
-import { Tags } from '@common/schemas/tags';
 import { TagsManager } from './managers/tagsManager';
-import { Filters, getEmptyFilters } from '@common/schemas/filters';
+import { getEmptyFilters } from '@common/schemas/filters';
 import { FiltersManager } from './managers/filtersManager';
-import { Sessions } from '@common/schemas/sessions';
 import { SessionsManager } from './managers/sessionsManager';
 import { TreeManager } from './managers/treeManager';
 import { DbManager } from './managers/dbManager';
 import { CardsManager } from './managers/cardsManager';
-import { getEmptyRequestPageDTO, RequestPageDTO } from '@common/dto/requestPageDTO';
 
-export async function loadStartupData(): Promise<StartupData> {
-  const currProfile = ProfileManager.instance.getCurrProfile();
+export async function loadStartupData(): Promise<RendererResponseDTO> {
+  const profile = ProfileManager.instance.getCurrProfile();
   const profileRegistry = ProfileManager.instance.getProfileRegistry();
-  let tags: Tags = {};
-  let filters: Filters = getEmptyFilters();
-  let sessions: Sessions = {};
-  let firstPage: RequestPageDTO = getEmptyRequestPageDTO();
-  if (currProfile) {
-    // The order of initialization below is extremely important.
-    TagsManager.instance.loadProfile(currProfile.id);
-    FiltersManager.instance.loadProfile(currProfile.id);
-    SessionsManager.instance.loadProfile(currProfile.id);
-    TreeManager.instance.loadTree(currProfile.id);
-    await DbManager.instance.loadProfile(currProfile.id);
-    await CardsManager.instance.loadFromDb();
-    firstPage = CardsManager.instance.getPage(0);
-    tags = TagsManager.instance.getTags();
-    filters = FiltersManager.instance.getFilters();
-    sessions = SessionsManager.instance.getSessions();
-  }
-  const result: StartupData = {
-    currProfile,
+  const data: RendererResponseDTO = {
+    profile,
     profileRegistry,
-    tags,
-    filters,
-    sessions,
-    firstPage,
+    tags: {},
+    filters: getEmptyFilters(),
+    sessions: {},
+    page: [],
+    height: 0,
   };
-  return result;
+  if (profile) {
+    // The order of initialization below is extremely important.
+    TagsManager.instance.loadProfile(profile.id);
+    FiltersManager.instance.loadProfile(profile.id);
+    SessionsManager.instance.loadProfile(profile.id);
+    TreeManager.instance.loadTree(profile.id);
+    await DbManager.instance.loadProfile(profile.id);
+    await CardsManager.instance.loadFromDb();
+    const { page, height } = CardsManager.instance.getPage(0);
+    data.page = page;
+    data.height = height;
+    data.tags = TagsManager.instance.getTags();
+    data.filters = FiltersManager.instance.getFilters();
+    data.sessions = SessionsManager.instance.getSessions();
+  }
+  return data;
 }

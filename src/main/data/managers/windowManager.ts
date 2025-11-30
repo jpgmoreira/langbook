@@ -7,8 +7,6 @@ import { is } from '@electron-toolkit/utils';
 import { TagsManager } from './tagsManager';
 import { SessionsManager } from './sessionsManager';
 import { Card } from '@common/schemas/card';
-import { RequestPageDTO } from '@common/dto/requestPageDTO';
-import { TreeManager } from './treeManager';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 
 /**
@@ -86,7 +84,7 @@ export class WindowManager {
     });
     this.mainWindow.once('ready-to-show', async () => {
       const startupData = await loadStartupData();
-      this.mainWindow.webContents.send(Channels.loadStartupData, startupData);
+      this.mainWindow.webContents.send(Channels.refreshData, startupData);
       this.mainWindow.show();
     });
     this.initWindow(this.mainWindow);
@@ -107,7 +105,7 @@ export class WindowManager {
     this.editorWindow.close();
   }
 
-  public sendDataToMainWindow(data: RequestPageDTO) {
+  public sendDataToMainWindow(data: RendererResponseDTO) {
     this.mainWindow.webContents.send(Channels.refreshData, data);
   }
 }

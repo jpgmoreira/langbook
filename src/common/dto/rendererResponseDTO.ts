@@ -8,7 +8,7 @@ import type { Profile, ProfileRegistry } from '@common/schemas/profile';
  * A generic DTO to represent application data sent to the renderer.
  */
 export type RendererResponseDTO = {
-  profile?: Profile;
+  profile?: Profile | null;
   profileRegistry?: ProfileRegistry;
   card?: Card | null;
   tags?: Tags;
