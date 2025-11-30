@@ -47,6 +47,10 @@
     if (hasSessions.value) return undefined;
     return 'Can only filter cards if there are sessions!';
   });
+  const clearTooltip = computed(() => {
+    if (hasSessions.value) return undefined;
+    return 'Can only clear filters when filtering is enabled!';
+  });
   const flashcardsTooltip = computed(() => {
     if (page.value.length) return undefined;
     return 'Can only use flashcards if there are cards!';
@@ -173,7 +177,13 @@
           >
             Filter
           </button>
-          <button type="button" class="btn-primary" @click="filtersStore.clearFilters">
+          <button
+            type="button"
+            class="btn-primary"
+            @click="filtersStore.clearFilters"
+            :disabled="!hasSessions"
+            v-tooltip="clearTooltip"
+          >
             Clear
           </button>
           <button
