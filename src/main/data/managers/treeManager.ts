@@ -527,34 +527,34 @@ export class TreeManager {
     node.parentId = null;
   }
 
-  private deleteSubtree(control: Links) {
+  private async deleteSubtree(control: Links) {
     const dirHead = this.getHead(control.dirs, false);
     const fileHead = this.getHead(control.files, false);
     let curr: Node | null = dirHead;
     while (curr) {
-      this.deleteCallback(curr);
+      await this.deleteCallback(curr);
       this.deleteSubtree(curr as DirNode);
       delete this.target.idToNode[curr.id];
       curr = this.getNext(curr, false);
     }
     curr = fileHead;
     while (curr) {
-      this.deleteCallback(curr);
+      await this.deleteCallback(curr);
       delete this.target.idToNode[curr.id];
       curr = this.getNext(curr, false);
     }
   }
 
-  private deleteCallback(node: Node) {
+  private async deleteCallback(node: Node) {
     if (node.type !== 'file') return;
-    SessionsManager.instance.deleteSession(node.sessionId);
+    await SessionsManager.instance.deleteSession(node.sessionId);
   }
 
-  public deleteNode(nodeId: string) {
+  public async deleteNode(nodeId: string) {
     const node = this.target.idToNode[nodeId];
     if (!node) return;
     this.removeNodeFromTree(node);
-    this.deleteCallback(node);
+    await this.deleteCallback(node);
     if (node.type === 'dir') {
       this.deleteSubtree(node);
     }
@@ -563,11 +563,11 @@ export class TreeManager {
     this.calculateUiDepths();
   }
 
-  public deleteSelectedNodes() {
+  public async deleteSelectedNodes() {
     for (const node of this.expandedFlat) {
       if (node.selected) {
         this.removeNodeFromTree(node);
-        this.deleteCallback(node);
+        await this.deleteCallback(node);
         delete this.target.idToNode[node.id];
       }
     }

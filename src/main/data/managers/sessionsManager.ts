@@ -7,6 +7,7 @@ import { getEmptySession, Session, Sessions } from '@common/schemas/sessions';
 import { randomId } from '@common/utils/utils';
 import { ProfileManager } from './profileManager';
 import { Card } from '@common/schemas/card';
+import { CardsManager } from './cardsManager';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   SessionsManager.instance.clear();
@@ -58,10 +59,11 @@ export class SessionsManager {
     session.name = newName;
   }
 
-  public deleteSession(sessionId: string) {
+  public async deleteSession(sessionId: string) {
     if (!(sessionId in this.proxy)) return;
     delete this.proxy[sessionId];
     ProfileManager.instance.addSessions(-1);
+    await CardsManager.instance.sessionDeleted(sessionId);
   }
 
   public cardDeleted(card: Card) {

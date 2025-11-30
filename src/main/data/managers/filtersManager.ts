@@ -87,6 +87,12 @@ export class FiltersManager {
     return true;
   }
 
+  public tagDeleted(tag: string) {
+    if (this.proxy.tags.includes(tag)) {
+      this.proxy.tags = this.proxy.tags.filter((t) => t !== tag);
+    }
+  }
+
   public clear() {
     this._proxy = null;
   }

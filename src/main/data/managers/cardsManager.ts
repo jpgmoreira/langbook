@@ -1,5 +1,5 @@
 import { EventEmitter } from '@common/events/eventEmitter';
-import { Card } from '@common/schemas/card';
+import { Card, MediaFile } from '@common/schemas/card';
 import { Events } from '@main/events/events';
 import { DbManager } from './dbManager';
 import { FiltersManager } from './filtersManager';
@@ -31,6 +31,9 @@ export class CardsManager {
   // Maps card ids to actual card objects:
   private cardsMap: Record<string, Card> = {};
 
+  // Maps session ids to a list of all cards that are in the session:
+  private sessionToCard: Record<string, Card[]> = {};
+
   // All cards that satisfy the current filters:
   private filtered: Card[] = [];
 
@@ -61,14 +64,21 @@ export class CardsManager {
   }
 
   /**
-   * Recompute "filtered" and "frequency" based on "cardsMap" and the current filters.
+   * Recompute "filtered", "frequency" and "sessionToCard" based on "cardsMap" and the current filters.
    */
   public refresh() {
     this.filtered = [];
+    this.sessionToCard = {};
     for (let i = 0; i <= 10; i++) {
       this.frequency[i] = [];
     }
     Object.values(this.cardsMap).forEach((card: Card) => {
+      for (const session of card.sessions) {
+        if (!(session in this.sessionToCard)) {
+          this.sessionToCard[session] = [];
+        }
+        this.sessionToCard[session].push(card);
+      }
       if (FiltersManager.instance.satisfyCurrentFilters(card)) {
         this.filtered.push(card);
         this.frequency[card.frequency].push(card);
@@ -78,6 +88,7 @@ export class CardsManager {
     for (let i = 0; i <= 10; i++) {
       shuffleArray(this.frequency[i]);
     }
+    this.anchor = Math.min(this.anchor, Math.max(this.filtered.length - this.CARDS_PAGE_SIZE, 0));
   }
 
   private async updateCardMedia(card: Card) {
@@ -132,6 +143,14 @@ export class CardsManager {
     card.extra = $extra.html();
   }
 
+  private deleteMediaFile(path: string) {
+    const filePath = path.replace('safe-file://', '');
+    const realPath = decodeURIComponent(filePath);
+    try {
+      fs.unlinkSync(realPath);
+    } catch {}
+  }
+
   public async upsertCard(card: Card) {
     // Delete old card info.
     if (card.id in this.cardsMap) {
@@ -141,8 +160,7 @@ export class CardsManager {
       TagsManager.instance.cardDeleted(oldCard);
       for (const media of oldCard.media) {
         if (!card.media.some((m) => m.path === media.path)) {
-          // TODO: make sure this works.
-          fs.unlinkSync(media.path);
+          this.deleteMediaFile(media.path);
         }
       }
     } else {
@@ -155,9 +173,7 @@ export class CardsManager {
     TagsManager.instance.cardCreated(card);
     this.cardsMap[card.id] = card;
     // Send updated page to renderer:
-    this.refresh();
-    const data = this.getPage(this.anchor);
-    WindowManager.instance.sendPageToRenderer(data);
+    this.sendCurrentPageToRenderer();
     WindowManager.instance.sendTagsToRenderer();
     // TODO: Check if flashcards window is open, and if it is, send newly updated card to it.
     WindowManager.instance.closeEditor();
@@ -177,10 +193,47 @@ export class CardsManager {
     return { page, height, anchor };
   }
 
+  public sendCurrentPageToRenderer() {
+    this.refresh();
+    const data = this.getPage(this.anchor);
+    WindowManager.instance.sendPageToRenderer(data);
+  }
+
+  public async sessionDeleted(sessionId: string) {
+    if (!(sessionId in this.sessionToCard)) return;
+    const cards = this.sessionToCard[sessionId];
+    for (const card of cards) {
+      if (card.sessions.length === 1) {
+        await this.deleteCard(card);
+      }
+    }
+    delete this.sessionToCard[sessionId];
+  }
+
+  private async deleteCard(card: Card) {
+    await DbManager.instance.deleteCard(card.id);
+    TagsManager.instance.cardDeleted(card);
+    SessionsManager.instance.cardDeleted(card);
+    ProfileManager.instance.addCards(-1);
+    for (const media of card.media) {
+      this.deleteMediaFile(media.path);
+    }
+    const $front = cheerio.load(card.front, null, false),
+      $back = cheerio.load(card.back, null, false),
+      $extra = cheerio.load(card.extra, null, false);
+    const images = [...$front('img'), ...$back('img'), ...$extra('img')];
+    for (const image of images) {
+      const src = image.attribs.src;
+      this.deleteMediaFile(src);
+    }
+    delete this.cardsMap[card.id];
+  }
+
   public clear() {
     this.anchor = 0;
     this.cardsMap = {};
     this.filtered = [];
     this.frequency = {};
+    this.sessionToCard = {};
   }
 }

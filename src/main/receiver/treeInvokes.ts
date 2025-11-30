@@ -8,6 +8,7 @@ import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { measure } from '@main/utils/performance';
 import { sleep } from '@common/utils/utils';
 import { WindowManager } from '@main/data/managers/windowManager';
+import { CardsManager } from '@main/data/managers/cardsManager';
 
 ipcMain.handle(
   TreeChannels.createNode,
@@ -107,9 +108,11 @@ ipcMain.handle(
     nodeId: string
   ): Promise<TreeOperationResponseDTO> => {
     await sleep(2000);
-    return measure('deleteNode', () => {
-      TreeManager.instance.deleteNode(nodeId);
+    return measure('deleteNode', async () => {
+      await TreeManager.instance.deleteNode(nodeId);
       WindowManager.instance.sendHasSessionsToRenderer();
+      WindowManager.instance.sendTagsToRenderer();
+      CardsManager.instance.sendCurrentPageToRenderer();
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -119,9 +122,11 @@ ipcMain.handle(
   TreeChannels.deleteSelectedNodes,
   async (_: IpcMainInvokeEvent, anchor: number): Promise<TreeOperationResponseDTO> => {
     await sleep(2000);
-    return measure('deleteSelectedNodes', () => {
-      TreeManager.instance.deleteSelectedNodes();
+    return measure('deleteSelectedNodes', async () => {
+      await TreeManager.instance.deleteSelectedNodes();
       WindowManager.instance.sendHasSessionsToRenderer();
+      WindowManager.instance.sendTagsToRenderer();
+      CardsManager.instance.sendCurrentPageToRenderer();
       return TreeManager.instance.buildResult(anchor);
     });
   }

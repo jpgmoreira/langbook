@@ -5,6 +5,7 @@ import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@main/events/events';
 import { Tags } from '@common/schemas/tags';
 import { Card } from '@common/schemas/card';
+import { FiltersManager } from './filtersManager';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   TagsManager.instance.clear();
@@ -47,6 +48,7 @@ export class TagsManager {
         this.proxy[tag]--;
         if (this.proxy[tag] === 0) {
           delete this.proxy[tag];
+          FiltersManager.instance.tagDeleted(tag);
         }
       }
     }
