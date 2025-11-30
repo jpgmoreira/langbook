@@ -17,9 +17,11 @@ export async function loadStartupData(): Promise<RendererResponseDTO> {
     profile,
     profileRegistry,
     tags: {},
-    filters: getEmptyFilters(),
     sessions: {},
+    hasSessions: false,
+    filters: getEmptyFilters(),
     page: [],
+    anchor: 0,
     height: 0,
   };
   if (profile) {
@@ -31,11 +33,13 @@ export async function loadStartupData(): Promise<RendererResponseDTO> {
     await DbManager.instance.loadProfile(profile.id);
     await CardsManager.instance.loadFromDb();
     const { page, height } = CardsManager.instance.getPage(0);
+    const hasSessions = TreeManager.instance.getNFiles() > 0;
+    data.tags = TagsManager.instance.getTags();
+    data.sessions = SessionsManager.instance.getSessions();
+    data.hasSessions = hasSessions;
+    data.filters = FiltersManager.instance.getFilters();
     data.page = page;
     data.height = height;
-    data.tags = TagsManager.instance.getTags();
-    data.filters = FiltersManager.instance.getFilters();
-    data.sessions = SessionsManager.instance.getSessions();
   }
   return data;
 }
