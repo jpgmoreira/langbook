@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia';
 import { getEmptyProfileRegistry, Profile } from '@common/schemas/profile';
-import { StartupData } from '@common/schemas/startup';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
 import { Channels } from '@preload/channels';
 import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
+import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 
-EventEmitter.instance.on(Events.loadInitialData, (data: StartupData) => {
-  useProfileStore().initFromStartupData(data);
+EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
+  useProfileStore().refreshData(data);
 });
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
@@ -21,9 +21,9 @@ export const useProfileStore = defineStore('profile', {
     registry: getEmptyProfileRegistry(),
   }),
   actions: {
-    initFromStartupData(data: StartupData) {
-      this.currProfile = data.currProfile;
-      this.registry = data.profileRegistry;
+    refreshData(data: RendererResponseDTO) {
+      this.currProfile = data.profile || null;
+      this.registry = data.profileRegistry || getEmptyProfileRegistry();
     },
     async createProfile(name: string): Promise<CreateProfileResponseDTO> {
       const result = await window.api.invoke<CreateProfileResponseDTO>(
@@ -31,13 +31,13 @@ export const useProfileStore = defineStore('profile', {
         name
       );
       if (result.status === 'success') {
-        EventEmitter.instance.emit(Events.loadInitialData, result.data);
+        EventEmitter.instance.emit(Events.refreshData, result.data);
       }
       return result;
     },
     async login(profileId: string) {
-      const data = await window.api.invoke<StartupData>(Channels.login, profileId);
-      EventEmitter.instance.emit(Events.loadInitialData, data);
+      const data = await window.api.invoke<RendererResponseDTO>(Channels.login, profileId);
+      EventEmitter.instance.emit(Events.refreshData, data);
     },
     clear() {
       this.currProfile = null;
