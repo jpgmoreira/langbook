@@ -18,7 +18,7 @@
   import { Card, getEmptyCard, MediaFile } from '@common/schemas/card';
   import { arrayRemove, randomId } from '@common/utils/utils';
   import { Tags } from '@common/schemas/tags';
-  import { Sessions } from '@common/schemas/sessions';
+  import { Session, Sessions } from '@common/schemas/sessions';
   import Multiselect from '@renderer/components/UI/Multiselect.vue';
   import { Channels } from '@preload/channels';
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
@@ -75,6 +75,12 @@
     if (!('card' in data && 'tags' in data && 'sessions' in data)) return;
     lastScroll.value = 0;
     card.value = data.card || getEmptyCard(randomId(), Date.now());
+    if (data.card === null) {
+      const latestSession = getLatestSession(data.sessions as Sessions);
+      if (latestSession) {
+        card.value.sessions.push(latestSession.id);
+      }
+    }
     allTags.value = data.tags as Tags;
     allSessions.value = data.sessions as Sessions;
     isNewCard.value = !data.card;
@@ -85,6 +91,18 @@
     refs.front.value?.refresh();
     refs.back.value?.refresh();
     refs.extra.value?.refresh();
+  }
+
+  function getLatestSession(sessions: Sessions) {
+    const sessionsList = Object.values(sessions);
+    if (sessionsList.length === 0) return null;
+    let result = sessionsList[0];
+    for (const session of sessionsList) {
+      if (session.createdAt > result.createdAt) {
+        result = session;
+      }
+    }
+    return result;
   }
 
   // --- RTE: ---
