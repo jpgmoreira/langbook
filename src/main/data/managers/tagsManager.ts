@@ -43,9 +43,11 @@ export class TagsManager {
 
   public cardDeleted(card: Card) {
     for (const tag of card.tags) {
-      this.proxy[tag]--;
-      if (this.proxy[tag] === 0) {
-        delete this.proxy[tag];
+      if (tag in this.proxy) {
+        this.proxy[tag]--;
+        if (this.proxy[tag] === 0) {
+          delete this.proxy[tag];
+        }
       }
     }
   }

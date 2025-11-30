@@ -66,13 +66,13 @@ export class SessionsManager {
 
   public cardDeleted(card: Card) {
     for (const session of card.sessions) {
-      this.proxy[session].count--;
+      if (session in this.proxy) this.proxy[session].count--;
     }
   }
 
   public cardCreated(card: Card) {
     for (const session of card.sessions) {
-      this.proxy[session].count++;
+      if (session in this.proxy) this.proxy[session].count++;
     }
   }
 
