@@ -63,3 +63,5 @@ ipcMain.handle(
     return CardsManager.instance.getPage(0);
   }
 );
+
+ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) => {});

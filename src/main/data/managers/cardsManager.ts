@@ -210,7 +210,7 @@ export class CardsManager {
     delete this.sessionToCard[sessionId];
   }
 
-  private async deleteCard(card: Card) {
+  public async deleteCard(card: Card) {
     await DbManager.instance.deleteCard(card.id);
     TagsManager.instance.cardDeleted(card);
     SessionsManager.instance.cardDeleted(card);

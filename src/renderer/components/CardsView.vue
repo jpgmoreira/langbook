@@ -3,6 +3,8 @@
   import type { Card, MediaFile } from '@common/schemas/card';
   import HomeCard from './HomeCard.vue';
   import { parseTimestamp } from '@common/utils/dateUtils';
+  import Modal from './UI/Modal.vue';
+  import { Channels } from '@preload/channels';
   const props = defineProps<{
     page: Card[];
     anchor: number;
@@ -15,6 +17,11 @@
     x: 0,
     y: 0,
     card: null as Card | null,
+  });
+  const modalState = reactive({
+    card: null as Card | null,
+    visible: false,
+    isDeleting: false,
   });
   const contextStyle = computed(() => ({
     left: `${contextMenu.x}px`,
@@ -37,6 +44,19 @@
   function hideContextMenu() {
     contextMenu.visible = false;
   }
+  function closeModal() {
+    modalState.card = null;
+    modalState.visible = false;
+  }
+  function openModal(card: Card | null) {
+    if (!card) return;
+    modalState.card = card;
+    modalState.visible = true;
+  }
+  function deleteCard(card: Card | null) {
+    if (!card) return;
+    window.api.invoke(Channels.deleteCard, card);
+  }
   onMounted(() => {
     observer = new ResizeObserver(hideContextMenu);
     if (rootRef.value) observer.observe(rootRef.value);
@@ -48,11 +68,46 @@
 
 <template>
   <div class="cards-view h-full relative" @click="hideContextMenu" ref="root">
+    <Modal :visible="modalState.visible" :frozen="modalState.isDeleting" @close="closeModal">
+      <template #header>Delete card</template>
+      <template #body>
+        <div class="flex flex-col text-center">
+          <span>Are you sure you want to delete this card?</span>
+          <span class="text-danger my-2">This action cannot be undone!</span>
+          <div v-if="modalState.isDeleting" class="text-danger flex items-center">
+            <span class="loader mr-2"></span>
+            Deleting...
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-between">
+          <button
+            type="button"
+            class="btn-secondary"
+            :disabled="modalState.isDeleting"
+            @click="closeModal"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn-danger"
+            :disabled="modalState.isDeleting"
+            @click="deleteCard(contextMenu.card)"
+          >
+            Delete
+          </button>
+        </div>
+      </template>
+    </Modal>
     <div v-if="!props.page.length" class="text-xl opacity-70 absolute-center">No cards to show</div>
     <div v-else class="overflow-auto relative h-full" @scroll="hideContextMenu">
       <div class="context-menu fixed" v-if="contextMenu.visible" :style="contextStyle">
         <div class="option px-2 py-0.5" @click="openEditor(contextMenu.card)">Edit</div>
-        <div class="option text-danger px-2 py-0.5">Delete</div>
+        <div class="option text-danger px-2 py-0.5" @click="openModal(contextMenu.card)">
+          Delete
+        </div>
       </div>
       <div
         class="absolute top-0 left-0 bottom-0 w-full flex flex-col"

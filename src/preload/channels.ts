@@ -12,4 +12,5 @@ export enum Channels {
   refreshTags = 'refresh-tags',
   refreshHasSessions = 'refresh-has-sessions',
   filter = 'filter',
+  deleteCard = 'delete-card',
 }
