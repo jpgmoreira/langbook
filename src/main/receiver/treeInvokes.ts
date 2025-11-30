@@ -9,6 +9,7 @@ import { measure } from '@main/utils/performance';
 import { sleep } from '@common/utils/utils';
 import { WindowManager } from '@main/data/managers/windowManager';
 import { CardsManager } from '@main/data/managers/cardsManager';
+import { TagsManager } from '@main/data/managers/tagsManager';
 
 ipcMain.handle(
   TreeChannels.createNode,
@@ -21,7 +22,8 @@ ipcMain.handle(
   ): TreeOperationResponseDTO => {
     return measure('createNode', () => {
       TreeManager.instance.createNode(type, prefix, parentId);
-      WindowManager.instance.sendHasSessionsToRenderer();
+      const hasSessions = TreeManager.instance.getNFiles() > 0;
+      WindowManager.instance.sendDataToMainWindow({ hasSessions });
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -38,7 +40,8 @@ ipcMain.handle(
   ): TreeOperationResponseDTO => {
     return measure('createNodeAbove', () => {
       TreeManager.instance.createNodeAbove(type, prefix, baseNodeId);
-      WindowManager.instance.sendHasSessionsToRenderer();
+      const hasSessions = TreeManager.instance.getNFiles() > 0;
+      WindowManager.instance.sendDataToMainWindow({ hasSessions });
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -55,7 +58,8 @@ ipcMain.handle(
   ): TreeOperationResponseDTO => {
     return measure('createNodeBelow', () => {
       TreeManager.instance.createNodeBelow(type, prefix, baseNodeId);
-      WindowManager.instance.sendHasSessionsToRenderer();
+      const hasSessions = TreeManager.instance.getNFiles() > 0;
+      WindowManager.instance.sendDataToMainWindow({ hasSessions });
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -110,9 +114,16 @@ ipcMain.handle(
     await sleep(2000);
     return measure('deleteNode', async () => {
       await TreeManager.instance.deleteNode(nodeId);
-      WindowManager.instance.sendHasSessionsToRenderer();
-      WindowManager.instance.sendTagsToRenderer();
-      CardsManager.instance.sendCurrentPageToRenderer();
+      const hasSessions = TreeManager.instance.getNFiles() > 0;
+      const tags = TagsManager.instance.getTags();
+      const { page, height, anchor } = CardsManager.instance.getCurrentPageRefreshed();
+      WindowManager.instance.sendDataToMainWindow({
+        hasSessions,
+        tags,
+        page,
+        height,
+        anchor,
+      });
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -124,9 +135,16 @@ ipcMain.handle(
     await sleep(2000);
     return measure('deleteSelectedNodes', async () => {
       await TreeManager.instance.deleteSelectedNodes();
-      WindowManager.instance.sendHasSessionsToRenderer();
-      WindowManager.instance.sendTagsToRenderer();
-      CardsManager.instance.sendCurrentPageToRenderer();
+      const hasSessions = TreeManager.instance.getNFiles() > 0;
+      const tags = TagsManager.instance.getTags();
+      const { page, height, anchor } = CardsManager.instance.getCurrentPageRefreshed();
+      WindowManager.instance.sendDataToMainWindow({
+        hasSessions,
+        tags,
+        page,
+        height,
+        anchor,
+      });
       return TreeManager.instance.buildResult(anchor);
     });
   }

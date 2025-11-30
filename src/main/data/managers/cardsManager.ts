@@ -198,6 +198,11 @@ export class CardsManager {
     return { page, height, anchor };
   }
 
+  public getCurrentPageRefreshed() {
+    this.refresh();
+    return this.getPage(this.anchor);
+  }
+
   public async sessionDeleted(sessionId: string) {
     if (!(sessionId in this.sessionToCard)) return;
     const cards = this.sessionToCard[sessionId];
