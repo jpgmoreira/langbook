@@ -106,6 +106,6 @@ export class WindowManager {
   }
 
   public sendDataToMainWindow(data: RendererResponseDTO) {
-    this.mainWindow.webContents.send(Channels.refreshMainData, data);
+    this.mainWindow.webContents.send(Channels.refreshData, data);
   }
 }

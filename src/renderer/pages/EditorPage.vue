@@ -71,7 +71,7 @@
 
   function initData(data: RendererResponseDTO) {
     lastScroll.value = 0;
-    card.value = data.card || getEmptyCard(randomId(), Date.now());
+    card.value = data.card;
     allTags.value = data.tags || {};
     allSessions.value = data.sessions || {};
     isNewCard.value = !data.card;

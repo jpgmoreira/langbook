@@ -26,6 +26,6 @@ window.api.on(Channels.closeEditor, () => {
   useUIStore().backdropVisible = false;
 });
 
-window.api.on(Channels.refreshMainData, (data: RendererResponseDTO) => {
+window.api.on(Channels.refreshData, (data: RendererResponseDTO) => {
   EventEmitter.instance.emit(Events.refreshData, data);
 });
