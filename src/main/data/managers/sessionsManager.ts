@@ -59,6 +59,7 @@ export class SessionsManager {
     session.name = newName;
   }
 
+  // This is the function that is called as a delete callback by the TreeManager.
   public async deleteSession(sessionId: string) {
     if (!(sessionId in this.proxy)) return;
     delete this.proxy[sessionId];

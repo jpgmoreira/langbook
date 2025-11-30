@@ -228,6 +228,9 @@ export class CardsManager {
       const src = image.attribs.src;
       this.deleteMediaFile(src);
     }
+    for (const session of card.sessions) {
+      this.sessionToCard[session] = this.sessionToCard[session].filter((c) => c !== card);
+    }
     delete this.cardsMap[card.id];
   }
 
