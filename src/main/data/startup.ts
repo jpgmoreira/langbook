@@ -7,11 +7,13 @@ import { SessionsManager } from './managers/sessionsManager';
 import { TreeManager } from './managers/treeManager';
 import { DbManager } from './managers/dbManager';
 import { CardsManager } from './managers/cardsManager';
+import { RefreshPlace } from '@common/types/refreshPlace';
 
 export async function loadStartupData(): Promise<RendererResponseDTO> {
   const profile = ProfileManager.instance.getCurrProfile();
   const profileRegistry = ProfileManager.instance.getProfileRegistry();
   const data: RendererResponseDTO = {
+    where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
     profile,
     profileRegistry,
     tags: {},

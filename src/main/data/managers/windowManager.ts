@@ -8,6 +8,7 @@ import { TagsManager } from './tagsManager';
 import { SessionsManager } from './sessionsManager';
 import { Card } from '@common/schemas/card';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
+import { RefreshPlace } from '@common/types/refreshPlace';
 
 /**
  * Singleton for managing application windows.
@@ -93,6 +94,7 @@ export class WindowManager {
 
   public openEditor(card: Card | null) {
     const data: RendererResponseDTO = {
+      where: [RefreshPlace.EDITOR_PAGE],
       card,
       tags: TagsManager.instance.getTags(),
       sessions: SessionsManager.instance.getSessions(),

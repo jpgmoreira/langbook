@@ -10,6 +10,7 @@ import { sleep } from '@common/utils/utils';
 import { WindowManager } from '@main/data/managers/windowManager';
 import { CardsManager } from '@main/data/managers/cardsManager';
 import { TagsManager } from '@main/data/managers/tagsManager';
+import { RefreshPlace } from '@common/types/refreshPlace';
 
 ipcMain.handle(
   TreeChannels.createNode,
@@ -23,7 +24,10 @@ ipcMain.handle(
     return measure('createNode', () => {
       TreeManager.instance.createNode(type, prefix, parentId);
       const hasSessions = TreeManager.instance.getNFiles() > 0;
-      WindowManager.instance.sendDataToMainWindow({ hasSessions });
+      WindowManager.instance.sendDataToMainWindow({
+        where: [RefreshPlace.HOME_PAGE, RefreshPlace.PROFILE_STORE],
+        hasSessions,
+      });
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -41,7 +45,10 @@ ipcMain.handle(
     return measure('createNodeAbove', () => {
       TreeManager.instance.createNodeAbove(type, prefix, baseNodeId);
       const hasSessions = TreeManager.instance.getNFiles() > 0;
-      WindowManager.instance.sendDataToMainWindow({ hasSessions });
+      WindowManager.instance.sendDataToMainWindow({
+        where: [RefreshPlace.HOME_PAGE, RefreshPlace.PROFILE_STORE],
+        hasSessions,
+      });
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -59,7 +66,10 @@ ipcMain.handle(
     return measure('createNodeBelow', () => {
       TreeManager.instance.createNodeBelow(type, prefix, baseNodeId);
       const hasSessions = TreeManager.instance.getNFiles() > 0;
-      WindowManager.instance.sendDataToMainWindow({ hasSessions });
+      WindowManager.instance.sendDataToMainWindow({
+        where: [RefreshPlace.HOME_PAGE, RefreshPlace.PROFILE_STORE],
+        hasSessions,
+      });
       return TreeManager.instance.buildResult(anchor);
     });
   }
@@ -122,6 +132,7 @@ ipcMain.handle(
         anchor: cardsViewAnchor,
       } = CardsManager.instance.getCurrentPageRefreshed();
       WindowManager.instance.sendDataToMainWindow({
+        where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
         hasSessions,
         tags,
         page,
@@ -147,6 +158,7 @@ ipcMain.handle(
         anchor: cardsViewAnchor,
       } = CardsManager.instance.getCurrentPageRefreshed();
       WindowManager.instance.sendDataToMainWindow({
+        where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
         hasSessions,
         tags,
         page,

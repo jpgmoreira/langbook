@@ -14,6 +14,7 @@ import path from 'node:path';
 import sharp from 'sharp';
 import { WindowManager } from './windowManager';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
+import { RefreshPlace } from '@common/types/refreshPlace';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -176,6 +177,7 @@ export class CardsManager {
     this.refresh();
     const { page, height } = this.getPage(this.anchor);
     const data: RendererResponseDTO = {
+      where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
       profileRegistry: ProfileManager.instance.getProfileRegistry(),
       tags: TagsManager.instance.getTags(),
       filters: FiltersManager.instance.getFilters(),
