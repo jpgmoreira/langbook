@@ -76,6 +76,40 @@ export class DbManager {
     );
   }
 
+  public async updateCard(card: Card) {
+    if (!this.db) return;
+    const serialized = this.serializeCard(card);
+    await this.db.run(
+      `
+      UPDATE cards SET
+        front = ?,
+        back = ?,
+        extra = ?,
+        media = ?,
+        allowReversed = ?,
+        createdAt = ?,
+        sessions = ?,
+        tags = ?,
+        frequency = ?,
+        height = ?
+      WHERE id = ?
+    `,
+      [
+        serialized.front,
+        serialized.back,
+        serialized.extra,
+        serialized.media,
+        serialized.allowReversed,
+        serialized.createdAt,
+        serialized.sessions,
+        serialized.tags,
+        serialized.frequency,
+        serialized.height,
+        serialized.id,
+      ]
+    );
+  }
+
   private serializeCard(card: Card): DBCard {
     const result = {
       ...card,

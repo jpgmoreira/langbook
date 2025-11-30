@@ -209,8 +209,11 @@ export class CardsManager {
     if (!(sessionId in this.sessionToCard)) return;
     const cards = this.sessionToCard[sessionId];
     for (const card of cards) {
-      if (card.sessions.length === 1) {
+      card.sessions = card.sessions.filter((s) => s !== sessionId);
+      if (card.sessions.length === 0) {
         await this.deleteCard(card);
+      } else {
+        await DbManager.instance.updateCard(card);
       }
     }
     delete this.sessionToCard[sessionId];
