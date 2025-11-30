@@ -53,11 +53,18 @@
     const entries = Object.entries(allTags.value);
     const result: MultiselectOption[] = [];
     for (const [tag, count] of entries) {
-      if (tag === 'audio' && !card.value.tags.includes('audio')) continue;
-      result.push({
+      if (tag === 'audio' && !card.value.tags.includes('audio')) {
+        // Audio tag cannot be manually added.
+        continue;
+      }
+      const option: MultiselectOption = {
         text: `${tag} (${count})`,
         value: tag,
-      });
+      };
+      if (tag === 'audio') {
+        option.class = 'audio non-closeable';
+      }
+      result.push(option);
     }
     return result;
   });
@@ -184,6 +191,7 @@
   }
 
   function deselectTag(tag: string) {
+    if (tag === 'audio') return;
     arrayRemove(card.value.tags, tag);
     if (allTags.value[tag] === 0) {
       delete allTags.value[tag];

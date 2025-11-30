@@ -29,6 +29,16 @@
 .theme-dark .multiselect .badge {
   background-color: #0072c7;
 }
+.theme-dark .multiselect .badge.audio {
+  background-color: #eac63a;
+  border: 1px solid #c6a62f;
+}
+.theme-dark .multiselect .badge.audio.non-closeable .close-button {
+  display: none;
+}
+.theme-dark .multiselect .badge.audio * {
+  color: #1f1f1f;
+}
 .theme-dark .multiselect .badge-index {
   margin-right: 2px;
   font-size: 0.85rem;

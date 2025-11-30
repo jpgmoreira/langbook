@@ -4,7 +4,7 @@
   import { useUIStore } from '@renderer/store/ui';
   import Header from '@renderer/components/Header.vue';
   import TreeView from '@renderer/components/UI/TreeView/TreeView.vue';
-  import Multiselect from '@renderer/components/UI/Multiselect.vue';
+  import Multiselect, { MultiselectOption } from '@renderer/components/UI/Multiselect.vue';
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
   import CardsView from '@renderer/components/CardsView.vue';
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
@@ -28,12 +28,21 @@
   const selectedMedia = ref<MediaFile | undefined>(undefined);
   const hasSessions = ref(false);
   const allTags = ref<Tags>({});
-  const tagsOptions = computed(() =>
-    Object.entries(allTags.value).map(([tag, count]) => ({
-      text: `${tag} (${count})`,
-      value: tag,
-    }))
-  );
+  const tagsOptions = computed(() => {
+    const entries = Object.entries(allTags.value);
+    const result: MultiselectOption[] = [];
+    for (const [tag, count] of entries) {
+      const option: MultiselectOption = {
+        text: `${tag} (${count})`,
+        value: tag,
+      };
+      if (tag === 'audio') {
+        option.class = 'audio';
+      }
+      result.push(option);
+    }
+    return result;
+  });
   const filterButtonClass = computed(() => {
     if (filtersStore.dirty && hasSessions.value) return 'btn-warning';
     return 'btn-primary';

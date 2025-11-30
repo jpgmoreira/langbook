@@ -18,15 +18,18 @@
    *  - Pass the "options" prop as an array of objects in the form:
    *    {
    *      text: string,
-   *      value: string
+   *      value: string,
+   *      class?: string
    *    }
    *    You should not have duplicate values in the options.
    *
-   *  On the parent component, you can listen to the following events:
+   *  - On the parent component, you can listen to the following events:
    *    - select-option   (passes an option value);
    *    - deselect-option (passes an option value);
    *    - create-option   (passes an option name);
    *    - change-mode     (passes a mode value);
+   *
+   * The "class" property allows to pass a class that will be added to the option's badge.
    *
    * Optional props:
    *   - placeholder     <string>         A placeholder for the text input;
@@ -64,6 +67,7 @@
   export type MultiselectOption = {
     text: string;
     value: string;
+    class?: string;
   };
   export type MultiselectProps = {
     options: MultiselectOption[];
@@ -150,7 +154,7 @@
     const option = contextOptions.value[state.highlightedContextIndex];
     if (option) {
       selectOption(option.value);
-    } else if (props.create) {
+    } else if (props.create && state.content.trim()) {
       emit('createOption', state.content);
       state.content = '';
       state.highlightedContextIndex = 0;
@@ -297,6 +301,7 @@
         v-for="(option, index) in selectedOptions"
         :key="option.value"
         class="badge"
+        :class="option.class || ''"
         tabindex="0"
         @keydown="badgeKeydown($event, option.value)"
         @mousedown.stop
