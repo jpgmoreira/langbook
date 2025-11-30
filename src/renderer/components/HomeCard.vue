@@ -18,9 +18,9 @@
 
 <template>
   <div class="home-card flex flex-col">
-    <div v-html="card.front" class="mx-1"></div>
-    <div v-if="card.back" v-html="card.back" class="mx-1"></div>
-    <div v-if="card.extra" v-html="card.extra" class="mx-1"></div>
+    <div v-html="card.front" class="mx-1 field"></div>
+    <div v-if="card.back" v-html="card.back" class="mx-1 field"></div>
+    <div v-if="card.extra" v-html="card.extra" class="mx-1 field"></div>
     <div v-if="card.media.length" class="flex">
       <button
         v-for="media in card.media"
@@ -32,3 +32,12 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+  :deep(.field img) {
+    display: inline-block;
+  }
+  :deep(.field span) {
+    color: inherit;
+  }
+</style>
