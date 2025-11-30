@@ -116,13 +116,17 @@ ipcMain.handle(
       await TreeManager.instance.deleteNode(nodeId);
       const hasSessions = TreeManager.instance.getNFiles() > 0;
       const tags = TagsManager.instance.getTags();
-      const { page, height, anchor } = CardsManager.instance.getCurrentPageRefreshed();
+      const {
+        page,
+        height,
+        anchor: cardsViewAnchor,
+      } = CardsManager.instance.getCurrentPageRefreshed();
       WindowManager.instance.sendDataToMainWindow({
         hasSessions,
         tags,
         page,
         height,
-        anchor,
+        anchor: cardsViewAnchor,
       });
       return TreeManager.instance.buildResult(anchor);
     });
@@ -137,13 +141,17 @@ ipcMain.handle(
       await TreeManager.instance.deleteSelectedNodes();
       const hasSessions = TreeManager.instance.getNFiles() > 0;
       const tags = TagsManager.instance.getTags();
-      const { page, height, anchor } = CardsManager.instance.getCurrentPageRefreshed();
+      const {
+        page,
+        height,
+        anchor: cardsViewAnchor,
+      } = CardsManager.instance.getCurrentPageRefreshed();
       WindowManager.instance.sendDataToMainWindow({
         hasSessions,
         tags,
         page,
         height,
-        anchor,
+        anchor: cardsViewAnchor,
       });
       return TreeManager.instance.buildResult(anchor);
     });
