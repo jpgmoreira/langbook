@@ -1,5 +1,5 @@
 export enum Channels {
-  loadStartupData = 'load-startup-data',
+  refreshData = 'referesh-data',
   createProfile = 'create-profile',
   renameProfile = 'rename-profile',
   deleteProfile = 'delete-profile',
@@ -8,9 +8,6 @@ export enum Channels {
   closeEditor = 'close-editor',
   cancelCardEdit = 'cancel-card-edit',
   upsertCard = 'upsert-card',
-  refreshCardsView = 'refresh-cards-view',
-  refreshTags = 'refresh-tags',
-  refreshHasSessions = 'refresh-has-sessions',
   filter = 'filter',
   deleteCard = 'delete-card',
 }

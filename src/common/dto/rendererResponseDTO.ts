@@ -10,15 +10,12 @@ import type { Profile, ProfileRegistry } from '@common/schemas/profile';
 export type RendererResponseDTO = {
   profile?: Profile;
   profileRegistry?: ProfileRegistry;
-  card?: Card;
+  card?: Card | null;
   tags?: Tags;
   sessions?: Sessions;
+  hasSessions?: boolean;
   filters?: Filters;
   page?: Card[];
   anchor?: number;
   height?: number;
 };
-
-export function getEmptyRendererResponseDTO(): RendererResponseDTO {
-  return {};
-}

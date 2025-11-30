@@ -1,5 +1,5 @@
 import { EventEmitter } from '@common/events/eventEmitter';
-import { Card, MediaFile } from '@common/schemas/card';
+import { Card } from '@common/schemas/card';
 import { Events } from '@main/events/events';
 import { DbManager } from './dbManager';
 import { FiltersManager } from './filtersManager';
@@ -13,7 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 import { WindowManager } from './windowManager';
-import { RendererRequestDTO } from '@common/dto/rendererResponseDTO';
+import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -172,18 +172,23 @@ export class CardsManager {
     SessionsManager.instance.cardCreated(card);
     TagsManager.instance.cardCreated(card);
     this.cardsMap[card.id] = card;
-    // Send updated page to renderer:
-    this.sendCurrentPageToRenderer();
-    WindowManager.instance.sendTagsToRenderer();
+    // Send updates to main window:
+    this.refresh();
+    const { page, height } = this.getPage(this.anchor);
+    const data: RendererResponseDTO = {
+      profileRegistry: ProfileManager.instance.getProfileRegistry(),
+      tags: TagsManager.instance.getTags(),
+      filters: FiltersManager.instance.getFilters(),
+      anchor: this.anchor,
+      page,
+      height,
+    };
+    WindowManager.instance.sendDataToMainWindow(data);
     // TODO: Check if flashcards window is open, and if it is, send newly updated card to it.
     WindowManager.instance.closeEditor();
   }
 
-  /**
-   * This method is used both when sending a notification to the renderer without previous
-   *   request, or when responding an invoke that was initiated by the renderer.
-   */
-  public getPage(anchor: number): RequestPageDTO {
+  public getPage(anchor: number) {
     this.anchor = anchor;
     const page: Card[] = [];
     for (let i = anchor, j = 0; i < this.filtered.length && j < this.CARDS_PAGE_SIZE; i++, j++) {
@@ -191,12 +196,6 @@ export class CardsManager {
     }
     const height = this.filtered.reduce((prev: number, curr: Card) => prev + curr.height, 0);
     return { page, height, anchor };
-  }
-
-  public sendCurrentPageToRenderer() {
-    this.refresh();
-    const data = this.getPage(this.anchor);
-    WindowManager.instance.sendPageToRenderer(data);
   }
 
   public async sessionDeleted(sessionId: string) {
@@ -210,7 +209,10 @@ export class CardsManager {
     delete this.sessionToCard[sessionId];
   }
 
-  public async deleteCard(card: Card) {
+  // Do not send a message to the renderer here, because this method can
+  // potentially be called to a large number of cards in a single call,
+  // in the case where you are deleting a bunch of sessions.
+  private async deleteCard(card: Card) {
     await DbManager.instance.deleteCard(card.id);
     TagsManager.instance.cardDeleted(card);
     SessionsManager.instance.cardDeleted(card);

@@ -9,6 +9,7 @@ import { SessionsManager } from './sessionsManager';
 import { Card } from '@common/schemas/card';
 import { RequestPageDTO } from '@common/dto/requestPageDTO';
 import { TreeManager } from './treeManager';
+import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 
 /**
  * Singleton for managing application windows.
@@ -93,7 +94,7 @@ export class WindowManager {
   }
 
   public openEditor(card: Card | null) {
-    const data = {
+    const data: RendererResponseDTO = {
       card,
       tags: TagsManager.instance.getTags(),
       sessions: SessionsManager.instance.getSessions(),
@@ -106,17 +107,7 @@ export class WindowManager {
     this.editorWindow.close();
   }
 
-  public sendPageToRenderer(data: RequestPageDTO) {
-    this.mainWindow.webContents.send(Channels.refreshCardsView, data);
-  }
-
-  public sendTagsToRenderer() {
-    const tags = TagsManager.instance.getTags();
-    this.mainWindow.webContents.send(Channels.refreshTags, tags);
-  }
-
-  public sendHasSessionsToRenderer() {
-    const hasSessions = TreeManager.instance.getNFiles() > 0;
-    this.mainWindow.webContents.send(Channels.refreshHasSessions, hasSessions);
+  public sendDataToMainWindow(data: RequestPageDTO) {
+    this.mainWindow.webContents.send(Channels.refreshData, data);
   }
 }
