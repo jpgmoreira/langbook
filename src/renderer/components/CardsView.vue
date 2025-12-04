@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-  import { reactive, computed, useTemplateRef, onMounted, onBeforeUnmount } from 'vue';
+  import { reactive, computed, useTemplateRef, onMounted, onBeforeUnmount, toRaw } from 'vue';
   import type { Card, MediaFile } from '@common/schemas/card';
   import HomeCard from './HomeCard.vue';
   import { parseTimestamp } from '@common/utils/dateUtils';
   import Modal from './UI/Modal.vue';
   import { Channels } from '@preload/channels';
+  import { EventEmitter } from '@common/events/eventEmitter';
+  import { Events } from '@renderer/events/events';
+  import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   const props = defineProps<{
     page: Card[];
     anchor: number;
@@ -53,9 +56,14 @@
     modalState.card = card;
     modalState.visible = true;
   }
-  function deleteCard(card: Card | null) {
+  async function deleteCard(card: Card | null) {
     if (!card) return;
-    window.api.invoke(Channels.deleteCard, card);
+    card.media = card.media.map((m) => toRaw(m));
+    modalState.isDeleting = true;
+    const data = await window.api.invoke<RendererResponseDTO>(Channels.deleteCard, toRaw(card));
+    modalState.isDeleting = false;
+    closeModal();
+    EventEmitter.instance.emit(Events.refreshData, data);
   }
   onMounted(() => {
     observer = new ResizeObserver(hideContextMenu);

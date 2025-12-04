@@ -222,7 +222,7 @@ export class CardsManager {
   // Do not send a message to the renderer here, because this method can
   // potentially be called to a large number of cards in a single call,
   // in the case where you are deleting a bunch of sessions.
-  private async deleteCard(card: Card) {
+  public async deleteCard(card: Card) {
     await DbManager.instance.deleteCard(card.id);
     TagsManager.instance.cardDeleted(card);
     SessionsManager.instance.cardDeleted(card);

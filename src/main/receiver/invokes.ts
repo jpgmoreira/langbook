@@ -4,9 +4,12 @@ import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { Card } from '@common/schemas/card';
 import { Filters } from '@common/schemas/filters';
 import { RefreshPlace } from '@common/types/refreshPlace';
+import { sleep } from '@common/utils/utils';
 import { CardsManager } from '@main/data/managers/cardsManager';
 import { FiltersManager } from '@main/data/managers/filtersManager';
 import { ProfileManager } from '@main/data/managers/profileManager';
+import { SessionsManager } from '@main/data/managers/sessionsManager';
+import { TagsManager } from '@main/data/managers/tagsManager';
 import { WindowManager } from '@main/data/managers/windowManager';
 import { loadStartupData } from '@main/data/startup';
 import { Channels } from '@preload/channels';
@@ -71,6 +74,22 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) => {
-  // TODO
-});
+ipcMain.handle(
+  Channels.deleteCard,
+  async (_: IpcMainInvokeEvent, card: Card): Promise<RendererResponseDTO> => {
+    await sleep(2000);
+    await CardsManager.instance.deleteCard(card);
+    const { page, height, anchor } = CardsManager.instance.getCurrentPageRefreshed();
+    const data: RendererResponseDTO = {
+      where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
+      profileRegistry: ProfileManager.instance.getProfileRegistry(),
+      tags: TagsManager.instance.getTags(),
+      sessions: SessionsManager.instance.getSessions(),
+      filters: FiltersManager.instance.getFilters(),
+      page,
+      anchor,
+      height,
+    };
+    return data;
+  }
+);

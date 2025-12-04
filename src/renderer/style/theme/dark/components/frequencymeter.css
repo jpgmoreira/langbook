@@ -2,6 +2,7 @@
   display: inline-flex;
   width: fit-content;
   border: 1px solid #30343a;
+  user-select: none;
 }
 
 .theme-dark .frequencymeter > div {
