@@ -22,7 +22,7 @@
     onMediaClick: (media: MediaFile) => void;
     openEditor: (card: Card | null) => void;
   }>();
-  const bottomPadding = 300; //px.
+  const bottomPadding = 200; //px.
   const scrollTimer = ref<ReturnType<typeof setTimeout> | undefined>(undefined);
   const scrollTop = ref(0);
   const isRequesting = ref(false);
