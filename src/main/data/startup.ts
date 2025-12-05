@@ -8,6 +8,8 @@ import { TreeManager } from './managers/treeManager';
 import { DbManager } from './managers/dbManager';
 import { CardsManager } from './managers/cardsManager';
 import { RefreshPlace } from '@common/types/refreshPlace';
+import { DATA_DIR } from './constants';
+import path from 'node:path';
 
 export async function loadStartupData(): Promise<RendererResponseDTO> {
   const profile = ProfileManager.instance.getCurrProfile();
@@ -34,6 +36,7 @@ export async function loadStartupData(): Promise<RendererResponseDTO> {
     await CardsManager.instance.loadFromDb();
     const { page, height, nFiltered } = CardsManager.instance.getPage(0);
     const hasSessions = TreeManager.instance.getNFiles() > 0;
+    data.mediaDir = path.join(DATA_DIR, 'profileData', profile.id, 'media');
     data.tags = TagsManager.instance.getTags();
     data.sessions = SessionsManager.instance.getSessions();
     data.hasSessions = hasSessions;

@@ -15,6 +15,7 @@ export type RendererResponseDTO = {
   where: RefreshPlace[];
   profile?: Profile | null;
   profileRegistry?: ProfileRegistry;
+  mediaDir?: string;
   card?: Card | null;
   tags?: Tags;
   sessions?: Sessions;
