@@ -106,7 +106,7 @@ export class CardsManager {
     for (let i = 0; i < card.media.length; i++) {
       const media = card.media[i];
       // if the file path already points to mediaDir, ignore.
-      if (!path.relative(mediaDir, path.dirname(media.path.replace('safe-file://', '')))) continue;
+      if (fs.existsSync(path.join(mediaDir, media.path))) continue;
       // if the file does not exist in the user's computer: remove.
       if (!fs.existsSync(media.path.replace('safe-file://', ''))) mediaDelete.push(media.name);
       else {
@@ -152,12 +152,14 @@ export class CardsManager {
     card.extra = $extra.html();
   }
 
-  private deleteMediaFile(path: string) {
-    const filePath = path.replace('safe-file://', '');
-    const realPath = decodeURIComponent(filePath);
+  private deleteMediaFile(base: string) {
+    const profileId = ProfileManager.instance.getCurrProfile()!.id;
+    const filePath = path.join(DATA_DIR, 'profileData', profileId, 'media', base);
     try {
-      fs.unlinkSync(realPath);
-    } catch {}
+      fs.unlinkSync(filePath);
+    } catch {
+      console.log('- Error deleting file:', filePath);
+    }
   }
 
   public async upsertCard(card: Card) {
