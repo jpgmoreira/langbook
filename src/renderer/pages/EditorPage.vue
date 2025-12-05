@@ -95,6 +95,7 @@
   // --- Initialization: ---
 
   function initData(data: RendererResponseDTO) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
     if (!data.where.includes(RefreshPlace.EDITOR_PAGE)) return;
     if (!('card' in data && 'tags' in data && 'sessions' in data)) return;
     lastScroll.value = 0;
