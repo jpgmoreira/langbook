@@ -76,13 +76,38 @@
     clearSelectedImage();
   }
 
-  function getContent() {
-    if (!rteRef.value) return;
-    const content = rteRef.value.innerHTML;
-    return content
-      .replace(/^(\s*(<div>)*\s*((\s*<br>\s*)|(\s*&nbsp;\s*))*\s*(<\/div>)*\s*)*/, '')
-      .replace(/(\s*(<div>)*\s*((\s*<br>\s*)|(\s*&nbsp;\s*))*\s*(<\/div>)*\s*)*$/, '')
+  function normalizeContent(rte: HTMLElement): string {
+    const lines: string[] = [];
+    rte.childNodes.forEach((node) => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = node as HTMLElement;
+        if (el.tagName === 'DIV') {
+          const html = el.innerHTML.trim();
+          if (html === '' || html.toLowerCase() === '<br>') {
+            lines.push('');
+          } else {
+            lines.push(html);
+          }
+        } else {
+          lines.push(el.outerHTML);
+        }
+      } else if (node.nodeType === Node.TEXT_NODE) {
+        const txt = node.textContent?.trim() ?? '';
+        if (txt !== '') lines.push(txt);
+      }
+    });
+    return lines
+      .join('<br>')
+      .replace(/^(<br>|&nbsp;|\s)+/i, '')
+      .replace(/(<br>|&nbsp;|\s)+$/i, '')
       .trim();
+  }
+
+  function getContent() {
+    if (!rteRef.value) return '';
+    const clone = rteRef.value.cloneNode(true) as HTMLElement;
+    const content = normalizeContent(clone);
+    return content;
   }
 
   function clearSelectedImage() {
