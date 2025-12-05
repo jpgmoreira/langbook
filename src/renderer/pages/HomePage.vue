@@ -25,6 +25,7 @@
   const page = ref<Card[]>([]);
   const anchor = ref(0);
   const height = ref(0);
+  const nFiltered = ref(0);
   const selectedMedia = ref<MediaFile | undefined>(undefined);
   const hasSessions = ref(false);
   const allTags = ref<Tags>({});
@@ -80,6 +81,7 @@
     if ('page' in data) page.value = data.page as Card[];
     if ('anchor' in data) anchor.value = data.anchor as number;
     if ('height' in data) height.value = data.height as number;
+    if ('nFiltered' in data) nFiltered.value = data.nFiltered as number;
     if ('tags' in data) allTags.value = data.tags as Tags;
     if ('hasSessions' in data) hasSessions.value = data.hasSessions as boolean;
   }
@@ -134,6 +136,7 @@
             :page="page"
             :anchor="anchor"
             :height="height"
+            :n-filtered="nFiltered"
             :onMediaClick="mediaClick"
             :openEditor="openEditor"
           />

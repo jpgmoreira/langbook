@@ -63,12 +63,12 @@ ipcMain.handle(
   async (_: IpcMainInvokeEvent, filters: Filters): Promise<RendererResponseDTO> => {
     FiltersManager.instance.updateFilters(filters);
     CardsManager.instance.refresh();
-    const { page, height, anchor } = CardsManager.instance.getPage(0);
+    const { page, height, nFiltered } = CardsManager.instance.getPage(0);
     const data: RendererResponseDTO = {
       where: [RefreshPlace.HOME_PAGE],
-      anchor,
       height,
       page,
+      nFiltered,
     };
     return data;
   }
@@ -77,7 +77,7 @@ ipcMain.handle(
 ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) => {
   await sleep(2000);
   await CardsManager.instance.deleteCard(card);
-  const { page, height, anchor } = CardsManager.instance.getCurrentPageRefreshed();
+  const { page, height, nFiltered } = CardsManager.instance.getCurrentPageRefreshed();
   const data: RendererResponseDTO = {
     where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
     profileRegistry: ProfileManager.instance.getProfileRegistry(),
@@ -85,7 +85,7 @@ ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) =>
     sessions: SessionsManager.instance.getSessions(),
     filters: FiltersManager.instance.getFilters(),
     page,
-    anchor,
+    nFiltered,
     height,
   };
   WindowManager.instance.cardWasDeleted(data);
