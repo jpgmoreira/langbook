@@ -15,6 +15,7 @@ import sharp from 'sharp';
 import { WindowManager } from './windowManager';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
+import { isFileInsideDirectory } from '../utils';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -94,7 +95,7 @@ export class CardsManager {
 
   /**
    * For both the media input and images in the RTE fields:
-   *  - We receive the full paths for the files here.
+   *  - We receive files with either the full path or just the filename inside the media folder.
    *  - In this method we copy the files to the media folder and adjust the
    *      paths to contain only the name of the file in the media folder.
    */
@@ -105,17 +106,25 @@ export class CardsManager {
     const mediaDelete: string[] = [];
     for (let i = 0; i < card.media.length; i++) {
       const media = card.media[i];
-      // if the file path already points to mediaDir, ignore.
-      if (fs.existsSync(path.join(mediaDir, media.path))) continue;
-      // if the file does not exist in the user's computer: remove.
-      if (!fs.existsSync(media.path.replace('safe-file://', ''))) mediaDelete.push(media.name);
-      else {
-        const ext = path.extname(media.name) ? '' : extFromMime(media.type);
-        const mediaFile = `${card.createdAt}_${media.name}${ext}`;
-        const newPath = path.join(mediaDir, mediaFile);
-        fs.copyFileSync(media.path, newPath);
-        media.path = mediaFile; // Store only file name in media folder.
+      // file already contained in the media: skip.
+      if (fs.existsSync(path.join(mediaDir, media.path))) {
+        continue;
       }
+      // tried to copy a file from inside the media folder: remove.
+      if (isFileInsideDirectory(mediaDir, media.path.replace('safe-file://', ''))) {
+        mediaDelete.push(media.name);
+        continue;
+      }
+      // if the file does not exist in the user's computer: remove.
+      if (!fs.existsSync(media.path.replace('safe-file://', ''))) {
+        mediaDelete.push(media.name);
+        continue;
+      }
+      const ext = path.extname(media.name) ? '' : extFromMime(media.type);
+      const mediaFile = `${card.createdAt}_${media.name}${ext}`;
+      const newPath = path.join(mediaDir, mediaFile);
+      fs.copyFileSync(media.path, newPath);
+      media.path = mediaFile; // Store only file name in media folder.
     }
     card.media = card.media.filter((m) => !mediaDelete.includes(m.name));
     // 2. Update images from the rich-text editors:
