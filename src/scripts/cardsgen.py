@@ -27,7 +27,7 @@ def generate_card(session_id):
         "tags": json.dumps([]),
         "sessions": json.dumps([session_id]),
         "media": json.dumps([]),
-        "height": 0,
+        "height": 108,  # Base height for 3 fields with simple text, if style changed in front it has to be adjusted.
     }
 
 
