@@ -76,34 +76,61 @@
     clearSelectedImage();
   }
 
+  // written by ChatGTP and tested.
   function normalizeLines(rte: HTMLElement): string {
-    const result: string[] = [];
+    const lines: string[] = [];
+    let currentLine: string[] = [];
+    const pushCurrentLineIfAny = () => {
+      if (currentLine.length > 0) {
+        lines.push(currentLine.join(''));
+        currentLine = [];
+      }
+    };
     rte.childNodes.forEach((node) => {
       if (node.nodeType === Node.ELEMENT_NODE) {
         const el = node as HTMLElement;
         if (el.tagName === 'DIV') {
-          const html = el.innerHTML.trim().toLowerCase();
-          if (html === '' || html === '<br>') {
-            result.push('<br>');
+          // Before processing the DIV, flush the current line
+          pushCurrentLineIfAny();
+          // Check if the DIV is "empty" (only spaces / &nbsp; / <br>)
+          const divInner = el.innerHTML ?? '';
+          const divText = el.textContent ?? '';
+          const isEmptyDiv =
+            divText.trim() === '' &&
+            // If there are tags, ensure they are only <br> or &nbsp;
+            // remove comments/spaces and check if innerHTML contains anything "visible"
+            divInner.replace(/<!--[\s\S]*?-->/g, '').replace(/(\s|&nbsp;|<br\/?>)*/gi, '') === '';
+          if (isEmptyDiv) {
+            // Empty line -> represent as <br>
+            lines.push('<br>');
           } else {
-            result.push(el.innerHTML);
+            // DIV with content -> use the div's innerHTML as a line
+            lines.push(divInner);
           }
-          return;
+        } else {
+          // Inline elements (img, span, b, etc.) stay in the current line
+          // use outerHTML to preserve attributes
+          currentLine.push(el.outerHTML);
         }
-        result.push(el.outerHTML);
-        return;
       } else if (node.nodeType === Node.TEXT_NODE) {
+        // Preserve text as-is; do not trim here to avoid losing meaningful spaces
         const txt = node.textContent ?? '';
-        if (txt.trim() !== '') {
-          result.push(txt);
-        }
+        // Avoid pushing purely empty \n\r nodes; keep significant text
+        if (txt !== null && txt !== '') currentLine.push(txt);
       }
+      // Ignore comments and other node types
     });
-    const content = result.join('');
-    return content
-      .replace(/^(<br>|&nbsp;|\s)+/i, '')
-      .replace(/(<br>|&nbsp;|\s)+$/i, '')
+    // If there's inline content after the last DIV, flush it
+    pushCurrentLineIfAny();
+    // Join the lines with <br> between them.
+    // IMPORTANT: do not use join('') — we want to keep line breaks.
+    let content = lines.join('<br>');
+    // Safe trim on the edges: remove br/nbsp/whitespace only at start and end
+    content = content
+      .replace(/^(?:\s|&nbsp;|(?:<br\s*\/?>))+/, '')
+      .replace(/(?:\s|&nbsp;|(?:<br\s*\/?>))+$/, '')
       .trim();
+    return content;
   }
 
   function getContent() {
