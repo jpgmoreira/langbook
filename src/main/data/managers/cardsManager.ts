@@ -101,13 +101,14 @@ export class CardsManager {
       const media = card.media[i];
       // if the file path already points to mediaDir, ignore.
       if (!path.relative(mediaDir, path.dirname(media.path.replace('safe-file://', '')))) continue;
+      // if the file does not exist in the user's computer: remove.
       if (!fs.existsSync(media.path.replace('safe-file://', ''))) mediaDelete.push(media.name);
       else {
         const ext = path.extname(media.name) ? '' : extFromMime(media.type);
         const mediaFile = `${card.createdAt}_${media.name}${ext}`;
         const newPath = path.join(mediaDir, mediaFile);
         fs.copyFileSync(media.path, newPath);
-        media.path = `safe-file://${newPath}`;
+        media.path = mediaFile; // Store only file name in media folder.
       }
     }
     card.media = card.media.filter((m) => !mediaDelete.includes(m.name));
@@ -123,8 +124,9 @@ export class CardsManager {
       const isUrl = src.startsWith('http');
       if (!isBase64 && !isUrl) continue;
       const hash = genHash(src, 10);
-      const fPath = path.join(mediaDir, `${card.createdAt}_${hash}.png`);
-      image.attribs.src = `safe-file://${fPath}`;
+      const mediaFile = `${card.createdAt}_${hash}.png`;
+      const fPath = path.join(mediaDir, mediaFile);
+      image.attribs.src = mediaFile; // Store only file name in media foder.
       if (fs.existsSync(fPath)) continue;
       let buffer: Buffer;
       if (isUrl) {
@@ -153,6 +155,7 @@ export class CardsManager {
   }
 
   public async upsertCard(card: Card) {
+    await this.updateCardMedia(card);
     // Delete old card info.
     if (card.id in this.cardsMap) {
       const oldCard = this.cardsMap[card.id];
@@ -168,7 +171,6 @@ export class CardsManager {
       ProfileManager.instance.addCards(1);
     }
     // Update with new info.
-    await this.updateCardMedia(card);
     await DbManager.instance.insertCard(card);
     SessionsManager.instance.cardCreated(card);
     TagsManager.instance.cardCreated(card);

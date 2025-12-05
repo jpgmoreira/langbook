@@ -57,6 +57,9 @@ export function randomId() {
   return `${timePart}.${randomPart}`;
 }
 
+/**
+ * Generates a deterministic hexadecimal hash for a string and returns the first "len" characters.
+ */
 export function genHash(str: string, len: number) {
   return crypto.createHash('sha256').update(str, 'binary').digest('hex').substring(0, len);
 }
