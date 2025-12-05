@@ -94,10 +94,19 @@ export class CardsManager {
   }
 
   /**
-   * For both the media input and images in the RTE fields:
-   *  - We receive files with either the full path or just the filename inside the media folder.
-   *  - In this method we copy the files to the media folder and adjust the
-   *      paths to contain only the name of the file in the media folder.
+   * Media files that come from the media input:
+   *  - They can come with the full absolute path on the machine (if they are new files),
+   *      or they can come with just the filename in the media folder (existing files).
+   *  - All files from the card's media will be assigned just the filename in the media
+   *      folder as the path.
+   *
+   * Image files that come from the RTE fields:
+   *  - They can come as:
+   *      1. base64 images;
+   *      2. Urls;
+   *      3. safe-file images (existing images).
+   *  - All the images in the fields will be assigned as source just the filename in
+   *      the media folder.
    */
   private async updateCardMedia(card: Card) {
     const profileId = ProfileManager.instance.getCurrProfile()!.id;
@@ -134,14 +143,21 @@ export class CardsManager {
     const images = [...$front('img'), ...$back('img'), ...$extra('img')];
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
-      let src = image.attribs.src;
+      const src = image.attribs.src;
+      const isSafeFile = src.startsWith('safe-file');
       const isBase64 = src.startsWith('data:image');
       const isUrl = src.startsWith('http');
-      if (!isBase64 && !isUrl) continue;
+      if (!isBase64 && !isUrl && !isSafeFile) {
+        continue;
+      }
       const hash = genHash(src, 10);
       const mediaFile = `${card.createdAt}_${hash}.png`;
-      const fPath = path.join(mediaDir, mediaFile);
       image.attribs.src = mediaFile; // Store only file name in media foder.
+      if (isSafeFile) {
+        // Image already existed: just keep only the name as src.
+        continue;
+      }
+      const fPath = path.join(mediaDir, mediaFile);
       if (fs.existsSync(fPath)) continue;
       let buffer: Buffer;
       if (isUrl) {
