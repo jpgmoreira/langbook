@@ -24,6 +24,7 @@
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
   import { RefreshPlace } from '@common/types/refreshPlace';
   import DeleteCardModal from '@renderer/components/UI/DeleteCardModal.vue';
+  import HomeCard from '@renderer/components/HomeCard.vue';
 
   type RTEField = 'front' | 'back' | 'extra';
 
@@ -56,6 +57,7 @@
     extra: useTemplateRef('extra-ref'),
     media: useTemplateRef('media-input'),
   };
+  const cardRef = useTemplateRef('card-ref');
   const tagsOptions = computed(() => {
     const entries = Object.entries(allTags.value);
     const result: MultiselectOption[] = [];
@@ -230,7 +232,12 @@
     card.value.back = refs.back.value?.getContent() || '';
     card.value.extra = refs.extra.value?.getContent() || '';
     card.value.media = card.value.media.map((m) => toRaw(m));
-    await window.api.invoke(Channels.upsertCard, toRaw(card.value));
+    nextTick(async () => {
+      if (!cardRef.value) return;
+      const height = cardRef.value.getHeight();
+      card.value.height = height;
+      await window.api.invoke(Channels.upsertCard, toRaw(card.value));
+    });
   }
 
   function openModal() {
@@ -292,6 +299,7 @@
 
 <template>
   <div class="editor-page flex flex-col gap-1 grow p-1">
+    <HomeCard :card="card" ref="card-ref" class="dummy-card" />
     <DeleteCardModal
       v-bind="modalState"
       @close="closeModal"
@@ -449,5 +457,11 @@
   .media-parent {
     display: flex;
     height: 100px;
+  }
+  .dummy-card {
+    visibility: hidden;
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
   }
 </style>
