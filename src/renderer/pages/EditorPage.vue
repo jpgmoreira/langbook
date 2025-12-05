@@ -5,6 +5,7 @@
   import { Events } from '@renderer/events/events';
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   import { useUIStore } from '@renderer/store/ui';
+  import { useMediaStore } from '@renderer/store/media';
   import {
     computed,
     ref,
@@ -31,6 +32,7 @@
   EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => initData(data));
 
   const uiStore = useUIStore();
+  const mediaStore = useMediaStore();
 
   // -- Dynamic data: ---
 
@@ -309,7 +311,7 @@
     <div class="rte-parent">
       <RichTextEditor
         v-show="showCardFields.front"
-        :initial="card.front"
+        :initial="mediaStore.processRteImages(card.front)"
         class="grow"
         @blur="rteBlur('front')"
         ref="front-ref"
@@ -327,7 +329,7 @@
     <div class="rte-parent">
       <RichTextEditor
         v-show="showCardFields.back"
-        :initial="card.back"
+        :initial="mediaStore.processRteImages(card.back)"
         class="grow"
         @blur="rteBlur('back')"
         ref="back-ref"
@@ -345,7 +347,7 @@
     <div class="rte-parent">
       <RichTextEditor
         v-show="showCardFields.extra"
-        :initial="card.extra"
+        :initial="mediaStore.processRteImages(card.extra)"
         class="grow"
         @blur="rteBlur('extra')"
         ref="extra-ref"

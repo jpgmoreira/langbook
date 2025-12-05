@@ -7,7 +7,6 @@ import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
-import { MediaFile } from '@common/schemas/card';
 
 EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
   if (data.where.includes(RefreshPlace.PROFILE_STORE)) {
@@ -23,7 +22,6 @@ export const useProfileStore = defineStore('profile', {
   state: () => ({
     currProfile: null as Profile | null,
     registry: getEmptyProfileRegistry(),
-    mediaDir: '',
   }),
   actions: {
     refreshData(data: RendererResponseDTO) {
@@ -31,7 +29,6 @@ export const useProfileStore = defineStore('profile', {
       if ('profileRegistry' in data) {
         this.registry = data.profileRegistry || getEmptyProfileRegistry();
       }
-      if ('mediaDir' in data) this.mediaDir = data.mediaDir || '';
     },
     async createProfile(name: string): Promise<CreateProfileResponseDTO> {
       const result = await window.api.invoke<CreateProfileResponseDTO>(
@@ -50,7 +47,6 @@ export const useProfileStore = defineStore('profile', {
     clear() {
       this.currProfile = null;
       this.registry.currProfileId = null;
-      this.mediaDir = '';
     },
     async renameProfile(profileId: string, newName: string): Promise<GenericResponseDTO> {
       newName = newName.trim();
@@ -73,9 +69,6 @@ export const useProfileStore = defineStore('profile', {
         );
       }
       return result;
-    },
-    resolveMediaPath(media: MediaFile) {
-      return `safe-file://${this.mediaDir}/${media.path}`;
     },
   },
 });

@@ -150,13 +150,15 @@ export class CardsManager {
       if (!isBase64 && !isUrl && !isSafeFile) {
         continue;
       }
+      if (isSafeFile) {
+        // Image already existed: just keep only the name as src.
+        const baseName = path.basename(src);
+        image.attribs.src = baseName;
+        continue;
+      }
       const hash = genHash(src, 10);
       const mediaFile = `${card.createdAt}_${hash}.png`;
       image.attribs.src = mediaFile; // Store only file name in media foder.
-      if (isSafeFile) {
-        // Image already existed: just keep only the name as src.
-        continue;
-      }
       const fPath = path.join(mediaDir, mediaFile);
       if (fs.existsSync(fPath)) continue;
       let buffer: Buffer;

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import path, { join } from 'path';
 import { Channels } from '@preload/channels';
 import { BrowserWindow, Menu } from 'electron';
 import { installExtension, VUEJS_DEVTOOLS } from 'electron-devtools-installer';
@@ -9,6 +9,8 @@ import { SessionsManager } from './sessionsManager';
 import { Card } from '@common/schemas/card';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
+import { DATA_DIR } from '../constants';
+import { ProfileManager } from './profileManager';
 
 /**
  * Singleton for managing application windows.
@@ -93,11 +95,13 @@ export class WindowManager {
   }
 
   public openEditor(card: Card | null) {
+    const profileId = ProfileManager.instance.getCurrProfile()!.id;
     const data: RendererResponseDTO = {
       where: [RefreshPlace.EDITOR_PAGE],
       card,
       tags: TagsManager.instance.getTags(),
       sessions: SessionsManager.instance.getSessions(),
+      mediaDir: path.join(DATA_DIR, 'profileData', profileId, 'media'),
     };
     this.editorWindow.webContents.send(Channels.openEditor, data);
     this.editorWindow.show();

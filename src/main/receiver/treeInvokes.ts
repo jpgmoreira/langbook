@@ -128,11 +128,7 @@ ipcMain.handle(
       await TreeManager.instance.deleteNode(nodeId);
       const hasSessions = TreeManager.instance.getNFiles() > 0;
       const tags = TagsManager.instance.getTags();
-      const {
-        page,
-        height,
-        anchor: cardsViewAnchor,
-      } = CardsManager.instance.getCurrentPageRefreshed();
+      const { page, height, nFiltered } = CardsManager.instance.getCurrentPageRefreshed();
       WindowManager.instance.sendDataToMainWindow({
         where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
         filters: FiltersManager.instance.getFilters(),
@@ -141,7 +137,7 @@ ipcMain.handle(
         tags,
         page,
         height,
-        anchor: cardsViewAnchor,
+        nFiltered,
       });
       return TreeManager.instance.buildResult(anchor);
     });
@@ -156,11 +152,7 @@ ipcMain.handle(
       await TreeManager.instance.deleteSelectedNodes();
       const hasSessions = TreeManager.instance.getNFiles() > 0;
       const tags = TagsManager.instance.getTags();
-      const {
-        page,
-        height,
-        anchor: cardsViewAnchor,
-      } = CardsManager.instance.getCurrentPageRefreshed();
+      const { page, height, nFiltered } = CardsManager.instance.getCurrentPageRefreshed();
       WindowManager.instance.sendDataToMainWindow({
         where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
         filters: FiltersManager.instance.getFilters(),
@@ -169,7 +161,7 @@ ipcMain.handle(
         tags,
         page,
         height,
-        anchor: cardsViewAnchor,
+        nFiltered,
       });
       return TreeManager.instance.buildResult(anchor);
     });

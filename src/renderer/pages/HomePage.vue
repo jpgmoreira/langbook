@@ -15,11 +15,11 @@
   import { Card, MediaFile } from '@common/schemas/card';
   import { Tags } from '@common/schemas/tags';
   import { RefreshPlace } from '@common/types/refreshPlace';
-  import { useProfileStore } from '@renderer/store/profile';
+  import { useMediaStore } from '@renderer/store/media';
   EventEmitter.instance.on(Events.refreshData, refreshData);
   const filtersStore = useFiltersStore();
   const uiStore = useUIStore();
-  const profileStore = useProfileStore();
+  const mediaStore = useMediaStore();
   const isResizing = ref(false);
   const treeAreaWidth = ref(300);
   const contestsAreaWidth = ref(window.innerWidth - 300);
@@ -87,7 +87,7 @@
   }
   async function mediaClick(media: MediaFile) {
     if (media.type.startsWith('audio')) {
-      const mediaPath = profileStore.resolveMediaPath(media);
+      const mediaPath = mediaStore.resolveMediaPath(media.path);
       const audio = new Audio(mediaPath);
       audio.play();
     } else if (media.type.startsWith('image')) {

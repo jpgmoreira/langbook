@@ -1,6 +1,8 @@
 <script lang="ts" setup>
   import { useTemplateRef } from 'vue';
+  import { useMediaStore } from '@renderer/store/media';
   import type { Card, MediaFile } from '@common/schemas/card';
+  const store = useMediaStore();
   const cardRef = useTemplateRef('card-ref');
   const props = defineProps<{
     card: Card;
@@ -25,9 +27,9 @@
 
 <template>
   <div class="home-card flex flex-col whitespace-nowrap" ref="card-ref">
-    <div v-html="card.front" class="mx-1 field"></div>
-    <div v-if="card.back" v-html="card.back" class="mx-1 field"></div>
-    <div v-if="card.extra" v-html="card.extra" class="mx-1 field"></div>
+    <div v-html="store.processRteImages(card.front)" class="mx-1 field"></div>
+    <div v-if="card.back" v-html="store.processRteImages(card.back)" class="mx-1 field"></div>
+    <div v-if="card.extra" v-html="store.processRteImages(card.extra)" class="mx-1 field"></div>
     <div v-if="card.media.length" class="flex">
       <button
         v-for="media in card.media"

@@ -1,18 +1,18 @@
 <script lang="ts" setup>
   import { computed, ref, watch } from 'vue';
   import { MediaFile } from '@common/schemas/card';
-  import { useProfileStore } from '@renderer/store/profile';
+  import { useMediaStore } from '@renderer/store/media';
   const props = defineProps<{
     media?: MediaFile;
   }>();
-  const store = useProfileStore();
+  const store = useMediaStore();
   const scale = ref(1);
   const style = computed(() => ({
     transform: `translate(-50%, -50%) scale(${scale.value})`,
   }));
   const mediaPath = computed(() => {
     if (!props.media) return '';
-    return store.resolveMediaPath(props.media);
+    return store.resolveMediaPath(props.media.path);
   });
   function onWheel(e: WheelEvent) {
     const factor = e.deltaY < 0 ? 1.1 : 0.9;
