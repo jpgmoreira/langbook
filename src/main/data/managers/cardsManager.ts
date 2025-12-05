@@ -202,6 +202,20 @@ export class CardsManager {
           this.deleteMediaFile(media.path);
         }
       }
+      // Delete images from the RTEs that are not present anymore.
+      let $front = cheerio.load(card.front, null, false),
+        $back = cheerio.load(card.back, null, false),
+        $extra = cheerio.load(card.extra, null, false);
+      const newImages = [...$front('img'), ...$back('img'), ...$extra('img')];
+      $front = cheerio.load(oldCard.front, null, false);
+      $back = cheerio.load(oldCard.back, null, false);
+      $extra = cheerio.load(oldCard.extra, null, false);
+      const oldImages = [...$front('img'), ...$back('img'), ...$extra('img')];
+      for (const image of oldImages) {
+        if (!newImages.some((i) => i.attribs.src === image.attribs.src)) {
+          this.deleteMediaFile(image.attribs.src);
+        }
+      }
     } else {
       ProfileManager.instance.addCards(1);
     }
