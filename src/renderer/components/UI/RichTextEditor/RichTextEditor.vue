@@ -76,28 +76,31 @@
     clearSelectedImage();
   }
 
-  function normalizeContent(rte: HTMLElement): string {
-    const lines: string[] = [];
+  function normalizeLines(rte: HTMLElement): string {
+    const result: string[] = [];
     rte.childNodes.forEach((node) => {
       if (node.nodeType === Node.ELEMENT_NODE) {
         const el = node as HTMLElement;
         if (el.tagName === 'DIV') {
-          const html = el.innerHTML.trim();
-          if (html === '' || html.toLowerCase() === '<br>') {
-            lines.push('');
+          const html = el.innerHTML.trim().toLowerCase();
+          if (html === '' || html === '<br>') {
+            result.push('<br>');
           } else {
-            lines.push(html);
+            result.push(el.innerHTML);
           }
-        } else {
-          lines.push(el.outerHTML);
+          return;
         }
+        result.push(el.outerHTML);
+        return;
       } else if (node.nodeType === Node.TEXT_NODE) {
-        const txt = node.textContent?.trim() ?? '';
-        if (txt !== '') lines.push(txt);
+        const txt = node.textContent ?? '';
+        if (txt.trim() !== '') {
+          result.push(txt);
+        }
       }
     });
-    return lines
-      .join('<br>')
+    const content = result.join('');
+    return content
       .replace(/^(<br>|&nbsp;|\s)+/i, '')
       .replace(/(<br>|&nbsp;|\s)+$/i, '')
       .trim();
@@ -106,7 +109,7 @@
   function getContent() {
     if (!rteRef.value) return '';
     const clone = rteRef.value.cloneNode(true) as HTMLElement;
-    const content = normalizeContent(clone);
+    const content = normalizeLines(clone);
     return content;
   }
 
