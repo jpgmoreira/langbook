@@ -10,4 +10,5 @@ export enum Channels {
   upsertCard = 'upsert-card',
   filter = 'filter',
   deleteCard = 'delete-card',
+  getPage = 'get-page',
 }

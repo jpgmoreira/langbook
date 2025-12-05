@@ -90,3 +90,14 @@ ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) =>
   };
   WindowManager.instance.cardWasDeleted(data);
 });
+
+ipcMain.handle(Channels.getPage, async (_: IpcMainInvokeEvent, scrollTop: number) => {
+  const { page, height, nFiltered } = CardsManager.instance.getPage(scrollTop);
+  const data: RendererResponseDTO = {
+    where: [RefreshPlace.HOME_PAGE],
+    page,
+    height,
+    nFiltered,
+  };
+  WindowManager.instance.sendDataToMainWindow(data);
+});

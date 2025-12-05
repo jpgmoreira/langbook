@@ -23,7 +23,6 @@
   const contestsAreaWidth = ref(window.innerWidth - 300);
   const hideFilters = ref(false);
   const page = ref<Card[]>([]);
-  const anchor = ref(0);
   const height = ref(0);
   const nFiltered = ref(0);
   const selectedMedia = ref<MediaFile | undefined>(undefined);
@@ -79,7 +78,6 @@
   function refreshData(data: RendererResponseDTO) {
     if (!data.where.includes(RefreshPlace.HOME_PAGE)) return;
     if ('page' in data) page.value = data.page as Card[];
-    if ('anchor' in data) anchor.value = data.anchor as number;
     if ('height' in data) height.value = data.height as number;
     if ('nFiltered' in data) nFiltered.value = data.nFiltered as number;
     if ('tags' in data) allTags.value = data.tags as Tags;
@@ -134,7 +132,6 @@
         <div class="grow overflow-hidden">
           <CardsView
             :page="page"
-            :anchor="anchor"
             :height="height"
             :n-filtered="nFiltered"
             :onMediaClick="mediaClick"

@@ -11,6 +11,7 @@ export const allowedInvokeChannels = Object.freeze([
   Channels.upsertCard,
   Channels.filter,
   Channels.deleteCard,
+  Channels.getPage,
   // Channels to perform treeview operations:
   TreeChannels.createNode,
   TreeChannels.createNodeAbove,

@@ -8,13 +8,15 @@
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   const props = defineProps<{
     page: Card[];
-    anchor: number;
     height: number;
     nFiltered: number;
     onMediaClick: (media: MediaFile) => void;
     openEditor: (card: Card | null) => void;
   }>();
   const bottomPadding = 300; //px.
+  const scrollTimer = ref<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const scrollTop = ref(0);
+  const isRequesting = ref(false);
   const contextMenu = reactive({
     visible: false,
     x: 0,
@@ -34,6 +36,7 @@
     height: `${props.height + props.nFiltered * 40 + bottomPadding}px`,
   }));
   const rootRef = useTemplateRef('root');
+  const scrollContainerRef = useTemplateRef('scroll-container');
   let observer: ResizeObserver | null = null;
   function showContextMenu(e: MouseEvent, card: Card) {
     const distanceToRight = window.innerWidth - e.clientX;
@@ -50,13 +53,17 @@
   function hideContextMenu() {
     contextMenu.visible = false;
   }
-  const lastScroll = ref(0);
   function handleScroll() {
-    const now = Date.now();
-    if (now - lastScroll.value < 100) return;
-    lastScroll.value = now;
     hideContextMenu();
-    // since the cards don't have a fixed height, I cannot use anchor.
+    clearTimeout(scrollTimer.value);
+    scrollTimer.value = setTimeout(async () => {
+      if (!scrollContainerRef.value) return;
+      if (isRequesting.value) return;
+      scrollTop.value = scrollContainerRef.value.scrollTop;
+      isRequesting.value = true;
+      await window.api.invoke(Channels.getPage, scrollTop.value);
+      isRequesting.value = false;
+    }, 30);
   }
   function closeModal() {
     modalState.card = null;
@@ -91,7 +98,7 @@
     <div v-if="!props.page.length" class="text-xl opacity-70 absolute-center whitespace-nowrap">
       No cards to show
     </div>
-    <div v-else class="overflow-auto relative h-full" @scroll="handleScroll">
+    <div v-else class="overflow-auto relative h-full" @scroll="handleScroll" ref="scroll-container">
       <div class="context-menu fixed" v-if="contextMenu.visible" :style="contextStyle">
         <div class="option px-2 py-0.5" @click="openEditor(contextMenu.card)">Edit</div>
         <div class="option text-danger px-2 py-0.5" @click="openModal(contextMenu.card)">
@@ -100,9 +107,9 @@
       </div>
       <div class="absolute" :style="ghostStyle" style="border: 2px solid orchid"></div>
       <div class="absolute top-0 left-0 bottom-0 w-full flex flex-col">
-        <div v-for="(card, index) in props.page" class="w-fit min-w-full">
+        <div v-for="card in props.page" class="w-fit min-w-full">
           <div class="card-number flex justify-between whitespace-nowrap">
-            <span>{{ index + anchor + 1 }}</span>
+            <span>{{ card.index! + 1 }}</span>
             <span class="text-sm">Created: {{ parseTimestamp(card.createdAt) }}</span>
           </div>
           <HomeCard
