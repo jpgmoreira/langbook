@@ -1,5 +1,14 @@
 <script lang="ts" setup>
-  import { ref, reactive, computed, useTemplateRef, onMounted, onBeforeUnmount, toRaw } from 'vue';
+  import {
+    ref,
+    reactive,
+    computed,
+    useTemplateRef,
+    onMounted,
+    onBeforeUnmount,
+    toRaw,
+    watch,
+  } from 'vue';
   import type { Card, MediaFile } from '@common/schemas/card';
   import HomeCard from './HomeCard.vue';
   import DeleteCardModal from './UI/DeleteCardModal.vue';
@@ -28,6 +37,9 @@
     visible: false,
     isDeleting: false,
   });
+  const pageStyle = reactive({
+    transform: `translateY(${props.page.length ? props.page[0].scrollTop! : 0}px)`,
+  });
   const contextStyle = computed(() => ({
     left: `${contextMenu.x}px`,
     top: `${contextMenu.y}px`,
@@ -38,6 +50,12 @@
   const rootRef = useTemplateRef('root');
   const scrollContainerRef = useTemplateRef('scroll-container');
   let observer: ResizeObserver | null = null;
+  watch(
+    () => props.page,
+    () => {
+      pageStyle.transform = `translateY(${props.page.length ? props.page[0].scrollTop! : 0}px)`;
+    }
+  );
   function showContextMenu(e: MouseEvent, card: Card) {
     const distanceToRight = window.innerWidth - e.clientX;
     const MENU_WIDTH = 100;
@@ -106,7 +124,7 @@
         </div>
       </div>
       <div class="absolute" :style="ghostStyle" style="border: 2px solid orchid"></div>
-      <div class="absolute top-0 left-0 bottom-0 w-full flex flex-col">
+      <div class="absolute top-0 left-0 bottom-0 w-full flex flex-col" :style="pageStyle">
         <div v-for="card in props.page" class="w-fit min-w-full">
           <div class="card-number flex justify-between whitespace-nowrap">
             <span>{{ card.index! + 1 }}</span>
