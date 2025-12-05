@@ -21,8 +21,8 @@ export async function loadStartupData(): Promise<RendererResponseDTO> {
     hasSessions: false,
     filters: getEmptyFilters(),
     page: [],
-    anchor: 0,
     height: 0,
+    nFiltered: 0,
   };
   if (profile) {
     // The order of initialization below is extremely important.
@@ -32,7 +32,7 @@ export async function loadStartupData(): Promise<RendererResponseDTO> {
     TreeManager.instance.loadTree(profile.id);
     await DbManager.instance.loadProfile(profile.id);
     await CardsManager.instance.loadFromDb();
-    const { page, height } = CardsManager.instance.getPage(0);
+    const { page, height, nFiltered } = CardsManager.instance.getPage(0);
     const hasSessions = TreeManager.instance.getNFiles() > 0;
     data.tags = TagsManager.instance.getTags();
     data.sessions = SessionsManager.instance.getSessions();
@@ -40,6 +40,7 @@ export async function loadStartupData(): Promise<RendererResponseDTO> {
     data.filters = FiltersManager.instance.getFilters();
     data.page = page;
     data.height = height;
+    data.nFiltered = nFiltered;
   }
   return data;
 }

@@ -15,8 +15,11 @@ export type Card = {
   sessions: string[];
   tags: string[];
   frequency: number;
-  // UI properties:
+  // UI properties stored in the database:
   height: number;
+  // UI properties not stored in the database:
+  scrollTop?: number;
+  index?: number;
 };
 
 export type DBCard = Omit<Card, 'tags' | 'sessions' | 'media'> & {

@@ -41,10 +41,11 @@ export class CardsManager {
   // Maps frequency numbers to all filtered cards that have that frequency:
   private frequency: Record<number, Card[]> = {};
 
-  // Current cards view anchor.
-  // Necessary because when editing, adding or deleting a card I need to notify
-  //   the main window about the change, so I need to store the anchor here.
-  private anchor = 0;
+  // Current cards view scroll top.
+  // I need it here, because a new page can be sent to the main window through an
+  //  operation via the editor window. In this case the flow does not start from
+  //  the main window so I can't receive the scroll top from it.
+  private scrollTop = 0;
 
   private constructor() {}
 
@@ -89,7 +90,6 @@ export class CardsManager {
     for (let i = 0; i <= 10; i++) {
       shuffleArray(this.frequency[i]);
     }
-    this.anchor = Math.min(this.anchor, Math.max(this.filtered.length - this.CARDS_PAGE_SIZE, 0));
   }
 
   private async updateCardMedia(card: Card) {
@@ -175,34 +175,55 @@ export class CardsManager {
     this.cardsMap[card.id] = card;
     // Send updates to main window:
     this.refresh();
-    const { page, height } = this.getPage(this.anchor);
+    const { page, height, nFiltered } = this.getPage(this.scrollTop);
     const data: RendererResponseDTO = {
       where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
       profileRegistry: ProfileManager.instance.getProfileRegistry(),
       tags: TagsManager.instance.getTags(),
       filters: FiltersManager.instance.getFilters(),
-      anchor: this.anchor,
       page,
       height,
+      nFiltered,
     };
     WindowManager.instance.sendDataToMainWindow(data);
     // TODO: Check if flashcards window is open, and if it is, send newly updated card to it.
     WindowManager.instance.closeEditor();
   }
 
-  public getPage(anchor: number) {
-    this.anchor = anchor;
+  public getPage(scrollTop: number) {
+    this.scrollTop = scrollTop;
     const page: Card[] = [];
-    for (let i = anchor, j = 0; i < this.filtered.length && j < this.CARDS_PAGE_SIZE; i++, j++) {
+    let height = 0;
+    let anchorIndex = 0;
+    let totalScroll = 0;
+    let hasSetAnchor = false;
+    for (let i = 0; i < this.filtered.length; i++) {
+      const card = this.filtered[i];
+      height += card.height;
+      card.index = i;
+      card.scrollTop = totalScroll;
+      totalScroll += 40 + card.height;
+      if (totalScroll > scrollTop && !hasSetAnchor) {
+        anchorIndex = i;
+        hasSetAnchor = true;
+      }
+    }
+    if (!hasSetAnchor) {
+      anchorIndex = this.filtered.length - 1;
+    }
+    const half = Math.floor(this.CARDS_PAGE_SIZE / 2);
+    const first = Math.max(0, anchorIndex - half);
+    const last = Math.min(this.filtered.length - 1, anchorIndex + half);
+    for (let i = first; i <= last; i++) {
       page.push(this.filtered[i]);
     }
-    const height = this.filtered.reduce((prev: number, curr: Card) => prev + curr.height, 0);
-    return { page, height, anchor };
+    const nFiltered = this.filtered.length;
+    return { page, height, nFiltered };
   }
 
   public getCurrentPageRefreshed() {
     this.refresh();
-    return this.getPage(this.anchor);
+    return this.getPage(this.scrollTop);
   }
 
   public async sessionDeleted(sessionId: string) {
@@ -245,7 +266,7 @@ export class CardsManager {
   }
 
   public clear() {
-    this.anchor = 0;
+    this.scrollTop = 0;
     this.cardsMap = {};
     this.filtered = [];
     this.frequency = {};
