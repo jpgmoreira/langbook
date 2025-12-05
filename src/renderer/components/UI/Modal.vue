@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { onMounted, onUnmounted } from 'vue';
+  import { ref, onMounted, onUnmounted } from 'vue';
   const props = defineProps({
     visible: {
       type: Boolean,
@@ -12,7 +12,16 @@
   });
   const emit = defineEmits<{
     (e: 'close'): void;
+    (e: 'animationFinished'): void;
   }>();
+  const leaveCount = ref(0);
+  function afterLeave() {
+    leaveCount.value++;
+    if (leaveCount.value === 2) {
+      leaveCount.value = 0;
+      emit('animationFinished');
+    }
+  }
   function close() {
     if (props.frozen) return;
     emit('close');
@@ -32,10 +41,10 @@
 <template>
   <teleport to="body">
     <div class="modal-container">
-      <Transition name="backdrop-fade">
+      <Transition name="backdrop-fade" @after-leave="afterLeave">
         <div v-if="props.visible" class="modal-backdrop" @click="close"></div>
       </Transition>
-      <Transition name="modal-slide">
+      <Transition name="modal-slide" @after-leave="afterLeave">
         <div v-if="props.visible" class="modal">
           <div class="modal-header">
             <div>

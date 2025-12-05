@@ -1,7 +1,7 @@
 import { Channels } from './channels';
 import { TreeChannels } from './treeChannels';
 
-export const allowedSendChannels = Object.freeze([Channels.cancelCardEdit] as const);
+export const allowedSendChannels = Object.freeze([Channels.closeEditor] as const);
 export const allowedInvokeChannels = Object.freeze([
   Channels.createProfile,
   Channels.renameProfile,

@@ -23,6 +23,7 @@
   import { Channels } from '@preload/channels';
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
   import { RefreshPlace } from '@common/types/refreshPlace';
+  import DeleteCardModal from '@renderer/components/UI/DeleteCardModal.vue';
 
   type RTEField = 'front' | 'back' | 'extra';
 
@@ -38,10 +39,16 @@
   const isNewCard = ref(true);
   const isAllowReversedDisabled = ref(true);
   const lastScroll = ref(0);
+  const mustCloseAfterModalAnimation = ref(false);
   const showCardFields = reactive({
     front: false,
     back: false,
     extra: false,
+  });
+  const modalState = reactive({
+    card: null as Card | null,
+    visible: false,
+    isDeleting: false,
   });
   const refs = {
     front: useTemplateRef('front-ref'),
@@ -226,8 +233,35 @@
     await window.api.invoke(Channels.upsertCard, toRaw(card.value));
   }
 
+  function openModal() {
+    if (isNewCard.value) return;
+    modalState.card = card.value;
+    modalState.visible = true;
+  }
+
+  function closeModal() {
+    modalState.card = null;
+    modalState.visible = false;
+  }
+
+  function modalAnimationFinished() {
+    if (mustCloseAfterModalAnimation.value) {
+      mustCloseAfterModalAnimation.value = false;
+      window.api.send(Channels.closeEditor);
+    }
+  }
+
+  async function deleteCard() {
+    card.value.media = card.value.media.map((m) => toRaw(m));
+    modalState.isDeleting = true;
+    await window.api.invoke<RendererResponseDTO>(Channels.deleteCard, toRaw(card.value));
+    modalState.isDeleting = false;
+    mustCloseAfterModalAnimation.value = true;
+    closeModal();
+  }
+
   function cancel() {
-    window.api.send(Channels.cancelCardEdit);
+    window.api.send(Channels.closeEditor);
   }
 
   function setFrequency(value: number) {
@@ -258,6 +292,12 @@
 
 <template>
   <div class="editor-page flex flex-col gap-1 grow p-1">
+    <DeleteCardModal
+      v-bind="modalState"
+      @close="closeModal"
+      @delete="deleteCard"
+      @animation-finished="modalAnimationFinished"
+    />
     <div class="rte-parent">
       <RichTextEditor
         v-show="showCardFields.front"
@@ -371,8 +411,32 @@
       <button v-if="isNewCard" type="button" class="btn-primary" @click="addOrSaveClick">
         Add
       </button>
-      <button v-else type="button" class="btn-primary" @click="addOrSaveClick">Save</button>
-      <button type="button" class="btn-warning" @click="cancel">Cancel</button>
+      <template v-else>
+        <button
+          type="button"
+          class="btn-primary"
+          @click="addOrSaveClick"
+          :disabled="mustCloseAfterModalAnimation"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          class="btn-danger"
+          @click="openModal"
+          :disabled="mustCloseAfterModalAnimation"
+        >
+          Delete
+        </button>
+      </template>
+      <button
+        type="button"
+        class="btn-warning"
+        @click="cancel"
+        :disabled="mustCloseAfterModalAnimation"
+      >
+        Cancel
+      </button>
     </footer>
   </div>
 </template>

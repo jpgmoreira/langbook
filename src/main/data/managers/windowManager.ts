@@ -110,4 +110,8 @@ export class WindowManager {
   public sendDataToMainWindow(data: RendererResponseDTO) {
     this.mainWindow.webContents.send(Channels.refreshData, data);
   }
+
+  public cardWasDeleted(data: RendererResponseDTO) {
+    this.sendDataToMainWindow(data);
+  }
 }

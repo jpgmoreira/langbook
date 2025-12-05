@@ -74,22 +74,19 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle(
-  Channels.deleteCard,
-  async (_: IpcMainInvokeEvent, card: Card): Promise<RendererResponseDTO> => {
-    await sleep(2000);
-    await CardsManager.instance.deleteCard(card);
-    const { page, height, anchor } = CardsManager.instance.getCurrentPageRefreshed();
-    const data: RendererResponseDTO = {
-      where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
-      profileRegistry: ProfileManager.instance.getProfileRegistry(),
-      tags: TagsManager.instance.getTags(),
-      sessions: SessionsManager.instance.getSessions(),
-      filters: FiltersManager.instance.getFilters(),
-      page,
-      anchor,
-      height,
-    };
-    return data;
-  }
-);
+ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) => {
+  await sleep(2000);
+  await CardsManager.instance.deleteCard(card);
+  const { page, height, anchor } = CardsManager.instance.getCurrentPageRefreshed();
+  const data: RendererResponseDTO = {
+    where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
+    profileRegistry: ProfileManager.instance.getProfileRegistry(),
+    tags: TagsManager.instance.getTags(),
+    sessions: SessionsManager.instance.getSessions(),
+    filters: FiltersManager.instance.getFilters(),
+    page,
+    anchor,
+    height,
+  };
+  WindowManager.instance.cardWasDeleted(data);
+});

@@ -2,11 +2,9 @@
   import { reactive, computed, useTemplateRef, onMounted, onBeforeUnmount, toRaw } from 'vue';
   import type { Card, MediaFile } from '@common/schemas/card';
   import HomeCard from './HomeCard.vue';
+  import DeleteCardModal from './UI/DeleteCardModal.vue';
   import { parseTimestamp } from '@common/utils/dateUtils';
-  import Modal from './UI/Modal.vue';
   import { Channels } from '@preload/channels';
-  import { EventEmitter } from '@common/events/eventEmitter';
-  import { Events } from '@renderer/events/events';
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   const props = defineProps<{
     page: Card[];
@@ -56,14 +54,14 @@
     modalState.card = card;
     modalState.visible = true;
   }
-  async function deleteCard(card: Card | null) {
+  async function deleteCard() {
+    const card = contextMenu.card;
     if (!card) return;
     card.media = card.media.map((m) => toRaw(m));
     modalState.isDeleting = true;
-    const data = await window.api.invoke<RendererResponseDTO>(Channels.deleteCard, toRaw(card));
+    await window.api.invoke<RendererResponseDTO>(Channels.deleteCard, toRaw(card));
     modalState.isDeleting = false;
     closeModal();
-    EventEmitter.instance.emit(Events.refreshData, data);
   }
   onMounted(() => {
     observer = new ResizeObserver(hideContextMenu);
@@ -76,39 +74,7 @@
 
 <template>
   <div class="cards-view h-full relative" @click="hideContextMenu" ref="root">
-    <Modal :visible="modalState.visible" :frozen="modalState.isDeleting" @close="closeModal">
-      <template #header>Delete card</template>
-      <template #body>
-        <div class="flex flex-col text-center">
-          <span>Are you sure you want to delete this card?</span>
-          <span class="text-danger my-2">This action cannot be undone!</span>
-          <div v-if="modalState.isDeleting" class="text-danger flex items-center">
-            <span class="loader mr-2"></span>
-            Deleting...
-          </div>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex justify-between">
-          <button
-            type="button"
-            class="btn-secondary"
-            :disabled="modalState.isDeleting"
-            @click="closeModal"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn-danger"
-            :disabled="modalState.isDeleting"
-            @click="deleteCard(contextMenu.card)"
-          >
-            Delete
-          </button>
-        </div>
-      </template>
-    </Modal>
+    <DeleteCardModal v-bind="modalState" @close="closeModal" @delete="deleteCard" />
     <div v-if="!props.page.length" class="text-xl opacity-70 absolute-center whitespace-nowrap">
       No cards to show
     </div>
