@@ -92,6 +92,12 @@ export class CardsManager {
     }
   }
 
+  /**
+   * For both the media input and images in the RTE fields:
+   *  - We receive the full paths for the files here.
+   *  - In this method we copy the files to the media folder and adjust the
+   *      paths to contain only the name of the file in the media folder.
+   */
   private async updateCardMedia(card: Card) {
     const profileId = ProfileManager.instance.getCurrProfile()!.id;
     const mediaDir = path.join(DATA_DIR, 'profileData', profileId, 'media');
