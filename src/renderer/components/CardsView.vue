@@ -28,6 +28,9 @@
     left: `${contextMenu.x}px`,
     top: `${contextMenu.y}px`,
   }));
+  const ghostStyle = computed(() => ({
+    height: `${props.height}px`,
+  }));
   const rootRef = useTemplateRef('root');
   let observer: ResizeObserver | null = null;
   function showContextMenu(e: MouseEvent, card: Card) {
@@ -85,10 +88,8 @@
           Delete
         </div>
       </div>
-      <div
-        class="absolute top-0 left-0 bottom-0 w-full flex flex-col"
-        :style="{ height: '3000px' }"
-      >
+      <div class="absolute" :style="ghostStyle" style="border: 2px solid orchid"></div>
+      <div class="absolute top-0 left-0 bottom-0 w-full flex flex-col">
         <div v-for="(card, index) in props.page" class="w-fit min-w-full">
           <div class="card-number flex justify-between whitespace-nowrap">
             <span>{{ index + anchor + 1 }}</span>
