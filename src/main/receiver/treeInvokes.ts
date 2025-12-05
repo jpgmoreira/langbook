@@ -123,7 +123,7 @@ ipcMain.handle(
     anchor: number,
     nodeId: string
   ): Promise<TreeOperationResponseDTO> => {
-    await sleep(2000);
+    await sleep(1000);
     return measure('deleteNode', async () => {
       await TreeManager.instance.deleteNode(nodeId);
       const hasSessions = TreeManager.instance.getNFiles() > 0;
@@ -147,7 +147,7 @@ ipcMain.handle(
 ipcMain.handle(
   TreeChannels.deleteSelectedNodes,
   async (_: IpcMainInvokeEvent, anchor: number): Promise<TreeOperationResponseDTO> => {
-    await sleep(2000);
+    await sleep(1000);
     return measure('deleteSelectedNodes', async () => {
       await TreeManager.instance.deleteSelectedNodes();
       const hasSessions = TreeManager.instance.getNFiles() > 0;

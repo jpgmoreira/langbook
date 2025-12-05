@@ -75,7 +75,7 @@ ipcMain.handle(
 );
 
 ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) => {
-  await sleep(2000);
+  await sleep(1000);
   await CardsManager.instance.deleteCard(card);
   const { page, height, nFiltered } = CardsManager.instance.getCurrentPageRefreshed();
   const data: RendererResponseDTO = {

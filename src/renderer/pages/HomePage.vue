@@ -108,13 +108,20 @@
     contestsAreaWidth.value = window.innerWidth - e.clientX;
     window.getSelection()?.removeAllRanges();
   }
+  function windowKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      mediaModalClick();
+    }
+  }
   onMounted(() => {
     window.addEventListener('mouseup', windowMouseUp);
     window.addEventListener('mousemove', windowMouseMove);
+    window.addEventListener('keydown', windowKeyDown);
   });
   onBeforeUnmount(() => {
     window.removeEventListener('mouseup', windowMouseUp);
     window.removeEventListener('mousemove', windowMouseMove);
+    window.removeEventListener('keydown', windowKeyDown);
   });
 </script>
 
