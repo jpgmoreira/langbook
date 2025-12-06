@@ -1,11 +1,7 @@
 .theme-dark .flashcards-page .sep-parent > div + div {
-  border-top: 2px dashed #525356;
+  border-top: 3px dashed #525356;
 }
 
 .theme-dark .flashcards-page .card div:not(.sep-parent) {
   padding: 20px 0;
-}
-
-.theme-dark .flashcards-page .media-button {
-  scale: 0.8;
 }

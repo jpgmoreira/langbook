@@ -11,7 +11,7 @@
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
   EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => initData(data));
 
-  const INITIAL_SCALE = 1.3;
+  const INITIAL_SCALE = 1;
   const INITIAL_PADDING_TOP = 80;
 
   const mediaStore = useMediaStore();
@@ -36,7 +36,7 @@
   const cardStyle = computed(() => {
     const { top, left, scale } = cardPosition;
     return {
-      transform: `translate(calc(-13.5% + ${left}px), ${top}px) scale(${scale})`,
+      transform: `translate(${left}px, ${top}px) scale(${scale})`,
     };
   });
 
@@ -166,7 +166,7 @@
     const minScale = 0.1;
     const maxScale = 1000;
     // finer control when CTRL is pressed
-    const factor = e.ctrlKey ? 1000 : 250;
+    const factor = e.ctrlKey ? 2500 : 1000;
     // use a relative scale change (so zoom speed is proportional to current scale)
     const delta = -e.deltaY / factor;
     const newScale = Math.max(minScale, Math.min(maxScale, cardPosition.scale * (1 + delta)));
@@ -241,7 +241,7 @@
             <button
               type="button"
               v-for="m in media"
-              class="media-button"
+              class="media-button m-1"
               :class="mediaButtonClass(m.type)"
               @click="mediaClick(m)"
               v-tooltip="m.name"
