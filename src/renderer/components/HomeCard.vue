@@ -32,6 +32,7 @@
     <div v-if="card.extra" v-html="store.processRteImages(card.extra)" class="mx-1 field"></div>
     <div v-if="card.media.length" class="flex">
       <button
+        type="button"
         v-for="media in card.media"
         class="media-button m-1"
         :class="mediaButtonClass(media.type)"

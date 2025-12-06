@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
   import { EventEmitter } from '@common/events/eventEmitter';
   import { Events } from '@renderer/events/events';
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   import { useMediaStore } from '@renderer/store/media';
-  import { Card } from '@common/schemas/card';
+  import { Card, MediaFile } from '@common/schemas/card';
   import { Sessions } from '@common/schemas/sessions';
   import { Channels } from '@preload/channels';
+  import { useUIStore } from '@renderer/store/ui';
+  import MediaModal from '@renderer/components/UI/MediaModal.vue';
   EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => initData(data));
 
   const mediaStore = useMediaStore();
+  const uiStore = useUIStore();
 
   const sessions = ref<Sessions>();
   const nFiltered = ref(0);
@@ -18,6 +21,7 @@
   const flipped = ref<boolean[]>([]);
   const index = ref(0);
   const reveal = ref(false);
+  const selectedMedia = ref<MediaFile | undefined>(undefined);
 
   const currentCard = computed(() => {
     if (index.value >= cardIds.value.length) {
@@ -109,10 +113,45 @@
     }
     reveal.value = false;
   }
+
+  async function mediaClick(media: MediaFile) {
+    if (media.type.startsWith('audio')) {
+      const mediaPath = mediaStore.resolveMediaPath(media.path);
+      const audio = new Audio(mediaPath);
+      audio.play();
+    } else if (media.type.startsWith('image')) {
+      uiStore.backdropVisible = true;
+      selectedMedia.value = media;
+    }
+  }
+
+  function mediaModalClick() {
+    selectedMedia.value = undefined;
+    uiStore.backdropVisible = false;
+  }
+
+  function mediaButtonClass(mime: string) {
+    if (mime.startsWith('image')) return 'image';
+    if (mime.startsWith('audio')) return 'audio';
+    return undefined;
+  }
+
+  function windowKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      mediaModalClick();
+    }
+  }
+  onMounted(() => {
+    window.addEventListener('keydown', windowKeyDown);
+  });
+  onBeforeUnmount(() => {
+    window.removeEventListener('keydown', windowKeyDown);
+  });
 </script>
 
 <template>
   <div class="flashcards-page h-[100vh] flex flex-col" style="border: 1px solid orchid">
+    <MediaModal :media="selectedMedia" @click="mediaModalClick" />
     <div v-if="currentCard" class="grow" style="border: 1px solid red">
       <div class="card sep-parent text-center">
         <div v-html="front"></div>
@@ -121,6 +160,17 @@
           <div v-else>No back</div>
           <div v-if="extra" v-html="extra"></div>
           <div v-else>No extra</div>
+          <div v-if="media.length" class="flex justify-center">
+            <button
+              type="button"
+              v-for="m in media"
+              class="media-button m-1"
+              :class="mediaButtonClass(m.type)"
+              @click="mediaClick(m)"
+              v-tooltip="m.name"
+            ></button>
+          </div>
+          <div v-else>No media</div>
         </div>
       </div>
     </div>
