@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue';
   import { EventEmitter } from '@common/events/eventEmitter';
   import { Events } from '@renderer/events/events';
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
@@ -22,6 +22,20 @@
   const index = ref(0);
   const reveal = ref(false);
   const selectedMedia = ref<MediaFile | undefined>(undefined);
+  const isMoving = ref(false);
+
+  const cardPosition = reactive({
+    top: 150,
+    left: 0,
+    scale: 1,
+  });
+
+  const cardStyle = computed(() => {
+    const { top, left, scale } = cardPosition;
+    return {
+      transform: `translate(${left}px,${top}px) scale(${scale})`,
+    };
+  });
 
   const currentCard = computed(() => {
     if (index.value >= cardIds.value.length) {
@@ -80,6 +94,7 @@
       cardIds.value.push(card.id);
       flipped.value.push(Boolean(card.allowReversed && Math.random() < 0.5));
     }
+    resetPosition();
   }
 
   async function getNewCard() {
@@ -136,24 +151,66 @@
     return undefined;
   }
 
+  function resetPosition() {
+    cardPosition.top = 150;
+    cardPosition.left = 0;
+    cardPosition.scale = 1;
+  }
+
   function windowKeyDown(e: KeyboardEvent) {
     if (e.key === 'Escape') {
       mediaModalClick();
+      resetPosition();
     }
   }
+  function windowMouseDown(e: MouseEvent) {
+    const target = e.target as HTMLElement;
+    if (!target) return;
+    const parent = target.closest('.card-parent');
+    if (!parent) return;
+    isMoving.value = true;
+  }
+  function windowMouseUp() {
+    isMoving.value = false;
+  }
+
+  function windowMouseMove(e: MouseEvent) {
+    if (!isMoving.value) return;
+    cardPosition.left += e.movementX;
+    cardPosition.top += e.movementY;
+  }
+
   onMounted(() => {
     window.addEventListener('keydown', windowKeyDown);
+    window.addEventListener('mousedown', windowMouseDown);
+    window.addEventListener('mouseup', windowMouseUp);
+    window.addEventListener('mousemove', windowMouseMove);
   });
   onBeforeUnmount(() => {
     window.removeEventListener('keydown', windowKeyDown);
+    window.removeEventListener('mousedown', windowMouseDown);
+    window.removeEventListener('mouseup', windowMouseUp);
+    window.removeEventListener('mousemove', windowMouseMove);
   });
 </script>
 
 <template>
-  <div class="flashcards-page h-[100vh] flex flex-col" style="border: 1px solid orchid">
+  <div
+    class="flashcards-page h-[100vh] flex flex-col overflow-hidden"
+    style="border: 1px solid orchid"
+  >
     <MediaModal :media="selectedMedia" @click="mediaModalClick" />
-    <div v-if="currentCard" class="grow" style="border: 1px solid red">
-      <div class="card sep-parent text-center">
+    <div
+      v-if="currentCard"
+      class="grow relative card-parent"
+      :class="isMoving ? 'cursor-grabbing' : 'cursor-grab'"
+      style="border: 1px solid red"
+    >
+      <div
+        class="card sep-parent text-center absolute w-full"
+        :style="cardStyle"
+        style="border: 1px solid white"
+      >
         <div v-html="front"></div>
         <div v-if="reveal" class="sep-parent">
           <div v-if="back" v-html="back"></div>
@@ -177,7 +234,10 @@
     <div v-else class="grow flex items-center justify-center whitespace-nowrap opacity-70 text-lg">
       No cards to show!
     </div>
-    <footer class="flex justify-center gap-10" style="border: 1px solid cyan">
+    <footer
+      class="flex justify-center gap-10 select-none bg-emerald-700 z-10"
+      style="border: 1px solid cyan"
+    >
       <button type="button" class="btn-primary" @click="goPrev" :disabled="cantGoPrev">
         Previous
       </button>
