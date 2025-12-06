@@ -45,6 +45,9 @@ export class CardsManager {
   // Maps frequency numbers to the index of the current card for the frequency:
   private frequencyIndex: Record<number, number> = {};
 
+  // Last bucket chosen:
+  private lastBucket = -1;
+
   // Current cards view scroll top.
   // I need it here, because a new page can be sent to the main window through an
   //  operation via the editor window. In this case the flow does not start from
@@ -111,17 +114,31 @@ export class CardsManager {
     return 10; // Never reached.
   }
 
+  /**
+   * Check if we can choose bucketIndex as the bucket for the next card.
+   * We cannot choose it in two situations:
+   *  1. The bucket is empty;
+   *  2. The bucket contains only one card and is the last bucket chosen
+   *      (to avoid repeating the same card twice in a row).
+   */
+  private canChooseBucket(bucketIndex: number) {
+    const bucket = this.frequency[bucketIndex];
+    if (bucket.length === 0) return false;
+    if (bucket.length === 1 && bucketIndex === this.lastBucket) return false;
+    return true;
+  }
+
   public getNextCard(): Card | null {
-    if (!Object.values(this.frequency).some((arr) => arr.length > 0)) {
-      return null;
-    }
+    if (this.filtered.length === 0) return null;
+    if (this.filtered.length === 1) return this.filtered[0];
+    const maxTries = 30;
     let bucketIndex = this.chooseBucket();
-    let tries = 1;
-    while (this.frequency[bucketIndex].length === 0 && tries < 200) {
+    let tries = 0;
+    while (!this.canChooseBucket(bucketIndex) && tries < maxTries) {
       bucketIndex = this.chooseBucket();
       tries++;
     }
-    if (tries >= 200) {
+    if (tries >= maxTries) {
       for (let i = 1; i <= 10; i++) {
         if (this.frequency[i].length > 0) {
           bucketIndex = i;
@@ -129,8 +146,9 @@ export class CardsManager {
         }
       }
     }
+    this.lastBucket = bucketIndex;
     const bucket = this.frequency[bucketIndex];
-    const index = ++this.frequencyIndex[bucketIndex] % bucket.length;
+    const index = this.frequencyIndex[bucketIndex] % bucket.length;
     if (index === 0) {
       shuffleArray(bucket);
     }

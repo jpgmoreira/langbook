@@ -115,11 +115,6 @@
     nFiltered.value = data.nFiltered!;
   }
 
-  function randomCardId() {
-    const keys = Object.keys(cards.value);
-    return keys[Math.floor(Math.random() * keys.length)];
-  }
-
   async function getNewCard() {
     const card = await window.api.invoke<Card | null>(Channels.getNewCard);
     if (!card) return;
@@ -127,16 +122,7 @@
       cards.value[card.id] = card;
     }
     flipped.value.push(Boolean(card.allowReversed && Math.random() < 0.5));
-    if (Object.keys(cards.value).length > 1 && card.id === currentCard.value?.id) {
-      // Do not show the same card twice in a row.
-      let newId = randomCardId();
-      while (newId === currentCard.value.id) {
-        newId = randomCardId();
-      }
-      cardIds.value.push(newId);
-    } else {
-      cardIds.value.push(card.id);
-    }
+    cardIds.value.push(card.id);
   }
 
   async function goNext() {
