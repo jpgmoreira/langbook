@@ -12,7 +12,7 @@
   EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => initData(data));
 
   const INITIAL_SCALE = 1;
-  const INITIAL_PADDING_TOP = 80;
+  const INITIAL_PADDING_TOP = 150;
 
   const mediaStore = useMediaStore();
   const uiStore = useUIStore();
@@ -227,7 +227,6 @@
       v-if="currentCard"
       class="grow relative card-parent"
       :class="isMoving ? 'cursor-grabbing' : 'cursor-grab'"
-      style="border: 1px solid red"
       @wheel="cardWheel"
       @dragstart.prevent
       @selectstart.prevent
@@ -253,10 +252,7 @@
     <div v-else class="grow flex items-center justify-center whitespace-nowrap opacity-70 text-lg">
       No cards to show!
     </div>
-    <footer
-      class="flex justify-center gap-10 select-none bg-emerald-700 z-10"
-      style="border: 1px solid cyan"
-    >
+    <footer class="flex justify-center gap-10 select-none">
       <button type="button" class="btn-primary" @click="goPrev" :disabled="cantGoPrev">
         Previous
       </button>
