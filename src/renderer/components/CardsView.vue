@@ -123,7 +123,7 @@
           Delete
         </div>
       </div>
-      <div class="absolute" :style="ghostStyle" style="border: 2px solid orchid"></div>
+      <div class="absolute border border-transparent" :style="ghostStyle"></div>
       <div class="absolute top-0 left-0 bottom-0 w-full flex flex-col" :style="pageStyle">
         <div v-for="card in props.page" class="w-fit min-w-full">
           <div class="card-number flex justify-between whitespace-nowrap">
