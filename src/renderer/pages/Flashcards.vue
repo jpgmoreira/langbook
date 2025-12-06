@@ -11,6 +11,9 @@
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
   EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => initData(data));
 
+  const INITIAL_SCALE = 1.3;
+  const INITIAL_PADDING_TOP = 80;
+
   const mediaStore = useMediaStore();
   const uiStore = useUIStore();
 
@@ -25,15 +28,15 @@
   const isMoving = ref(false);
 
   const cardPosition = reactive({
-    top: 150,
+    top: INITIAL_PADDING_TOP,
     left: 0,
-    scale: 1,
+    scale: INITIAL_SCALE,
   });
 
   const cardStyle = computed(() => {
     const { top, left, scale } = cardPosition;
     return {
-      transform: `translate(${left}px,${top}px) scale(${scale})`,
+      transform: `translate(calc(-13.5% + ${left}px), ${top}px) scale(${scale})`,
     };
   });
 
@@ -154,9 +157,9 @@
   }
 
   function resetPosition() {
-    cardPosition.top = 150;
+    cardPosition.top = INITIAL_PADDING_TOP;
     cardPosition.left = 0;
-    cardPosition.scale = 1;
+    cardPosition.scale = INITIAL_SCALE;
   }
   function cardWheel(e: WheelEvent) {
     e.preventDefault();
@@ -233,20 +236,17 @@
         <div v-html="front"></div>
         <div v-if="reveal" class="sep-parent">
           <div v-if="back" v-html="back"></div>
-          <div v-else>No back</div>
           <div v-if="extra" v-html="extra"></div>
-          <div v-else>No extra</div>
           <div v-if="media.length" class="flex justify-center">
             <button
               type="button"
               v-for="m in media"
-              class="media-button m-1"
+              class="media-button"
               :class="mediaButtonClass(m.type)"
               @click="mediaClick(m)"
               v-tooltip="m.name"
             ></button>
           </div>
-          <div v-else>No media</div>
         </div>
       </div>
     </div>
