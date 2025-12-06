@@ -215,6 +215,7 @@
       uiStore.showToast('Cannot manually create the "audio" tag!', 'info');
       return;
     }
+    if (name in allTags.value) return;
     allTags.value[name] = 0;
     card.value.tags.push(name);
   }
