@@ -21,6 +21,11 @@
   background-color: #b70011;
 }
 
+.theme-dark .flashcards-page .card .field-hint {
+  color: #aaa;
+  font-weight: bold;
+}
+
 /* --- chatgpt: --- */
 .theme-dark .flashcards-page footer {
   background: linear-gradient(180deg, #242628, #1d1f20);

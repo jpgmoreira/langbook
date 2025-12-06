@@ -232,11 +232,24 @@
       @dragstart.prevent
       @selectstart.prevent
     >
-      <div class="card sep-parent text-center absolute w-full" :style="cardStyle">
-        <div class="card-field" v-html="front"></div>
+      <div class="card sep-parent absolute w-full" :style="cardStyle">
+        <div class="card-field flex justify-center items-center relative">
+          <div v-if="reveal" class="absolute left-1 field-hint">
+            {{ flip ? 'Back:' : 'Front:' }}
+          </div>
+          <div v-html="front"></div>
+        </div>
         <div v-if="reveal" class="sep-parent">
-          <div v-if="back" v-html="back" class="card-field"></div>
-          <div v-if="extra" v-html="extra" class="card-field"></div>
+          <div v-if="back" class="card-field flex justify-center items-center relative">
+            <div v-if="reveal" class="absolute left-1 field-hint">
+              {{ flip ? 'Front:' : 'Back:' }}
+            </div>
+            <div v-html="back"></div>
+          </div>
+          <div v-if="extra" class="card-field flex justify-center items-center relative">
+            <div class="absolute left-1 field-hint">Extra:</div>
+            <div v-html="extra"></div>
+          </div>
           <div v-if="media.length" class="flex justify-center card-field">
             <button
               type="button"
