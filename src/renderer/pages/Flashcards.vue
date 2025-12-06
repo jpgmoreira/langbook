@@ -116,9 +116,11 @@
     <div v-if="currentCard" class="grow" style="border: 1px solid red">
       <div class="card sep-parent text-center">
         <div v-html="front"></div>
-        <div v-show="reveal" class="sep-parent">
-          <div v-html="back"></div>
-          <div v-html="extra"></div>
+        <div v-if="reveal" class="sep-parent">
+          <div v-if="back" v-html="back"></div>
+          <div v-else>No back</div>
+          <div v-if="extra" v-html="extra"></div>
+          <div v-else>No extra</div>
         </div>
       </div>
     </div>
