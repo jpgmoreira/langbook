@@ -77,6 +77,10 @@
     uiStore.backdropVisible = true;
     window.api.invoke(Channels.openEditor, toRaw(card));
   }
+  function openFlashcards() {
+    uiStore.backdropVisible = true;
+    window.api.invoke(Channels.openFlashcards);
+  }
   function refreshData(data: RendererResponseDTO) {
     if (!data.where.includes(RefreshPlace.HOME_PAGE)) return;
     if ('page' in data) page.value = data.page as Card[];
@@ -214,6 +218,7 @@
             type="button"
             class="btn-primary"
             :disabled="!page.length"
+            @click="openFlashcards"
             v-tooltip="flashcardsTooltip"
           >
             Flashcards

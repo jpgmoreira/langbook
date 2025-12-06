@@ -22,7 +22,14 @@ window.api.on(Channels.openEditor, async (data: RendererResponseDTO) => {
   EventEmitter.instance.emit(Events.refreshData, data);
 });
 
-window.api.on(Channels.closeEditor, () => {
+window.api.on(Channels.openFlashcards, async (data: RendererResponseDTO) => {
+  document.documentElement.classList.add('theme-dark');
+  document.title = 'Flashcards';
+  await router.replace('/flashcards');
+  EventEmitter.instance.emit(Events.refreshData, data);
+});
+
+window.api.on(Channels.closeBackdrop, () => {
   useUIStore().backdropVisible = false;
 });
 

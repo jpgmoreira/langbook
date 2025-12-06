@@ -12,6 +12,8 @@ export const allowedInvokeChannels = Object.freeze([
   Channels.filter,
   Channels.deleteCard,
   Channels.getPage,
+  Channels.openFlashcards,
+  Channels.closeBackdrop,
   // Channels to perform treeview operations:
   TreeChannels.createNode,
   TreeChannels.createNodeAbove,
@@ -34,9 +36,10 @@ export const allowedInvokeChannels = Object.freeze([
 ] as const);
 export const allowedOnChannels = Object.freeze([
   Channels.openEditor,
-  Channels.closeEditor,
+  Channels.closeBackdrop,
   Channels.startup,
   Channels.refreshData,
+  Channels.openFlashcards,
 ] as const);
 
 export interface ElectronAPI {

@@ -11,4 +11,6 @@ export enum Channels {
   filter = 'filter',
   deleteCard = 'delete-card',
   getPage = 'get-page',
+  openFlashcards = 'open-flashcards',
+  closeBackdrop = 'close-backdrop',
 }

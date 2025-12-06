@@ -21,6 +21,7 @@ export class WindowManager {
 
   private mainWindow!: BrowserWindow;
   private editorWindow!: BrowserWindow;
+  private flashcardsWindow!: BrowserWindow;
 
   private readonly indexHtmlPath = join(__dirname, '../renderer/index.html');
   private readonly iconPath = join(__dirname, '../../../../build/icon.png');
@@ -73,9 +74,25 @@ export class WindowManager {
     this.editorWindow.on('close', (e) => {
       e.preventDefault();
       this.editorWindow.hide();
-      this.mainWindow.webContents.send(Channels.closeEditor);
+      this.mainWindow.webContents.send(Channels.closeBackdrop);
     });
     this.initWindow(this.editorWindow);
+  }
+
+  private createFlashcardsWindow(): void {
+    this.flashcardsWindow = new BrowserWindow({
+      ...this.commonWindowConfig,
+      width: 1000,
+      height: 740,
+      parent: this.mainWindow,
+      modal: true,
+    });
+    this.flashcardsWindow.on('close', (e) => {
+      e.preventDefault();
+      this.flashcardsWindow.hide();
+      this.mainWindow.webContents.send(Channels.closeBackdrop);
+    });
+    this.initWindow(this.flashcardsWindow);
   }
 
   public createMainWindow(): void {
@@ -92,6 +109,7 @@ export class WindowManager {
     });
     this.initWindow(this.mainWindow);
     this.createEditorWindow();
+    this.createFlashcardsWindow();
   }
 
   public openEditor(card: Card | null) {
@@ -105,6 +123,11 @@ export class WindowManager {
     };
     this.editorWindow.webContents.send(Channels.openEditor, data);
     this.editorWindow.show();
+  }
+
+  public openFlashcards() {
+    this.flashcardsWindow.webContents.send(Channels.openFlashcards);
+    this.flashcardsWindow.show();
   }
 
   public closeEditor() {
