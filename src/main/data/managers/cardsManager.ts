@@ -102,6 +102,42 @@ export class CardsManager {
     }
   }
 
+  // I am using a weighted categorical distribution where bucket i, from 1 to 10, has weight i (linear weighting).
+  // The sum of all numbers from 1 to 10 is 55, so we get a nice distribution if i has prob. i / 55.
+  private chooseBucket(): number {
+    const rand = Math.floor(Math.random() * 55) + 1;
+    for (let i = 1; i <= 10; i++) {
+      if ((i * (i + 1)) / 2 >= rand) return i;
+    }
+    return 10; // Never reached.
+  }
+
+  public getNextCard(): Card | null {
+    if (!Object.values(this.frequency).some((arr) => arr.length > 0)) {
+      return null;
+    }
+    let bucketIndex = this.chooseBucket();
+    let tries = 1;
+    while (this.frequency[bucketIndex].length === 0 && tries < 200) {
+      bucketIndex = this.chooseBucket();
+      tries++;
+    }
+    if (tries >= 200) {
+      for (let i = 1; i <= 10; i++) {
+        if (this.frequency[i].length > 0) {
+          bucketIndex = i;
+          break;
+        }
+      }
+    }
+    const bucket = this.frequency[bucketIndex];
+    const index = ++this.frequencyIndex[bucketIndex] % bucket.length;
+    if (index === 0) {
+      shuffleArray(bucket);
+    }
+    return bucket[index];
+  }
+
   /**
    * Media files that come from the media input:
    *  - They can come with the full absolute path on the machine (if they are new files),
