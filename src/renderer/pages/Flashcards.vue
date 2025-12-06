@@ -11,6 +11,7 @@
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
   import { RefreshPlace } from '@common/types/refreshPlace';
+  import { GetNewCardResponseDTO } from '@common/dto/getNewCardResponseDTO';
   EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
     if (data.where.includes(RefreshPlace.FLASHCARDS_PAGE_INIT)) {
       initData(data);
@@ -34,6 +35,7 @@
   const reveal = ref(false);
   const selectedMedia = ref<MediaFile | undefined>(undefined);
   const isMoving = ref(false);
+  const nSeen = ref(0);
 
   const cardPosition = reactive({
     top: INITIAL_PADDING_TOP,
@@ -101,6 +103,7 @@
     flipped.value = [];
     index.value = 0;
     reveal.value = false;
+    nSeen.value = data.card ? 1 : 0;
     const card = data.card;
     if (card) {
       cards.value[card.id] = card;
@@ -113,10 +116,12 @@
   function updateData(data: RendererResponseDTO) {
     cards.value[data.card!.id] = data.card!;
     nFiltered.value = data.nFiltered!;
+    nSeen.value = data.nSeen!;
   }
 
   async function getNewCard() {
-    const card = await window.api.invoke<Card | null>(Channels.getNewCard);
+    const { card, nSeen: n } = await window.api.invoke<GetNewCardResponseDTO>(Channels.getNewCard);
+    nSeen.value = n;
     if (!card) return;
     if (!(card.id in cards.value)) {
       cards.value[card.id] = card;
@@ -293,7 +298,7 @@
           </div>
         </div>
       </div>
-      <div class="absolute right-0 bottom-0">Total cards: {{ nFiltered }}</div>
+      <div class="absolute right-0 bottom-0">Cards seen: {{ nSeen }} of {{ nFiltered }}</div>
     </div>
     <div v-else class="grow flex items-center justify-center whitespace-nowrap opacity-70 text-lg">
       No cards to show!

@@ -129,11 +129,13 @@ export class WindowManager {
   }
 
   public openFlashcards() {
+    CardsManager.instance.resetFlashcards();
     const profileId = ProfileManager.instance.getCurrProfile()!.id;
+    const { card } = CardsManager.instance.getNextCard();
     const data: RendererResponseDTO = {
       where: [RefreshPlace.FLASHCARDS_PAGE_INIT],
-      nFiltered: CardsManager.instance.getNFiltered(),
-      card: CardsManager.instance.getNextCard(),
+      nFiltered: CardsManager.instance.getNFilteredNonZero(),
+      card,
       mediaDir: path.join(DATA_DIR, 'profileData', profileId, 'media'),
       sessions: SessionsManager.instance.getSessions(),
     };

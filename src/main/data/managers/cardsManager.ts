@@ -16,6 +16,7 @@ import { WindowManager } from './windowManager';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
 import { isFileInsideDirectory } from '../utils';
+import { GetNewCardResponseDTO } from '@common/dto/getNewCardResponseDTO';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -48,6 +49,12 @@ export class CardsManager {
   // Last bucket chosen:
   private lastBucket = -1;
 
+  // Set with all card IDs for the current flashcards study.
+  private cardsSeen = new Set<string>();
+
+  // Number of filtered cards, excluding frequency 0 cards.
+  private nFilteredNonZero = 0;
+
   // Current cards view scroll top.
   // I need it here, because a new page can be sent to the main window through an
   //  operation via the editor window. In this case the flow does not start from
@@ -78,11 +85,14 @@ export class CardsManager {
    *   - frequency;
    *   - sessionToCard;
    *   - frequencyIndex;
+   *   - cardsSeen;
+   *   - nFilteredNonZero;
    * Based on "cardsMap" and the current filters.
    */
   public refresh() {
     this.filtered = [];
     this.sessionToCard = {};
+    this.nFilteredNonZero = 0;
     for (let i = 0; i <= 10; i++) {
       this.frequency[i] = [];
       this.frequencyIndex[i] = 0;
@@ -97,6 +107,9 @@ export class CardsManager {
       if (FiltersManager.instance.satisfyCurrentFilters(card)) {
         this.filtered.push(card);
         this.frequency[card.frequency].push(card);
+        if (card.frequency > 0) {
+          this.nFilteredNonZero++;
+        }
       }
     });
     this.filtered.sort((a, b) => a.createdAt - b.createdAt); // Ascending.
@@ -128,9 +141,13 @@ export class CardsManager {
     return true;
   }
 
-  public getNextCard(): Card | null {
-    if (this.filtered.length === 0) return null;
-    if (this.filtered.length === 1) return this.filtered[0];
+  public getNextCard(): GetNewCardResponseDTO {
+    if (this.filtered.length === 0) {
+      return { card: null, nSeen: this.cardsSeen.size };
+    }
+    if (this.filtered.length === 1) {
+      return { card: this.filtered[0], nSeen: this.cardsSeen.size };
+    }
     const maxTries = 30;
     let bucketIndex = this.chooseBucket();
     let tries = 0;
@@ -152,7 +169,9 @@ export class CardsManager {
     if (index === 0) {
       shuffleArray(bucket);
     }
-    return bucket[index];
+    const card = bucket[index];
+    this.cardsSeen.add(card.id);
+    return { card, nSeen: this.cardsSeen.size };
   }
 
   /**
@@ -300,7 +319,8 @@ export class CardsManager {
     };
     const flashcardsWindowData: RendererResponseDTO = {
       where: [RefreshPlace.FLASHCARDS_PAGE_UPDATE],
-      nFiltered,
+      nFiltered: this.getNFilteredNonZero(),
+      nSeen: this.cardsSeen.size,
       card,
     };
     WindowManager.instance.sendDataToMainWindow(mainWindowData);
@@ -385,6 +405,15 @@ export class CardsManager {
 
   public getNFiltered() {
     return this.filtered.length;
+  }
+
+  // Number of filtered cards, excluding frequency 0 cards.
+  public getNFilteredNonZero() {
+    return this.nFilteredNonZero;
+  }
+
+  public resetFlashcards() {
+    this.cardsSeen.clear();
   }
 
   public clear() {

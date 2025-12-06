@@ -24,4 +24,5 @@ export type RendererResponseDTO = {
   page?: Card[];
   height?: number; // Sum of the height of all filtered cards.
   nFiltered?: number;
+  nSeen?: number;
 };

@@ -1,5 +1,6 @@
 import { CreateProfileResponseDTO } from '@common/dto/createProfileResponseDTO';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
+import { GetNewCardResponseDTO } from '@common/dto/getNewCardResponseDTO';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { Card } from '@common/schemas/card';
 import { Filters } from '@common/schemas/filters';
@@ -106,6 +107,9 @@ ipcMain.handle(Channels.openFlashcards, async (_: IpcMainInvokeEvent) => {
   WindowManager.instance.openFlashcards();
 });
 
-ipcMain.handle(Channels.getNewCard, async (_: IpcMainInvokeEvent) => {
-  return CardsManager.instance.getNextCard();
-});
+ipcMain.handle(
+  Channels.getNewCard,
+  async (_: IpcMainInvokeEvent): Promise<GetNewCardResponseDTO> => {
+    return CardsManager.instance.getNextCard();
+  }
+);
