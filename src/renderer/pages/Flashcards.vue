@@ -15,6 +15,7 @@
   const nFiltered = ref(0);
   const cardIds = ref<string[]>([]);
   const cards = ref<Record<string, Card>>({}); // maps id to card.
+  const flipped = ref<boolean[]>([]);
   const index = ref(0);
   const reveal = ref(false);
 
@@ -29,6 +30,11 @@
     return index.value === 0 && !reveal.value;
   });
 
+  const flip = computed(() => {
+    if (index.value >= flipped.value.length) return false;
+    return flipped.value[index.value];
+  });
+
   function initData(data: RendererResponseDTO) {
     sessions.value = data.sessions!;
     nFiltered.value = data.nFiltered!;
@@ -36,6 +42,7 @@
     if (card) {
       cards.value[card.id] = card;
       cardIds.value.push(card.id);
+      flipped.value.push(Math.random() < 0.5);
     }
   }
 
@@ -47,6 +54,7 @@
       cards.value[card.id] = card;
     }
     cardIds.value.push(card.id);
+    flipped.value.push(Math.random() < 0.5);
   }
 
   async function goNext() {
@@ -75,9 +83,9 @@
   <div class="flashcards-page h-[100vh] flex flex-col" style="border: 1px solid orchid">
     <div v-if="currentCard" class="grow flex justify-center" style="border: 1px solid red">
       <div class="card">
-        <div v-html="currentCard.front"></div>
+        <div v-html="flip ? currentCard.front : currentCard.back"></div>
         <div v-show="reveal">
-          <div v-html="currentCard.back"></div>
+          <div v-html="flip ? currentCard.back : currentCard.front"></div>
           <div v-html="currentCard.extra"></div>
         </div>
       </div>
