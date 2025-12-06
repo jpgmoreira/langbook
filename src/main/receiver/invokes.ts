@@ -105,3 +105,7 @@ ipcMain.handle(Channels.getPage, async (_: IpcMainInvokeEvent, scrollTop: number
 ipcMain.handle(Channels.openFlashcards, async (_: IpcMainInvokeEvent) => {
   WindowManager.instance.openFlashcards();
 });
+
+ipcMain.handle(Channels.getNewCard, async (_: IpcMainInvokeEvent) => {
+  return CardsManager.instance.getNextCard();
+});

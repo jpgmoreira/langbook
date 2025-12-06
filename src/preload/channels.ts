@@ -13,4 +13,5 @@ export enum Channels {
   getPage = 'get-page',
   openFlashcards = 'open-flashcards',
   closeBackdrop = 'close-backdrop',
+  getNewCard = 'get-new-card',
 }

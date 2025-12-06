@@ -102,10 +102,9 @@ export class CardsManager {
     }
   }
 
-  // I am using a weighted categorical distribution where bucket i, from 1 to 10, has weight i (linear weighting).
   // The sum of all numbers from 1 to 10 is 55, so we get a nice distribution if i has prob. i / 55.
   private chooseBucket(): number {
-    const rand = Math.floor(Math.random() * 55) + 1;
+    const rand = Math.floor(Math.random() * 55);
     for (let i = 1; i <= 10; i++) {
       if ((i * (i + 1)) / 2 >= rand) return i;
     }
@@ -359,6 +358,10 @@ export class CardsManager {
       this.sessionToCard[session] = this.sessionToCard[session].filter((c) => c !== card);
     }
     delete this.cardsMap[card.id];
+  }
+
+  public getNFiltered() {
+    return this.filtered.length;
   }
 
   public clear() {

@@ -8,6 +8,7 @@
 export enum RefreshPlace {
   EDITOR_PAGE,
   HOME_PAGE,
+  FLASHCARDS_PAGE,
   FILTERS_STORE,
   PROFILE_STORE,
 }

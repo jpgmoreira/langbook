@@ -11,6 +11,8 @@ import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
 import { DATA_DIR } from '../constants';
 import { ProfileManager } from './profileManager';
+import { CardsManager } from './cardsManager';
+import { FiltersManager } from './filtersManager';
 
 /**
  * Singleton for managing application windows.
@@ -126,7 +128,15 @@ export class WindowManager {
   }
 
   public openFlashcards() {
-    this.flashcardsWindow.webContents.send(Channels.openFlashcards);
+    const profileId = ProfileManager.instance.getCurrProfile()!.id;
+    const data: RendererResponseDTO = {
+      where: [RefreshPlace.FLASHCARDS_PAGE],
+      nFiltered: CardsManager.instance.getNFiltered(),
+      card: CardsManager.instance.getNextCard(),
+      mediaDir: path.join(DATA_DIR, 'profileData', profileId, 'media'),
+      sessions: SessionsManager.instance.getSessions(),
+    };
+    this.flashcardsWindow.webContents.send(Channels.openFlashcards, data);
     this.flashcardsWindow.show();
   }
 
