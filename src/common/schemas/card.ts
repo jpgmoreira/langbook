@@ -4,6 +4,10 @@ export type MediaFile = {
   path: string;
 };
 
+export type ReviewStatus = 'normal' | 'review' | 'suspended';
+
+export type CardStage = 0 | 1 | 2 | 3 | 4 | 5;
+
 export type Card = {
   id: string;
   front: string;
@@ -14,9 +18,10 @@ export type Card = {
   createdAt: number;
   sessions: string[];
   tags: string[];
-  frequency: number;
+  status: ReviewStatus;
+  stage: CardStage;
   // UI properties stored in the database:
-  height: number;
+  height: number; // Needed for virtualization.
   // UI properties not stored in the database:
   scrollTop?: number;
   index?: number;
@@ -39,7 +44,8 @@ export function getEmptyCard(id: string, timestamp: number): Card {
     createdAt: timestamp,
     sessions: [],
     tags: [],
-    frequency: 5,
+    status: 'normal',
+    stage: 5,
     height: 0,
   };
 }

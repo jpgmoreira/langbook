@@ -1,10 +1,13 @@
+import { CardStage, ReviewStatus } from './card';
+
 export type TagsMode = 'all' | 'any';
 
 export type Filters = {
   text: string;
   tags: string[];
   tagsMode: TagsMode;
-  frequencies: number[];
+  status: ReviewStatus[];
+  stages: CardStage[];
 };
 
 export function getEmptyFilters(): Filters {
@@ -12,6 +15,7 @@ export function getEmptyFilters(): Filters {
     text: '',
     tags: [],
     tagsMode: 'all',
-    frequencies: [],
+    status: ['normal', 'review', 'suspended'],
+    stages: [],
   };
 }
