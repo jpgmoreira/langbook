@@ -42,7 +42,7 @@
     if (card) {
       cards.value[card.id] = card;
       cardIds.value.push(card.id);
-      flipped.value.push(Math.random() < 0.5);
+      flipped.value.push(card.allowReversed && Math.random() < 0.5);
     }
   }
 
@@ -54,7 +54,7 @@
       cards.value[card.id] = card;
     }
     cardIds.value.push(card.id);
-    flipped.value.push(Math.random() < 0.5);
+    flipped.value.push(card.allowReversed && Math.random() < 0.5);
   }
 
   async function goNext() {
