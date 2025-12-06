@@ -42,6 +42,9 @@ export class CardsManager {
   // Maps frequency numbers to all filtered cards that have that frequency:
   private frequency: Record<number, Card[]> = {};
 
+  // Maps frequency numbers to the index of the current card for the frequency:
+  private frequencyIndex: Record<number, number> = {};
+
   // Current cards view scroll top.
   // I need it here, because a new page can be sent to the main window through an
   //  operation via the editor window. In this case the flow does not start from
@@ -67,13 +70,19 @@ export class CardsManager {
   }
 
   /**
-   * Recompute "filtered", "frequency" and "sessionToCard" based on "cardsMap" and the current filters.
+   * Recomputes:
+   *   - filtered;
+   *   - frequency;
+   *   - sessionToCard;
+   *   - frequencyIndex;
+   * Based on "cardsMap" and the current filters.
    */
   public refresh() {
     this.filtered = [];
     this.sessionToCard = {};
     for (let i = 0; i <= 10; i++) {
       this.frequency[i] = [];
+      this.frequencyIndex[i] = 0;
     }
     Object.values(this.cardsMap).forEach((card: Card) => {
       for (const session of card.sessions) {
