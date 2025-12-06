@@ -9,10 +9,11 @@
   import { Channels } from '@preload/channels';
   import { useUIStore } from '@renderer/store/ui';
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
+  import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
   EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => initData(data));
 
   const INITIAL_SCALE = 1;
-  const INITIAL_PADDING_TOP = 150;
+  const INITIAL_PADDING_TOP = 40;
 
   const mediaStore = useMediaStore();
   const uiStore = useUIStore();
@@ -232,11 +233,11 @@
       @selectstart.prevent
     >
       <div class="card sep-parent text-center absolute w-full" :style="cardStyle">
-        <div v-html="front"></div>
+        <div class="card-field" v-html="front"></div>
         <div v-if="reveal" class="sep-parent">
-          <div v-if="back" v-html="back"></div>
-          <div v-if="extra" v-html="extra"></div>
-          <div v-if="media.length" class="flex justify-center">
+          <div v-if="back" v-html="back" class="card-field"></div>
+          <div v-if="extra" v-html="extra" class="card-field"></div>
+          <div v-if="media.length" class="flex justify-center card-field">
             <button
               type="button"
               v-for="m in media"
@@ -245,6 +246,17 @@
               @click="mediaClick(m)"
               v-tooltip="m.name"
             ></button>
+          </div>
+          <div class="flex flex-col items-center gap-5 p-5">
+            <div v-if="currentCard.tags.length" class="flex gap-1 justify-center flex-wrap">
+              <div class="tag badge" v-for="tag in currentCard.tags" :key="tag">{{ tag }}</div>
+            </div>
+            <div class="flex gap-1 justify-center flex-wrap">
+              <div class="session badge" v-for="session in currentCard.sessions" :key="session">
+                {{ sessions![session].name }}
+              </div>
+            </div>
+            <Frequencymeter :selected="[currentCard.frequency]" />
           </div>
         </div>
       </div>

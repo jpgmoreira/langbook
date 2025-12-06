@@ -1,9 +1,24 @@
-.theme-dark .flashcards-page .sep-parent > div + div {
+.theme-dark .flashcards-page .sep-parent > div:not(.border-none) + div {
   border-top: 3px dashed #525356;
 }
 
-.theme-dark .flashcards-page .card div:not(.sep-parent) {
+.theme-dark .flashcards-page .card .card-field {
   padding: 20px 0;
+}
+
+.theme-dark .flashcards-page .card .badge {
+  font-size: 0.9rem;
+  border-radius: 1000px;
+  padding: 3px 8px;
+  line-height: 1rem;
+}
+
+.theme-dark .flashcards-page .card .badge.tag {
+  background-color: #0070e1;
+}
+
+.theme-dark .flashcards-page .card .badge.session {
+  background-color: #b70011;
 }
 
 /* --- chatgpt: --- */
