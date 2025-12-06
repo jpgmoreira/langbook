@@ -218,10 +218,7 @@
 </script>
 
 <template>
-  <div
-    class="flashcards-page h-[100vh] flex flex-col overflow-hidden"
-    style="border: 1px solid orchid"
-  >
+  <div class="flashcards-page h-[100vh] flex flex-col overflow-hidden">
     <MediaModal :media="selectedMedia" @click="mediaModalClick" />
     <div
       v-if="currentCard"

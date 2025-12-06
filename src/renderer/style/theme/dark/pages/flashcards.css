@@ -1,3 +1,7 @@
 .theme-dark .flashcards-page .sep-parent > div + div {
-  border-top: 1px solid red;
+  border-top: 3px dashed #525356;
+}
+
+.theme-dark .flashcards-page .card div:not(.sep-parent) {
+  padding: 10px 0;
 }
