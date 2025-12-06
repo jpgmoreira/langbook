@@ -30,19 +30,51 @@
     return index.value === 0 && !reveal.value;
   });
 
+  const cantGoNext = computed(() => {
+    if (currentCard.value) return false;
+    return true;
+  });
+
   const flip = computed(() => {
     if (index.value >= flipped.value.length) return false;
     return flipped.value[index.value];
   });
 
+  const front = computed(() => {
+    if (!currentCard.value) return '';
+    if (flip.value) return currentCard.value.back;
+    return currentCard.value.front;
+  });
+
+  const back = computed(() => {
+    if (!currentCard.value) return '';
+    if (flip.value) return currentCard.value.front;
+    return currentCard.value.back;
+  });
+
+  const extra = computed(() => {
+    if (!currentCard.value) return '';
+    return currentCard.value.extra;
+  });
+
+  const media = computed(() => {
+    if (!currentCard.value) return [];
+    return currentCard.value.media;
+  });
+
   function initData(data: RendererResponseDTO) {
     sessions.value = data.sessions!;
     nFiltered.value = data.nFiltered!;
+    cardIds.value = [];
+    cards.value = {};
+    flipped.value = [];
+    index.value = 0;
+    reveal.value = false;
     const card = data.card;
     if (card) {
       cards.value[card.id] = card;
       cardIds.value.push(card.id);
-      flipped.value.push(card.allowReversed && Math.random() < 0.5);
+      flipped.value.push(Boolean(card.allowReversed && Math.random() < 0.5));
     }
   }
 
@@ -54,7 +86,7 @@
       cards.value[card.id] = card;
     }
     cardIds.value.push(card.id);
-    flipped.value.push(card.allowReversed && Math.random() < 0.5);
+    flipped.value.push(Boolean(card.allowReversed && Math.random() < 0.5));
   }
 
   async function goNext() {
@@ -81,12 +113,12 @@
 
 <template>
   <div class="flashcards-page h-[100vh] flex flex-col" style="border: 1px solid orchid">
-    <div v-if="currentCard" class="grow flex justify-center" style="border: 1px solid red">
-      <div class="card">
-        <div v-html="flip ? currentCard.front : currentCard.back"></div>
-        <div v-show="reveal">
-          <div v-html="flip ? currentCard.back : currentCard.front"></div>
-          <div v-html="currentCard.extra"></div>
+    <div v-if="currentCard" class="grow" style="border: 1px solid red">
+      <div class="card sep-parent text-center">
+        <div v-html="front"></div>
+        <div v-show="reveal" class="sep-parent">
+          <div v-html="back"></div>
+          <div v-html="extra"></div>
         </div>
       </div>
     </div>
@@ -97,10 +129,8 @@
       <button type="button" class="btn-primary" @click="goPrev" :disabled="cantGoPrev">
         Previous
       </button>
-      <button type="button" class="btn-primary" @click="goNext" :disabled="!currentCard">
-        Next
-      </button>
-      <button type="button" class="btn-primary">Edit</button>
+      <button type="button" class="btn-primary" @click="goNext" :disabled="cantGoNext">Next</button>
+      <button type="button" class="btn-primary" :disabled="!currentCard">Edit</button>
     </footer>
   </div>
 </template>

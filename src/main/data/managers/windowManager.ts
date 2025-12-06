@@ -12,7 +12,6 @@ import { RefreshPlace } from '@common/types/refreshPlace';
 import { DATA_DIR } from '../constants';
 import { ProfileManager } from './profileManager';
 import { CardsManager } from './cardsManager';
-import { FiltersManager } from './filtersManager';
 
 /**
  * Singleton for managing application windows.
