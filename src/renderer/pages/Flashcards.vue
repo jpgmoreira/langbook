@@ -60,19 +60,21 @@
 
   const front = computed(() => {
     if (!currentCard.value) return '';
-    if (flip.value) return currentCard.value.back;
-    return currentCard.value.front;
+    let content = currentCard.value.front;
+    if (flip.value) content = currentCard.value.back;
+    return mediaStore.processRteImages(content);
   });
 
   const back = computed(() => {
     if (!currentCard.value) return '';
-    if (flip.value) return currentCard.value.front;
-    return currentCard.value.back;
+    let content = currentCard.value.back;
+    if (flip.value) content = currentCard.value.front;
+    return mediaStore.processRteImages(content);
   });
 
   const extra = computed(() => {
     if (!currentCard.value) return '';
-    return currentCard.value.extra;
+    return mediaStore.processRteImages(currentCard.value.extra);
   });
 
   const media = computed(() => {
@@ -156,6 +158,27 @@
     cardPosition.left = 0;
     cardPosition.scale = 1;
   }
+  function cardWheel(e: WheelEvent) {
+    e.preventDefault();
+    const minScale = 0.1;
+    const maxScale = 1000;
+    // finer control when CTRL is pressed
+    const factor = e.ctrlKey ? 1000 : 250;
+    // use a relative scale change (so zoom speed is proportional to current scale)
+    const delta = -e.deltaY / factor;
+    const newScale = Math.max(minScale, Math.min(maxScale, cardPosition.scale * (1 + delta)));
+    if (newScale === cardPosition.scale) return;
+    const mx = e.clientX;
+    const my = e.clientY;
+    const oldScale = cardPosition.scale;
+    // convert mouse screen coords to element-local coords (assuming transform origin at 0,0)
+    const localX = (mx - cardPosition.left) / oldScale;
+    const localY = (my - cardPosition.top) / oldScale;
+    // keep the same local point under the mouse after scaling
+    cardPosition.left = mx - localX * newScale;
+    cardPosition.top = my - localY * newScale;
+    cardPosition.scale = newScale;
+  }
 
   function windowKeyDown(e: KeyboardEvent) {
     if (e.key === 'Escape') {
@@ -205,12 +228,11 @@
       class="grow relative card-parent"
       :class="isMoving ? 'cursor-grabbing' : 'cursor-grab'"
       style="border: 1px solid red"
+      @wheel="cardWheel"
+      @dragstart.prevent
+      @selectstart.prevent
     >
-      <div
-        class="card sep-parent text-center absolute w-full"
-        :style="cardStyle"
-        style="border: 1px solid white"
-      >
+      <div class="card sep-parent text-center absolute w-full" :style="cardStyle">
         <div v-html="front"></div>
         <div v-if="reveal" class="sep-parent">
           <div v-if="back" v-html="back"></div>
@@ -246,3 +268,15 @@
     </footer>
   </div>
 </template>
+
+<style scoped>
+  .card {
+    transform-origin: 0 0;
+  }
+  :deep(.card img) {
+    display: inline-block;
+  }
+  :deep(.card span) {
+    color: inherit;
+  }
+</style>
