@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, reactive, computed, onMounted, onBeforeUnmount, toRaw } from 'vue';
   import { EventEmitter } from '@common/events/eventEmitter';
   import { Events } from '@renderer/events/events';
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
@@ -10,7 +10,14 @@
   import { useUIStore } from '@renderer/store/ui';
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
   import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
-  EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => initData(data));
+  import { RefreshPlace } from '@common/types/refreshPlace';
+  EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
+    if (data.where.includes(RefreshPlace.FLASHCARDS_PAGE_INIT)) {
+      initData(data);
+    } else if (data.where.includes(RefreshPlace.FLASHCARDS_PAGE_UPDATE)) {
+      updateData(data);
+    }
+  });
 
   const INITIAL_SCALE = 1;
   const INITIAL_PADDING_TOP = 40;
@@ -103,15 +110,33 @@
     resetPosition();
   }
 
+  function updateData(data: RendererResponseDTO) {
+    cards.value[data.card!.id] = data.card!;
+    nFiltered.value = data.nFiltered!;
+  }
+
+  function randomCardId() {
+    const keys = Object.keys(cards.value);
+    return keys[Math.floor(Math.random() * keys.length)];
+  }
+
   async function getNewCard() {
-    console.log('- get new card');
     const card = await window.api.invoke<Card | null>(Channels.getNewCard);
     if (!card) return;
     if (!(card.id in cards.value)) {
       cards.value[card.id] = card;
     }
-    cardIds.value.push(card.id);
     flipped.value.push(Boolean(card.allowReversed && Math.random() < 0.5));
+    if (Object.keys(cards.value).length > 1 && card.id === currentCard.value?.id) {
+      // Do not show the same card twice in a row.
+      let newId = randomCardId();
+      while (newId === currentCard.value.id) {
+        newId = randomCardId();
+      }
+      cardIds.value.push(newId);
+    } else {
+      cardIds.value.push(card.id);
+    }
   }
 
   async function goNext() {
@@ -182,6 +207,15 @@
     cardPosition.left = mx - localX * newScale;
     cardPosition.top = my - localY * newScale;
     cardPosition.scale = newScale;
+  }
+
+  async function toggleFrequency(value: number) {
+    const card = toRaw(currentCard.value);
+    if (!card) return;
+    if (card.frequency === value) return;
+    card.frequency = value;
+    card.media = card.media.map((m) => toRaw(m));
+    await window.api.invoke(Channels.upsertCard, card);
   }
 
   function windowKeyDown(e: KeyboardEvent) {
@@ -269,10 +303,11 @@
                 {{ sessions![session].name }}
               </div>
             </div>
-            <Frequencymeter :selected="[currentCard.frequency]" />
+            <Frequencymeter :selected="[currentCard.frequency]" @toggle="toggleFrequency" />
           </div>
         </div>
       </div>
+      <div class="absolute right-0 bottom-0">Total cards: {{ nFiltered }}</div>
     </div>
     <div v-else class="grow flex items-center justify-center whitespace-nowrap opacity-70 text-lg">
       No cards to show!

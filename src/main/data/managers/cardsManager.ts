@@ -271,7 +271,7 @@ export class CardsManager {
     // Send updates to main window:
     this.refresh();
     const { page, height, nFiltered } = this.getPage(this.scrollTop);
-    const data: RendererResponseDTO = {
+    const mainWindowData: RendererResponseDTO = {
       where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
       profileRegistry: ProfileManager.instance.getProfileRegistry(),
       tags: TagsManager.instance.getTags(),
@@ -280,8 +280,13 @@ export class CardsManager {
       height,
       nFiltered,
     };
-    WindowManager.instance.sendDataToMainWindow(data);
-    // TODO: Check if flashcards window is open, and if it is, send newly updated card to it.
+    const flashcardsWindowData: RendererResponseDTO = {
+      where: [RefreshPlace.FLASHCARDS_PAGE_UPDATE],
+      nFiltered,
+      card,
+    };
+    WindowManager.instance.sendDataToMainWindow(mainWindowData);
+    WindowManager.instance.sendDataToFlashcardsWindow(flashcardsWindowData);
     WindowManager.instance.closeEditor();
   }
 

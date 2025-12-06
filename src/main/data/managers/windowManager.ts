@@ -75,7 +75,9 @@ export class WindowManager {
     this.editorWindow.on('close', (e) => {
       e.preventDefault();
       this.editorWindow.hide();
-      this.mainWindow.webContents.send(Channels.closeBackdrop);
+      if (!this.flashcardsWindow.isVisible()) {
+        this.mainWindow.webContents.send(Channels.closeBackdrop);
+      }
     });
     this.initWindow(this.editorWindow);
   }
@@ -129,7 +131,7 @@ export class WindowManager {
   public openFlashcards() {
     const profileId = ProfileManager.instance.getCurrProfile()!.id;
     const data: RendererResponseDTO = {
-      where: [RefreshPlace.FLASHCARDS_PAGE],
+      where: [RefreshPlace.FLASHCARDS_PAGE_INIT],
       nFiltered: CardsManager.instance.getNFiltered(),
       card: CardsManager.instance.getNextCard(),
       mediaDir: path.join(DATA_DIR, 'profileData', profileId, 'media'),
@@ -145,6 +147,13 @@ export class WindowManager {
 
   public sendDataToMainWindow(data: RendererResponseDTO) {
     this.mainWindow.webContents.send(Channels.refreshData, data);
+    if (!this.flashcardsWindow.isVisible()) {
+      this.closeEditor();
+    }
+  }
+
+  public sendDataToFlashcardsWindow(data: RendererResponseDTO) {
+    this.flashcardsWindow.webContents.send(Channels.refreshData, data);
   }
 
   public cardWasDeleted(data: RendererResponseDTO) {
