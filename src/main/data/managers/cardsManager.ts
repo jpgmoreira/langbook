@@ -417,6 +417,9 @@ export class CardsManager {
       this.sessionToCard[session] = this.sessionToCard[session].filter((c) => c !== card);
     }
     delete this.cardsMap[card.id];
+    if (this.cardsSeen.has(card.id)) {
+      this.cardsSeen.delete(card.id);
+    }
   }
 
   public getNFiltered() {
@@ -429,6 +432,10 @@ export class CardsManager {
 
   public getNFilteredSuspended() {
     return this.cardsByStatus['suspended'].length;
+  }
+
+  public getNSeen() {
+    return this.cardsSeen.size;
   }
 
   public resetFlashcards() {

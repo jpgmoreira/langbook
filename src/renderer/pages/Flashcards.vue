@@ -18,6 +18,8 @@
       initData(data);
     } else if (data.where.includes(RefreshPlace.FLASHCARDS_PAGE_UPDATE)) {
       updateData(data);
+    } else if (data.where.includes(RefreshPlace.FLASHCARDS_PAGE_CARD_DELETED)) {
+      cardDeleted(data);
     }
   });
 
@@ -74,6 +76,13 @@
     return flipped.value[index.value];
   });
 
+  const editTooltip = computed(() => {
+    const card = currentCard.value;
+    if (!card) return undefined;
+    if (!card.deleted) return undefined;
+    return 'Cannot edit a card that was already deleted.';
+  });
+
   function initData(data: RendererResponseDTO) {
     sessions.value = data.sessions!;
     nFiltered.value = data.nFiltered!;
@@ -100,6 +109,14 @@
     nFilteredReview.value = data.nFilteredReview!;
     nFilteredSuspended.value = data.nFilteredSuspended!;
     nSeen.value = data.nSeen!;
+  }
+
+  function cardDeleted(data: RendererResponseDTO) {
+    nFiltered.value = data.nFiltered!;
+    nFilteredReview.value = data.nFilteredReview!;
+    nFilteredSuspended.value = data.nFilteredSuspended!;
+    nSeen.value = data.nSeen!;
+    cards.value[data.card!.id].deleted = true;
   }
 
   async function getNewCard() {
@@ -288,7 +305,13 @@
         Previous
       </button>
       <button type="button" class="btn-primary" @click="goNext" :disabled="cantGoNext">Next</button>
-      <button type="button" class="btn-primary" :disabled="!currentCard" @click="openEditor">
+      <button
+        type="button"
+        class="btn-primary"
+        :disabled="!currentCard || currentCard.deleted"
+        @click="openEditor"
+        v-tooltip="editTooltip"
+      >
         Edit
       </button>
     </footer>

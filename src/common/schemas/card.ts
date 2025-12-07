@@ -58,6 +58,7 @@ export type Card = {
   // UI properties not stored in the database:
   scrollTop?: number;
   index?: number;
+  deleted?: boolean;
 };
 
 export type DBCard = Omit<Card, 'tags' | 'sessions' | 'media'> & {

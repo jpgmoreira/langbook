@@ -80,7 +80,10 @@ ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) =>
   await sleep(1000);
   await CardsManager.instance.deleteCard(card);
   const { page, height, nFiltered } = CardsManager.instance.getCurrentPageRefreshed();
-  const data: RendererResponseDTO = {
+  const nFilteredReview = CardsManager.instance.getNFilteredReview();
+  const nFilteredSuspended = CardsManager.instance.getNFilteredSuspended();
+  const nSeen = CardsManager.instance.getNSeen();
+  const mainWindowData: RendererResponseDTO = {
     where: [
       RefreshPlace.HOME_PAGE,
       RefreshPlace.FILTERS_STORE,
@@ -95,7 +98,16 @@ ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) =>
     nFiltered,
     height,
   };
-  WindowManager.instance.cardWasDeleted(data);
+  const flashcardsWindowData: RendererResponseDTO = {
+    where: [RefreshPlace.FLASHCARDS_PAGE_CARD_DELETED],
+    nFiltered,
+    nFilteredReview,
+    nFilteredSuspended,
+    nSeen,
+    card,
+  };
+  WindowManager.instance.sendDataToMainWindow(mainWindowData);
+  WindowManager.instance.sendDataToFlashcardsWindow(flashcardsWindowData);
 });
 
 ipcMain.handle(Channels.getPage, async (_: IpcMainInvokeEvent, scrollTop: number) => {
