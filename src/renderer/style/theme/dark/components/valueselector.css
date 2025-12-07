@@ -1,25 +1,24 @@
-.theme-dark .frequencymeter {
+.theme-dark .value-selector {
   display: inline-flex;
   width: fit-content;
   border: 1px solid #30343a;
   user-select: none;
 }
 
-.theme-dark .frequencymeter > div {
+.theme-dark .value-selector > div {
   background-color: #3f444b;
   padding: 1px 4px;
   cursor: pointer;
   border-left: 1px solid #30343a;
-  transition: background 0.2s ease;
 }
 
-.theme-dark .frequencymeter > div:first-child {
+.theme-dark .value-selector > div:first-child {
   border-left: none;
 }
 
-.theme-dark .frequencymeter > div:hover {
+.theme-dark .value-selector > div:hover {
   background-color: #2f6097;
 }
-.theme-dark .frequencymeter > div.selected {
+.theme-dark .value-selector > div.selected {
   background-color: #448ee4;
 }

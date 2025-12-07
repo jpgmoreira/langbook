@@ -4,6 +4,7 @@ import { Events } from '@renderer/events/events';
 import { getEmptyFilters, TagsMode } from '@common/schemas/filters';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
+import { CardStage } from '@common/schemas/card';
 
 EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
   if (data.where.includes(RefreshPlace.FILTERS_STORE)) {
@@ -45,22 +46,22 @@ export const useFiltersStore = defineStore('filters', {
     changeTagsMode(mode: TagsMode) {
       this.filters.tagsMode = mode;
     },
-    toggleFrequency(value: number) {
-      const frequencies = this.filters.frequencies;
-      if (frequencies.includes(value)) {
-        this.filters.frequencies = frequencies.filter((v) => v !== value);
+    toggleStage(value: CardStage) {
+      const stages = this.filters.stages;
+      if (stages.includes(value)) {
+        this.filters.stages = stages.filter((v) => v !== value);
       } else {
-        frequencies.push(value);
+        stages.push(value);
       }
       this.dirty = true;
     },
     clearFilters() {
-      if (this.filters.tags.length || this.filters.text.trim() || this.filters.frequencies.length) {
+      if (this.filters.tags.length || this.filters.text.trim() || this.filters.stages.length) {
         this.dirty = true;
       }
       this.filters.tags = [];
       this.filters.text = '';
-      this.filters.frequencies = [];
+      this.filters.stages = [];
     },
   },
 });

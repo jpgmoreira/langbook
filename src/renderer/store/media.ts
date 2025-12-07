@@ -17,7 +17,7 @@ export const useMediaStore = defineStore('media', {
   }),
   actions: {
     refreshData(data: RendererResponseDTO) {
-      if ('mediaDir' in data) this.mediaDir = data.mediaDir || '';
+      this.mediaDir = data.mediaDir!;
     },
     clear() {
       this.mediaDir = '';
