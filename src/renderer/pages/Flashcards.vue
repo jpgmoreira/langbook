@@ -11,6 +11,7 @@
     CardStatus,
     TIER_OPTIONS,
     STATUS_OPTIONS,
+    YesOrNo,
   } from '@common/schemas/card';
   import { Sessions } from '@common/schemas/sessions';
   import { Channels } from '@preload/channels';
@@ -222,11 +223,22 @@
     await window.api.invoke(Channels.upsertCard, card);
   }
 
-  async function toggleStage(value: CardTier) {
+  async function toggleTier(value: CardTier) {
     const card = toRaw(currentCard.value);
     if (!card) return;
-    if (card.stage === value) return;
-    card.stage = value;
+    if (card.tier === value) return;
+    card.tier = value;
+    card.media = card.media.map((m) => toRaw(m));
+    await window.api.invoke(Channels.upsertCard, card);
+  }
+
+  async function toggleCore(e: Event) {
+    const target = e.target as HTMLInputElement;
+    const value = target.checked;
+    const card = toRaw(currentCard.value);
+    if (!card) return;
+    if (card.core === value) return;
+    card.core = value;
     card.media = card.media.map((m) => toRaw(m));
     await window.api.invoke(Channels.upsertCard, card);
   }
@@ -318,11 +330,11 @@
             </div>
             <div class="flex w-full items-center justify-evenly">
               <div>
-                Stage:
+                Tier:
                 <SelectionList
                   :options="[...TIER_OPTIONS]"
-                  :selected="[currentCard.stage]"
-                  @toggle="toggleStage"
+                  :selected="[currentCard.tier]"
+                  @toggle="toggleTier"
                 />
               </div>
               <div>
@@ -331,6 +343,16 @@
                   :options="[...STATUS_OPTIONS]"
                   :selected="[currentCard.status]"
                   @toggle="toggleStatus"
+                />
+              </div>
+              <div class="flex items-center select-none">
+                <label for="core-checkbox" class="mr-1">Core:</label>
+                <input
+                  type="checkbox"
+                  id="core-checkbox"
+                  name="core-checkbox"
+                  :checked="currentCard.core"
+                  @change="toggleCore"
                 />
               </div>
             </div>
