@@ -61,7 +61,7 @@ export class ProfileManager {
         errorMsg: 'Profile name already in use!',
       } as const;
     }
-    return { status: 'success ' } as const;
+    return { status: 'success' } as const;
   }
 
   public getCurrProfile() {
