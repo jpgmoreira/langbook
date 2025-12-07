@@ -26,6 +26,7 @@
   }>();
   const mediaStore = useMediaStore();
   const props = defineProps<FlashcardProps>();
+
   const front = computed(() => {
     if (!props.card) return '';
     let content = props.card.front;

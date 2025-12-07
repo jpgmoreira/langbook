@@ -271,7 +271,7 @@
   <div class="flashcards-page h-[100vh] flex flex-col overflow-hidden">
     <MediaModal :media="selectedMedia" @click="mediaModalClick" />
     <div
-      v-if="currentCard"
+      v-if="currentCard && !currentCard.deleted"
       class="grow relative card-parent"
       :class="isMoving ? 'cursor-grabbing' : 'cursor-grab'"
       @wheel="cardWheel"
@@ -296,6 +296,12 @@
         <span class="stat stat-suspended">Suspended: {{ nFilteredSuspended }}</span>
         <span class="stat stat-total">Total: {{ nFiltered }}</span>
       </div>
+    </div>
+    <div
+      v-else-if="currentCard && currentCard.deleted"
+      class="grow flex items-center justify-center whitespace-nowrap opacity-70 text-lg"
+    >
+      This card has been deleted.
     </div>
     <div v-else class="grow flex items-center justify-center whitespace-nowrap opacity-70 text-lg">
       No cards to show!
