@@ -6,10 +6,10 @@
   import { useMediaStore } from '@renderer/store/media';
   import {
     Card,
-    CardStage,
+    CardTier,
     MediaFile,
-    ReviewStatus,
-    STAGE_OPTIONS,
+    CardStatus,
+    TIER_OPTIONS,
     STATUS_OPTIONS,
   } from '@common/schemas/card';
   import { Sessions } from '@common/schemas/sessions';
@@ -213,7 +213,7 @@
     cardPosition.scale = newScale;
   }
 
-  async function toggleStatus(value: ReviewStatus) {
+  async function toggleStatus(value: CardStatus) {
     const card = toRaw(currentCard.value);
     if (!card) return;
     if (card.status === value) return;
@@ -222,7 +222,7 @@
     await window.api.invoke(Channels.upsertCard, card);
   }
 
-  async function toggleStage(value: CardStage) {
+  async function toggleStage(value: CardTier) {
     const card = toRaw(currentCard.value);
     if (!card) return;
     if (card.stage === value) return;
@@ -320,7 +320,7 @@
               <div>
                 Stage:
                 <SelectionList
-                  :options="[...STAGE_OPTIONS]"
+                  :options="[...TIER_OPTIONS]"
                   :selected="[currentCard.stage]"
                   @toggle="toggleStage"
                 />

@@ -1,5 +1,5 @@
 import { EventEmitter } from '@common/events/eventEmitter';
-import { Card, REVIEW_STATUS, ReviewStatus } from '@common/schemas/card';
+import { Card, CARD_STATUSES, CardStatus } from '@common/schemas/card';
 import { Events } from '@main/events/events';
 import { DbManager } from './dbManager';
 import { FiltersManager } from './filtersManager';
@@ -42,14 +42,14 @@ export class CardsManager {
   private filtered: Card[] = [];
 
   // Maps card statuses to all filtered cards that have that status:
-  private cardsByStatus: Record<ReviewStatus, Card[]> = {
+  private cardsByStatus: Record<CardStatus, Card[]> = {
     review: [],
     normal: [],
     suspended: [],
   };
 
   // Maps card statuses to the index of the current card for the status:
-  private cardStatusIndex: Record<ReviewStatus, number> = {
+  private cardStatusIndex: Record<CardStatus, number> = {
     review: 0,
     normal: 0,
     suspended: 0,
@@ -98,7 +98,7 @@ export class CardsManager {
   public refresh() {
     this.filtered = [];
     this.sessionToCard = {};
-    for (const status of REVIEW_STATUS) {
+    for (const status of CARD_STATUSES) {
       this.cardsByStatus[status] = [];
       this.cardStatusIndex[status] = 0;
     }
@@ -115,12 +115,12 @@ export class CardsManager {
       }
     });
     this.filtered.sort((a, b) => a.createdAt - b.createdAt); // Ascending.
-    for (const status of REVIEW_STATUS) {
+    for (const status of CARD_STATUSES) {
       shuffleArray(this.cardsByStatus[status]);
     }
   }
 
-  private chooseStatus(): ReviewStatus {
+  private chooseStatus(): CardStatus {
     const rand = Math.random();
     const { reviewProbability, suspendedProbability } =
       ProfileManager.instance.getStatusProbabilities()!;
@@ -136,7 +136,7 @@ export class CardsManager {
    *  2. There is only one card with this status and this is the last status chosen
    *      (to avoid repeating the same card twice in a row).
    */
-  private canChooseStatus(status: ReviewStatus) {
+  private canChooseStatus(status: CardStatus) {
     const cards = this.cardsByStatus[status];
     if (cards.length === 0) return false;
     if (cards.length === 1 && status === this.lastStatusChosen) return false;
@@ -158,7 +158,7 @@ export class CardsManager {
       tries++;
     }
     if (tries >= maxTries) {
-      for (const s of REVIEW_STATUS) {
+      for (const s of CARD_STATUSES) {
         if (this.cardsByStatus[status].length > 0) {
           status = s;
           break;

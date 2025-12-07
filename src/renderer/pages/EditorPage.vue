@@ -18,11 +18,11 @@
   } from 'vue';
   import {
     Card,
-    CardStage,
+    CardTier,
     getEmptyCard,
     MediaFile,
-    ReviewStatus,
-    STAGE_OPTIONS,
+    CardStatus,
+    TIER_OPTIONS,
     STATUS_OPTIONS,
   } from '@common/schemas/card';
   import { arrayRemove, randomId } from '@common/utils/utils';
@@ -284,11 +284,11 @@
     window.api.send(Channels.closeEditor);
   }
 
-  function setStage(stage: CardStage) {
+  function setStage(stage: CardTier) {
     card.value.stage = stage;
   }
 
-  function setStatus(status: ReviewStatus) {
+  function setStatus(status: CardStatus) {
     card.value.status = status;
   }
 
@@ -421,7 +421,7 @@
     <div class="flex items-center justify-between">
       <div>
         Stage:
-        <SelectionList :options="STAGE_OPTIONS" :selected="selectedStage" @toggle="setStage" />
+        <SelectionList :options="TIER_OPTIONS" :selected="selectedStage" @toggle="setStage" />
       </div>
       <div>
         Status:

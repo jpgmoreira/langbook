@@ -1,4 +1,4 @@
-import { CardStage, ReviewStatus } from './card';
+import { CardTier, CardStatus, YesOrNo } from './card';
 
 export type TagsMode = 'all' | 'any';
 
@@ -6,8 +6,9 @@ export type Filters = {
   text: string;
   tags: string[];
   tagsMode: TagsMode;
-  status: ReviewStatus[];
-  stages: CardStage[];
+  statuses: CardStatus[];
+  tiers: CardTier[];
+  core: YesOrNo[];
 };
 
 export function getEmptyFilters(): Filters {
@@ -15,7 +16,8 @@ export function getEmptyFilters(): Filters {
     text: '',
     tags: [],
     tagsMode: 'all',
-    status: [],
-    stages: [],
+    statuses: [],
+    tiers: [],
+    core: [],
   };
 }

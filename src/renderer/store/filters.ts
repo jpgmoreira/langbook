@@ -4,7 +4,7 @@ import { Events } from '@renderer/events/events';
 import { getEmptyFilters, TagsMode } from '@common/schemas/filters';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
-import { CardStage, ReviewStatus } from '@common/schemas/card';
+import { CardTier, CardStatus } from '@common/schemas/card';
 
 EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
   if (data.where.includes(RefreshPlace.FILTERS_STORE)) {
@@ -46,7 +46,7 @@ export const useFiltersStore = defineStore('filters', {
     changeTagsMode(mode: TagsMode) {
       this.filters.tagsMode = mode;
     },
-    toggleStage(value: CardStage) {
+    toggleStage(value: CardTier) {
       const stages = this.filters.stages;
       if (stages.includes(value)) {
         this.filters.stages = stages.filter((v) => v !== value);
@@ -55,7 +55,7 @@ export const useFiltersStore = defineStore('filters', {
       }
       this.dirty = true;
     },
-    toggleStatus(value: ReviewStatus) {
+    toggleStatus(value: CardStatus) {
       const status = this.filters.status;
       if (status.includes(value)) {
         this.filters.status = status.filter((v) => v !== value);

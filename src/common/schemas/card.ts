@@ -6,13 +6,13 @@ export type MediaFile = {
   path: string;
 };
 
-export const REVIEW_STATUS = Object.freeze(['normal', 'review', 'suspended'] as const);
+export const CARD_STATUSES = Object.freeze(['normal', 'review', 'suspended'] as const);
+export const CARD_TIERS = Object.freeze([0, 1, 2, 3, 4, 5] as const);
+export const YES_OR_NO = Object.freeze(['yes', 'no'] as const);
 
-export type ReviewStatus = (typeof REVIEW_STATUS)[number];
-
-export const CARD_STAGES = Object.freeze([0, 1, 2, 3, 4, 5] as const);
-
-export type CardStage = (typeof CARD_STAGES)[number];
+export type CardStatus = (typeof CARD_STATUSES)[number];
+export type CardTier = (typeof CARD_TIERS)[number];
+export type YesOrNo = (typeof YES_OR_NO)[number];
 
 export const STATUS_OPTIONS = deepFreeze([
   {
@@ -28,8 +28,17 @@ export const STATUS_OPTIONS = deepFreeze([
     value: 'suspended',
   },
 ] as const);
-
-export const STAGE_OPTIONS = deepFreeze(CARD_STAGES.map((s) => ({ text: s.toString(), value: s })));
+export const TIER_OPTIONS = deepFreeze(CARD_TIERS.map((s) => ({ text: s.toString(), value: s })));
+export const YES_OR_NO_OPTIONS = deepFreeze([
+  {
+    text: 'Yes',
+    value: 'yes',
+  },
+  {
+    text: 'No',
+    value: 'no',
+  },
+] as const);
 
 export type Card = {
   id: string;
@@ -41,8 +50,9 @@ export type Card = {
   createdAt: number;
   sessions: string[];
   tags: string[];
-  status: ReviewStatus;
-  stage: CardStage;
+  status: CardStatus;
+  tier: CardTier;
+  core: boolean;
   // UI properties stored in the database:
   height: number; // Needed for virtualization.
   // UI properties not stored in the database:
@@ -68,7 +78,8 @@ export function getEmptyCard(id: string, timestamp: number): Card {
     sessions: [],
     tags: [],
     status: 'normal',
-    stage: 0,
+    tier: 0,
+    core: false,
     height: 0,
   };
 }

@@ -14,10 +14,10 @@
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   import {
     Card,
-    CardStage,
+    CardTier,
     MediaFile,
-    ReviewStatus,
-    STAGE_OPTIONS,
+    CardStatus,
+    TIER_OPTIONS,
     STATUS_OPTIONS,
   } from '@common/schemas/card';
   import { Tags } from '@common/schemas/tags';
@@ -124,10 +124,10 @@
     selectedMedia.value = undefined;
     uiStore.backdropVisible = false;
   }
-  function setStage(value: CardStage) {
+  function setStage(value: CardTier) {
     filtersStore.toggleStage(value);
   }
-  function setStatus(value: ReviewStatus) {
+  function setStatus(value: CardStatus) {
     filtersStore.toggleStatus(value);
   }
   function windowMouseUp() {
@@ -203,7 +203,7 @@
             <div>
               Stage:
               <SelectionList
-                :options="[...STAGE_OPTIONS]"
+                :options="[...TIER_OPTIONS]"
                 :selected="filtersStore.filters.stages"
                 @toggle="setStage"
               />
