@@ -30,7 +30,7 @@ export function getEmptyProfile(id: string, name: string): Profile {
   return {
     id,
     name,
-    reviewProbability: 30,
+    reviewProbability: 0.3,
     suspendedProbability: 0,
   };
 }
