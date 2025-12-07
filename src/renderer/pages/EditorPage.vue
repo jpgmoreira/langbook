@@ -16,13 +16,21 @@
     onBeforeUnmount,
     toRaw,
   } from 'vue';
-  import { Card, CardStage, getEmptyCard, MediaFile, ReviewStatus } from '@common/schemas/card';
+  import {
+    Card,
+    CardStage,
+    getEmptyCard,
+    MediaFile,
+    ReviewStatus,
+    STAGE_OPTIONS,
+    STATUS_OPTIONS,
+  } from '@common/schemas/card';
   import { arrayRemove, randomId } from '@common/utils/utils';
   import { Tags } from '@common/schemas/tags';
   import { Sessions } from '@common/schemas/sessions';
   import Multiselect, { MultiselectOption } from '@renderer/components/UI/Multiselect.vue';
   import { Channels } from '@preload/channels';
-  import Frequencymeter from '@renderer/components/UI/SelectionList.vue';
+  import SelectionList from '@renderer/components/UI/SelectionList.vue';
   import { RefreshPlace } from '@common/types/refreshPlace';
   import DeleteCardModal from '@renderer/components/UI/DeleteCardModal.vue';
   import HomeCard from '@renderer/components/HomeCard.vue';
@@ -410,9 +418,15 @@
       @select-option="selectSession"
       @deselect-option="deselectSession"
     />
-    <div>
-      Frequency:
-      <Frequencymeter :selected="selectedFrequency" @toggle="setFrequency" />
+    <div class="flex items-center justify-between">
+      <div>
+        Stage:
+        <SelectionList :options="STAGE_OPTIONS" :selected="selectedStage" @toggle="setStage" />
+      </div>
+      <div>
+        Status:
+        <SelectionList :options="STATUS_OPTIONS" :selected="selectedStatus" @toggle="setStatus" />
+      </div>
     </div>
     <footer class="flex justify-around mt-auto">
       <div class="flex items-center" v-tooltip="allowReversedTooltip">

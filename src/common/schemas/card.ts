@@ -1,12 +1,35 @@
+import { deepFreeze } from '@common/utils/utils';
+
 export type MediaFile = {
   name: string;
   type: string; // Mime type.
   path: string;
 };
 
-export type ReviewStatus = 'normal' | 'review' | 'suspended';
+export const REVIEW_STATUS = Object.freeze(['normal', 'review', 'suspended'] as const);
 
-export type CardStage = 0 | 1 | 2 | 3 | 4 | 5;
+export type ReviewStatus = (typeof REVIEW_STATUS)[number];
+
+export const CARD_STAGES = Object.freeze([0, 1, 2, 3, 4, 5] as const);
+
+export type CardStage = (typeof CARD_STAGES)[number];
+
+export const STATUS_OPTIONS = deepFreeze([
+  {
+    text: 'Normal',
+    value: 'normal',
+  },
+  {
+    text: 'Review',
+    value: 'review',
+  },
+  {
+    text: 'Suspended',
+    value: 'suspended',
+  },
+] as const);
+
+export const STAGE_OPTIONS = deepFreeze(CARD_STAGES.map((s) => ({ text: s.toString(), value: s })));
 
 export type Card = {
   id: string;
@@ -45,7 +68,7 @@ export function getEmptyCard(id: string, timestamp: number): Card {
     sessions: [],
     tags: [],
     status: 'normal',
-    stage: 5,
+    stage: 0,
     height: 0,
   };
 }

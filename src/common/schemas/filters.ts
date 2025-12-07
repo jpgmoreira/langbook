@@ -1,4 +1,4 @@
-import { CardStage, ReviewStatus } from './card';
+import { CardStage, REVIEW_STATUS, ReviewStatus } from './card';
 
 export type TagsMode = 'all' | 'any';
 
@@ -15,7 +15,7 @@ export function getEmptyFilters(): Filters {
     text: '',
     tags: [],
     tagsMode: 'all',
-    status: ['normal', 'review', 'suspended'],
+    status: [...REVIEW_STATUS],
     stages: [],
   };
 }

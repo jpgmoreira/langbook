@@ -1,5 +1,5 @@
 import { EventEmitter } from '@common/events/eventEmitter';
-import { Card, ReviewStatus } from '@common/schemas/card';
+import { Card, REVIEW_STATUS, ReviewStatus } from '@common/schemas/card';
 import { Events } from '@main/events/events';
 import { DbManager } from './dbManager';
 import { FiltersManager } from './filtersManager';
@@ -97,8 +97,7 @@ export class CardsManager {
   public refresh() {
     this.filtered = [];
     this.sessionToCard = {};
-    const statuses = ['normal', 'review', 'suspended'];
-    for (const status of statuses) {
+    for (const status of REVIEW_STATUS) {
       this.cardsByStatus[status] = [];
       this.cardStatusIndex[status] = 0;
     }
@@ -115,7 +114,7 @@ export class CardsManager {
       }
     });
     this.filtered.sort((a, b) => a.createdAt - b.createdAt); // Ascending.
-    for (const status of statuses) {
+    for (const status of REVIEW_STATUS) {
       shuffleArray(this.cardsByStatus[status]);
     }
   }
@@ -158,7 +157,7 @@ export class CardsManager {
       tries++;
     }
     if (tries >= maxTries) {
-      for (const s of ['normal', 'review', 'suspended'] as const) {
+      for (const s of REVIEW_STATUS) {
         if (this.cardsByStatus[status].length > 0) {
           status = s;
           break;
