@@ -169,6 +169,8 @@ export class CardsManager {
     const cards = this.cardsByStatus[status];
     const index = ++this.cardStatusIndex[status] % cards.length;
     if (index === 0) {
+      // Notice that after shuffling, the card can repeat once, if the last
+      // card chosen ends up being the first card in the new shuffled array.
       shuffleArray(cards);
     }
     const card = cards[index];
