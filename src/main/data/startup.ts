@@ -15,7 +15,12 @@ export async function loadStartupData(): Promise<RendererResponseDTO> {
   const profile = ProfileManager.instance.getCurrProfile();
   const profileRegistry = ProfileManager.instance.getProfileRegistry();
   const data: RendererResponseDTO = {
-    where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
+    where: [
+      RefreshPlace.HOME_PAGE,
+      RefreshPlace.FILTERS_STORE,
+      RefreshPlace.PROFILE_STORE,
+      RefreshPlace.MEDIA_STORE,
+    ],
     profile,
     profileRegistry,
     tags: {},

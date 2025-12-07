@@ -2,9 +2,12 @@ import { defineStore } from 'pinia';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
+import { RefreshPlace } from '@common/types/refreshPlace';
 
 EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
-  useMediaStore().refreshData(data);
+  if (data.where.includes(RefreshPlace.MEDIA_STORE)) {
+    useMediaStore().refreshData(data);
+  }
 });
 
 EventEmitter.instance.on(Events.clearProfileData, () => {

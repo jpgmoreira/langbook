@@ -118,7 +118,7 @@ export class WindowManager {
   public openEditor(card: Card | null) {
     const profileId = ProfileManager.instance.getCurrProfile()!.id;
     const data: RendererResponseDTO = {
-      where: [RefreshPlace.EDITOR_PAGE],
+      where: [RefreshPlace.EDITOR_PAGE, RefreshPlace.MEDIA_STORE],
       card,
       tags: TagsManager.instance.getTags(),
       sessions: SessionsManager.instance.getSessions(),
@@ -133,7 +133,7 @@ export class WindowManager {
     const profileId = ProfileManager.instance.getCurrProfile()!.id;
     const { card } = CardsManager.instance.getNextCard();
     const data: RendererResponseDTO = {
-      where: [RefreshPlace.FLASHCARDS_PAGE_INIT],
+      where: [RefreshPlace.FLASHCARDS_PAGE_INIT, RefreshPlace.MEDIA_STORE],
       nFiltered: CardsManager.instance.getNFiltered(),
       nFilteredReview: CardsManager.instance.getNFilteredReview(),
       nFilteredSuspended: CardsManager.instance.getNFilteredSuspended(),
