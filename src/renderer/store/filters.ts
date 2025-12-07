@@ -4,7 +4,7 @@ import { Events } from '@renderer/events/events';
 import { getEmptyFilters, TagsMode } from '@common/schemas/filters';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
-import { CardTier, CardStatus } from '@common/schemas/card';
+import { CardTier, CardStatus, YesOrNo } from '@common/schemas/card';
 
 EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
   if (data.where.includes(RefreshPlace.FILTERS_STORE)) {
@@ -46,31 +46,37 @@ export const useFiltersStore = defineStore('filters', {
     changeTagsMode(mode: TagsMode) {
       this.filters.tagsMode = mode;
     },
-    toggleStage(value: CardTier) {
-      const stages = this.filters.stages;
-      if (stages.includes(value)) {
-        this.filters.stages = stages.filter((v) => v !== value);
+    toggleListSelector<T>(value: T, list: T[]) {
+      if (list.includes(value)) {
+        list = list.filter((v) => v !== value);
       } else {
-        stages.push(value);
+        list.push(value);
       }
       this.dirty = true;
+      return list;
+    },
+    toggleTier(value: CardTier) {
+      this.filters.tiers = this.toggleListSelector(value, this.filters.tiers);
     },
     toggleStatus(value: CardStatus) {
-      const status = this.filters.status;
-      if (status.includes(value)) {
-        this.filters.status = status.filter((v) => v !== value);
-      } else {
-        status.push(value);
-      }
-      this.dirty = true;
+      this.filters.statuses = this.toggleListSelector(value, this.filters.statuses);
+    },
+    toggleCore(value: YesOrNo) {
+      this.filters.core = this.toggleListSelector(value, this.filters.core);
     },
     clearFilters() {
-      if (this.filters.tags.length || this.filters.text.trim() || this.filters.stages.length) {
+      if (
+        this.filters.tags.length ||
+        this.filters.text.trim() ||
+        this.filters.tiers.length ||
+        this.filters.statuses.length
+      ) {
         this.dirty = true;
       }
       this.filters.tags = [];
       this.filters.text = '';
-      this.filters.stages = [];
+      this.filters.tiers = [];
+      this.filters.statuses = [];
     },
   },
 });
