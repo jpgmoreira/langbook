@@ -4,22 +4,15 @@
   import { Events } from '@renderer/events/events';
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   import { useMediaStore } from '@renderer/store/media';
-  import {
-    Card,
-    CardTier,
-    MediaFile,
-    CardStatus,
-    TIER_OPTIONS,
-    STATUS_OPTIONS,
-    YesOrNo,
-  } from '@common/schemas/card';
+  import { Card, CardTier, MediaFile, CardStatus } from '@common/schemas/card';
   import { Sessions } from '@common/schemas/sessions';
   import { Channels } from '@preload/channels';
   import { useUIStore } from '@renderer/store/ui';
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
-  import SelectionList from '@renderer/components/UI/SelectionList.vue';
   import { RefreshPlace } from '@common/types/refreshPlace';
   import { GetNewCardResponseDTO } from '@common/dto/getNewCardResponseDTO';
+  import FlashCard from '@renderer/components/FlashCard.vue';
+
   EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
     if (data.where.includes(RefreshPlace.FLASHCARDS_PAGE_INIT)) {
       initData(data);
@@ -34,7 +27,7 @@
   const mediaStore = useMediaStore();
   const uiStore = useUIStore();
 
-  const sessions = ref<Sessions>();
+  const sessions = ref<Sessions>({});
   const nFiltered = ref(0);
   const nFilteredReview = ref(0);
   const nFilteredSuspended = ref(0);
@@ -79,30 +72,6 @@
   const flip = computed(() => {
     if (index.value >= flipped.value.length) return false;
     return flipped.value[index.value];
-  });
-
-  const front = computed(() => {
-    if (!currentCard.value) return '';
-    let content = currentCard.value.front;
-    if (flip.value) content = currentCard.value.back;
-    return mediaStore.processRteImages(content);
-  });
-
-  const back = computed(() => {
-    if (!currentCard.value) return '';
-    let content = currentCard.value.back;
-    if (flip.value) content = currentCard.value.front;
-    return mediaStore.processRteImages(content);
-  });
-
-  const extra = computed(() => {
-    if (!currentCard.value) return '';
-    return mediaStore.processRteImages(currentCard.value.extra);
-  });
-
-  const media = computed(() => {
-    if (!currentCard.value) return [];
-    return currentCard.value.media;
   });
 
   function initData(data: RendererResponseDTO) {
@@ -181,12 +150,6 @@
     uiStore.backdropVisible = false;
   }
 
-  function mediaButtonClass(mime: string) {
-    if (mime.startsWith('image')) return 'image';
-    if (mime.startsWith('audio')) return 'audio';
-    return undefined;
-  }
-
   function resetPosition() {
     cardPosition.top = INITIAL_PADDING_TOP;
     cardPosition.left = 0;
@@ -232,9 +195,7 @@
     await window.api.invoke(Channels.upsertCard, card);
   }
 
-  async function toggleCore(e: Event) {
-    const target = e.target as HTMLInputElement;
-    const value = target.checked;
+  async function toggleCore(value: boolean) {
     const card = toRaw(currentCard.value);
     if (!card) return;
     if (card.core === value) return;
@@ -291,74 +252,17 @@
       @dragstart.prevent
       @selectstart.prevent
     >
-      <div class="card sep-parent absolute w-full" :style="cardStyle" :class="currentCard.status">
-        <div class="card-field flex justify-center items-center relative">
-          <div v-if="reveal" class="absolute left-1 field-hint">
-            {{ flip ? 'Back:' : 'Front:' }}
-          </div>
-          <div v-html="front"></div>
-        </div>
-        <div v-if="reveal" class="sep-parent">
-          <div v-if="back" class="card-field flex justify-center items-center relative">
-            <div v-if="reveal" class="absolute left-1 field-hint">
-              {{ flip ? 'Front:' : 'Back:' }}
-            </div>
-            <div v-html="back"></div>
-          </div>
-          <div v-if="extra" class="card-field flex justify-center items-center relative">
-            <div class="absolute left-1 field-hint">Extra:</div>
-            <div v-html="extra"></div>
-          </div>
-          <div v-if="media.length" class="flex justify-center card-field">
-            <button
-              type="button"
-              v-for="m in media"
-              class="media-button m-1"
-              :class="mediaButtonClass(m.type)"
-              @click="mediaClick(m)"
-              v-tooltip="m.name"
-            ></button>
-          </div>
-          <div class="flex flex-col items-center gap-5 p-5">
-            <div v-if="currentCard.tags.length" class="flex gap-1 justify-center flex-wrap">
-              <div class="tag badge" v-for="tag in currentCard.tags" :key="tag">{{ tag }}</div>
-            </div>
-            <div class="flex gap-1 justify-center flex-wrap">
-              <div class="session badge" v-for="session in currentCard.sessions" :key="session">
-                {{ sessions![session].name }}
-              </div>
-            </div>
-            <div class="flex w-full items-center justify-evenly">
-              <div>
-                Tier:
-                <SelectionList
-                  :options="[...TIER_OPTIONS]"
-                  :selected="[currentCard.tier]"
-                  @toggle="toggleTier"
-                />
-              </div>
-              <div>
-                Status:
-                <SelectionList
-                  :options="[...STATUS_OPTIONS]"
-                  :selected="[currentCard.status]"
-                  @toggle="toggleStatus"
-                />
-              </div>
-              <div class="flex items-center select-none">
-                <label for="core-checkbox" class="mr-1">Core:</label>
-                <input
-                  type="checkbox"
-                  id="core-checkbox"
-                  name="core-checkbox"
-                  :checked="currentCard.core"
-                  @change="toggleCore"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <FlashCard
+        :card="currentCard"
+        :flip="flip"
+        :reveal="reveal"
+        :sessions="sessions"
+        :style="cardStyle"
+        @toggle-core="toggleCore"
+        @toggle-status="toggleStatus"
+        @toggle-tier="toggleTier"
+        @media-click="mediaClick"
+      />
       <div class="stats-bar">
         <span class="stat stat-seen">Seen: {{ nSeen }}</span>
         <span class="stat stat-active">Active: {{ nFiltered - nFilteredSuspended }}</span>
@@ -381,13 +285,13 @@
 </template>
 
 <style scoped>
-  .card {
+  :deep(.flashcard) {
     transform-origin: 0 0;
   }
-  :deep(.card img) {
+  :deep(.flashcard img) {
     display: inline-block;
   }
-  :deep(.card span) {
+  :deep(.flashcard span) {
     color: inherit;
   }
 </style>

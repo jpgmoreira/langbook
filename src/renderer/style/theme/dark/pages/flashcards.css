@@ -2,26 +2,26 @@
   border-top: 3px dashed #525356;
 }
 
-.theme-dark .flashcards-page .card .card-field {
+.theme-dark .flashcards-page .flashcard .card-field {
   padding: 20px 0;
 }
 
-.theme-dark .flashcards-page .card .badge {
+.theme-dark .flashcards-page .flashcard .badge {
   font-size: 0.9rem;
   border-radius: 1000px;
   padding: 3px 8px;
   line-height: 1rem;
 }
 
-.theme-dark .flashcards-page .card .badge.tag {
+.theme-dark .flashcards-page .flashcard .badge.tag {
   background-color: #0070e1;
 }
 
-.theme-dark .flashcards-page .card .badge.session {
+.theme-dark .flashcards-page .flashcard .badge.session {
   background-color: #b70011;
 }
 
-.theme-dark .flashcards-page .card .field-hint {
+.theme-dark .flashcards-page .flashcard .field-hint {
   color: #aaa;
   font-weight: bold;
 }
@@ -84,7 +84,7 @@
   color: #ddd;
 }
 
-.theme-dark .flashcards-page .card.review {
+.theme-dark .flashcards-page .flashcard.review {
   border-color: #2ea043;
   background: linear-gradient(180deg, #233428, #1b2a20);
   box-shadow:
@@ -92,14 +92,14 @@
     inset 0 0 6px rgba(46, 160, 67, 0.15);
 }
 
-.theme-dark .flashcards-page .card.review:hover {
+.theme-dark .flashcards-page .flashcard.review:hover {
   border-color: #33c24d;
   box-shadow:
     0 0 16px rgba(51, 194, 77, 0.45),
     inset 0 0 8px rgba(51, 194, 77, 0.2);
 }
 
-.theme-dark .flashcards-page .card.suspended {
+.theme-dark .flashcards-page .flashcard.suspended {
   border-color: #d43838;
   background: linear-gradient(180deg, #2f2323, #261b1b);
   box-shadow:
@@ -107,7 +107,7 @@
     inset 0 0 6px rgba(212, 56, 56, 0.15);
 }
 
-.theme-dark .flashcards-page .card.suspended:hover {
+.theme-dark .flashcards-page .flashcard.suspended:hover {
   border-color: #ff4f4f;
   box-shadow:
     0 0 16px rgba(255, 79, 79, 0.45),
