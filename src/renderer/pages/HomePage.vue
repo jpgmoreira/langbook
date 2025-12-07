@@ -5,7 +5,7 @@
   import Header from '@renderer/components/Header.vue';
   import TreeView from '@renderer/components/UI/TreeView/TreeView.vue';
   import Multiselect, { MultiselectOption } from '@renderer/components/UI/Multiselect.vue';
-  import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
+  import Frequencymeter from '@renderer/components/UI/SelectionList.vue';
   import CardsView from '@renderer/components/CardsView.vue';
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
   import { Channels } from '@preload/channels';

@@ -4,7 +4,7 @@
    * {
    *      name: string,
    *      path: string,
-   *      type: 'image' | 'audio'
+   *      type: string
    * }
    */
   import { type MediaFile } from '@common/schemas/card';

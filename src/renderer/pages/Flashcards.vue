@@ -9,7 +9,7 @@
   import { Channels } from '@preload/channels';
   import { useUIStore } from '@renderer/store/ui';
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
-  import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
+  import Frequencymeter from '@renderer/components/UI/SelectionList.vue';
   import { RefreshPlace } from '@common/types/refreshPlace';
   import { GetNewCardResponseDTO } from '@common/dto/getNewCardResponseDTO';
   EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {

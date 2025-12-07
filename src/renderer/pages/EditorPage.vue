@@ -16,13 +16,13 @@
     onBeforeUnmount,
     toRaw,
   } from 'vue';
-  import { Card, getEmptyCard, MediaFile } from '@common/schemas/card';
+  import { Card, CardStage, getEmptyCard, MediaFile, ReviewStatus } from '@common/schemas/card';
   import { arrayRemove, randomId } from '@common/utils/utils';
   import { Tags } from '@common/schemas/tags';
   import { Sessions } from '@common/schemas/sessions';
   import Multiselect, { MultiselectOption } from '@renderer/components/UI/Multiselect.vue';
   import { Channels } from '@preload/channels';
-  import Frequencymeter from '@renderer/components/UI/Frequencymeter.vue';
+  import Frequencymeter from '@renderer/components/UI/SelectionList.vue';
   import { RefreshPlace } from '@common/types/refreshPlace';
   import DeleteCardModal from '@renderer/components/UI/DeleteCardModal.vue';
   import HomeCard from '@renderer/components/HomeCard.vue';
@@ -90,7 +90,8 @@
       return 'Allow reversed is only available when the back field has content';
     return undefined;
   });
-  const selectedFrequency = computed(() => [card.value.frequency]);
+  const selectedStage = computed(() => [card.value.stage]);
+  const selectedStatus = computed(() => [card.value.status]);
 
   // --- Initialization: ---
 
@@ -275,8 +276,12 @@
     window.api.send(Channels.closeEditor);
   }
 
-  function setFrequency(value: number) {
-    card.value.frequency = value;
+  function setStage(stage: CardStage) {
+    card.value.stage = stage;
+  }
+
+  function setStatus(status: ReviewStatus) {
+    card.value.status = status;
   }
 
   // --- Lifecycle hooks: ---
@@ -462,6 +467,7 @@
     display: flex;
     height: 100px;
   }
+  /* Used to compute the card's height: */
   .dummy-card {
     visibility: hidden;
     position: absolute;

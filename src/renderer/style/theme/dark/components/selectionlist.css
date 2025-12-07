@@ -1,24 +1,24 @@
-.theme-dark .value-selector {
+.theme-dark .selection-list {
   display: inline-flex;
   width: fit-content;
   border: 1px solid #30343a;
   user-select: none;
 }
 
-.theme-dark .value-selector > div {
+.theme-dark .selection-list > div {
   background-color: #3f444b;
   padding: 1px 4px;
   cursor: pointer;
   border-left: 1px solid #30343a;
 }
 
-.theme-dark .value-selector > div:first-child {
+.theme-dark .selection-list > div:first-child {
   border-left: none;
 }
 
-.theme-dark .value-selector > div:hover {
+.theme-dark .selection-list > div:hover {
   background-color: #2f6097;
 }
-.theme-dark .value-selector > div.selected {
+.theme-dark .selection-list > div.selected {
   background-color: #448ee4;
 }
