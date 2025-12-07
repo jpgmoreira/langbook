@@ -11,7 +11,7 @@
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
   import { RefreshPlace } from '@common/types/refreshPlace';
   import { GetNewCardResponseDTO } from '@common/dto/getNewCardResponseDTO';
-  import FlashCard from '@renderer/components/FlashCard.vue';
+  import FlashCard from '@renderer/components/Flashcard.vue';
 
   EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
     if (data.where.includes(RefreshPlace.FLASHCARDS_PAGE_INIT)) {
