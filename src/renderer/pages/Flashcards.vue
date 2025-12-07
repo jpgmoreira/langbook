@@ -204,6 +204,11 @@
     await window.api.invoke(Channels.upsertCard, card);
   }
 
+  function openEditor() {
+    uiStore.backdropVisible = true;
+    window.api.invoke(Channels.openEditor, toRaw(currentCard.value));
+  }
+
   function windowKeyDown(e: KeyboardEvent) {
     if (e.key === 'Escape') {
       mediaModalClick();
@@ -283,7 +288,9 @@
         Previous
       </button>
       <button type="button" class="btn-primary" @click="goNext" :disabled="cantGoNext">Next</button>
-      <button type="button" class="btn-primary" :disabled="!currentCard">Edit</button>
+      <button type="button" class="btn-primary" :disabled="!currentCard" @click="openEditor">
+        Edit
+      </button>
     </footer>
   </div>
 </template>

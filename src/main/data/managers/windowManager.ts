@@ -75,7 +75,9 @@ export class WindowManager {
     this.editorWindow.on('close', (e) => {
       e.preventDefault();
       this.editorWindow.hide();
-      if (!this.flashcardsWindow.isVisible()) {
+      if (this.flashcardsWindow.isVisible()) {
+        this.flashcardsWindow.webContents.send(Channels.closeBackdrop);
+      } else {
         this.mainWindow.webContents.send(Channels.closeBackdrop);
       }
     });
