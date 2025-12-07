@@ -5,14 +5,21 @@
   import Header from '@renderer/components/Header.vue';
   import TreeView from '@renderer/components/UI/TreeView/TreeView.vue';
   import Multiselect, { MultiselectOption } from '@renderer/components/UI/Multiselect.vue';
-  import Frequencymeter from '@renderer/components/UI/SelectionList.vue';
+  import SelectionList from '@renderer/components/UI/SelectionList.vue';
   import CardsView from '@renderer/components/CardsView.vue';
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
   import { Channels } from '@preload/channels';
   import { EventEmitter } from '@common/events/eventEmitter';
   import { Events } from '@renderer/events/events';
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
-  import { Card, MediaFile } from '@common/schemas/card';
+  import {
+    Card,
+    CardStage,
+    MediaFile,
+    ReviewStatus,
+    STAGE_OPTIONS,
+    STATUS_OPTIONS,
+  } from '@common/schemas/card';
   import { Tags } from '@common/schemas/tags';
   import { RefreshPlace } from '@common/types/refreshPlace';
   import { useMediaStore } from '@renderer/store/media';
@@ -81,7 +88,7 @@
       Channels.filter,
       toRaw(filtersStore.filters)
     );
-    refreshData(result);
+    refreshNewPage(result);
   }
   function openEditor(card: Card | null) {
     uiStore.backdropVisible = true;
@@ -116,6 +123,12 @@
   function mediaModalClick() {
     selectedMedia.value = undefined;
     uiStore.backdropVisible = false;
+  }
+  function setStage(value: CardStage) {
+    filtersStore.toggleStage(value);
+  }
+  function setStatus(value: ReviewStatus) {
+    filtersStore.toggleStatus(value);
   }
   function windowMouseUp() {
     isResizing.value = false;
@@ -186,12 +199,23 @@
             v-model.trim="filtersStore.filters.text"
             @input="filtersStore.dirty = true"
           />
-          <div class="flex items-center">
-            <span class="mr-1">Frequency:</span>
-            <Frequencymeter
-              :selected="filtersStore.filters.frequencies"
-              @toggle="filtersStore.toggleFrequency"
-            />
+          <div class="flex items-center justify-between">
+            <div>
+              Stage:
+              <SelectionList
+                :options="[...STAGE_OPTIONS]"
+                :selected="filtersStore.filters.stages"
+                @toggle="setStage"
+              />
+            </div>
+            <div>
+              Status:
+              <SelectionList
+                :options="[...STATUS_OPTIONS]"
+                :selected="filtersStore.filters.status"
+                @toggle="setStatus"
+              />
+            </div>
           </div>
         </div>
         <footer class="flex items-center justify-evenly py-1">
