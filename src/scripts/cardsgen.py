@@ -23,11 +23,12 @@ def generate_card(session_id):
         "extra": random_text(5),
         "allowReversed": 0,  # default FALSE
         "createdAt": now,
-        "frequency": random.randint(1, 10),
+        "status": "normal",
+        "stage": 0,
         "tags": json.dumps([]),
         "sessions": json.dumps([session_id]),
         "media": json.dumps([]),
-        "height": 108,  # Base height for 3 fields with simple text, if style changed in front it has to be adjusted.
+        "height": 108,  # Base height for 3 fields
     }
 
 
@@ -53,9 +54,10 @@ def main():
         front TEXT NOT NULL,
         back TEXT NOT NULL DEFAULT '',
         extra TEXT NOT NULL DEFAULT '',
-        allowReversed BOOLEAN NOT NULL DEFAULT FALSE,
+        allowReversed INTEGER NOT NULL DEFAULT 0,
         createdAt INTEGER NOT NULL,
-        frequency INTEGER NOT NULL,
+        status TEXT NOT NULL DEFAULT 'normal',
+        stage INTEGER NOT NULL DEFAULT 0,
         tags TEXT NOT NULL,
         sessions TEXT NOT NULL,
         media TEXT NOT NULL,
@@ -70,8 +72,8 @@ def main():
     cursor.executemany(
         """
     INSERT INTO cards 
-    (id, front, back, extra, allowReversed, createdAt, frequency, tags, sessions, media, height)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (id, front, back, extra, allowReversed, createdAt, status, stage, tags, sessions, media, height)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """,
         [
             (
@@ -81,7 +83,8 @@ def main():
                 c["extra"],
                 c["allowReversed"],
                 c["createdAt"],
-                c["frequency"],
+                c["status"],
+                c["stage"],
                 c["tags"],
                 c["sessions"],
                 c["media"],

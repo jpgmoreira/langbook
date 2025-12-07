@@ -5,7 +5,6 @@ Generate a tree to test the TreeView component.
 import json
 import random
 import string
-import sys
 from typing import Optional
 
 

@@ -1,3 +1,6 @@
+/**
+ * Constants used just by the main process.
+ */
 import { is } from '@electron-toolkit/utils';
 import { app } from 'electron';
 import { resolve, dirname } from 'node:path';
