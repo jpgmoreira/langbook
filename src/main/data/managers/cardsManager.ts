@@ -92,8 +92,7 @@ export class CardsManager {
    *   - cardsByStatus;
    *   - cardStatusIndex;
    * Based on "cardsMap" and the current filters.
-   * "cardsSeen" is not recalculated because refresh can
-   *   be called in the middle of a flashcards study.
+   * Updates "cardsSeen".
    */
   public refresh() {
     this.filtered = [];
@@ -112,6 +111,9 @@ export class CardsManager {
       if (FiltersManager.instance.satisfyCurrentFilters(card)) {
         this.filtered.push(card);
         this.cardsByStatus[card.status].push(card);
+      } else {
+        // Remove cards that don't satisfy filters from cards seen
+        this.cardsSeen.delete(card.id);
       }
     });
     this.filtered.sort((a, b) => a.createdAt - b.createdAt); // Ascending.
@@ -309,8 +311,11 @@ export class CardsManager {
     SessionsManager.instance.cardCreated(card);
     TagsManager.instance.cardCreated(card);
     this.cardsMap[card.id] = card;
-    // Send updates to main window:
+    // Send updates to main and flashcards windows:
     this.refresh();
+    if (FiltersManager.instance.satisfyCurrentFilters(card)) {
+      this.cardsSeen.add(card.id);
+    }
     const { page, height, nFiltered } = this.getPage(this.scrollTop);
     const mainWindowData: RendererResponseDTO = {
       where: [
