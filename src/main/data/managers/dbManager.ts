@@ -56,9 +56,9 @@ export class DbManager {
       `
       INSERT INTO cards (
         id, front, back, extra, media, allowReversed,
-        createdAt, sessions, tags, frequency, height
+        createdAt, sessions, tags, status, stage, height
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
       [
         serialized.id,
@@ -70,7 +70,8 @@ export class DbManager {
         serialized.createdAt,
         serialized.sessions,
         serialized.tags,
-        serialized.frequency,
+        serialized.status,
+        serialized.stage,
         serialized.height,
       ]
     );
@@ -90,7 +91,8 @@ export class DbManager {
         createdAt = ?,
         sessions = ?,
         tags = ?,
-        frequency = ?,
+        status = ?,
+        stage = ?,
         height = ?
       WHERE id = ?
     `,
@@ -103,7 +105,8 @@ export class DbManager {
         serialized.createdAt,
         serialized.sessions,
         serialized.tags,
-        serialized.frequency,
+        serialized.status,
+        serialized.stage,
         serialized.height,
         serialized.id,
       ]

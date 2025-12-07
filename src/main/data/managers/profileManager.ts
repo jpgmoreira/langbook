@@ -132,6 +132,14 @@ export class ProfileManager {
     ensureDirExists(mediaDir);
   }
 
+  public getStatusProbabilities() {
+    if (!this.profile) return;
+    return {
+      reviewProbability: this.profile.reviewProbability,
+      suspendedProbability: this.profile.suspendedProbability,
+    };
+  }
+
   public addSessions(n: 1 | -1) {
     const profileId = this.profile?.id;
     if (!profileId) return;

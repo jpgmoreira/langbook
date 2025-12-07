@@ -1,6 +1,8 @@
 export type Profile = {
   id: string;
   name: string;
+  reviewProbability: number;
+  suspendedProbability: number;
 };
 
 export type ProfileRecord = {
@@ -28,5 +30,7 @@ export function getEmptyProfile(id: string, name: string): Profile {
   return {
     id,
     name,
+    reviewProbability: 30,
+    suspendedProbability: 0,
   };
 }

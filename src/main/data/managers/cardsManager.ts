@@ -1,5 +1,5 @@
 import { EventEmitter } from '@common/events/eventEmitter';
-import { Card } from '@common/schemas/card';
+import { Card, ReviewStatus } from '@common/schemas/card';
 import { Events } from '@main/events/events';
 import { DbManager } from './dbManager';
 import { FiltersManager } from './filtersManager';
@@ -40,20 +40,25 @@ export class CardsManager {
   // All cards that satisfy the current filters:
   private filtered: Card[] = [];
 
-  // Maps frequency numbers to all filtered cards that have that frequency:
-  private frequency: Record<number, Card[]> = {};
+  // Maps card statuses to all filtered cards that have that status:
+  private cardsByStatus: Record<ReviewStatus, Card[]> = {
+    review: [],
+    normal: [],
+    suspended: [],
+  };
 
-  // Maps frequency numbers to the index of the current card for the frequency:
-  private frequencyIndex: Record<number, number> = {};
+  // Maps card statuses to the index of the current card for the status:
+  private cardStatusIndex: Record<ReviewStatus, number> = {
+    review: 0,
+    normal: 0,
+    suspended: 0,
+  };
 
-  // Last bucket chosen:
-  private lastBucket = -1;
+  // Last status chosen:
+  private lastStatusChosen = '';
 
   // Set with all card IDs for the current flashcards study.
   private cardsSeen = new Set<string>();
-
-  // Number of filtered cards, excluding frequency 0 cards.
-  private nFilteredNonZero = 0;
 
   // Current cards view scroll top.
   // I need it here, because a new page can be sent to the main window through an
@@ -82,20 +87,20 @@ export class CardsManager {
   /**
    * Recomputes:
    *   - filtered;
-   *   - frequency;
    *   - sessionToCard;
-   *   - frequencyIndex;
-   *   - cardsSeen;
-   *   - nFilteredNonZero;
+   *   - cardsByStatus;
+   *   - cardStatusIndex;
    * Based on "cardsMap" and the current filters.
+   * "cardsSeen" is not recalculated because refresh can
+   *   be called in the middle of a flashcards study.
    */
   public refresh() {
     this.filtered = [];
     this.sessionToCard = {};
-    this.nFilteredNonZero = 0;
-    for (let i = 0; i <= 10; i++) {
-      this.frequency[i] = [];
-      this.frequencyIndex[i] = 0;
+    const statuses = ['normal', 'review', 'suspended'];
+    for (const status of statuses) {
+      this.cardsByStatus[status] = [];
+      this.cardStatusIndex[status] = 0;
     }
     Object.values(this.cardsMap).forEach((card: Card) => {
       for (const session of card.sessions) {
@@ -106,70 +111,67 @@ export class CardsManager {
       }
       if (FiltersManager.instance.satisfyCurrentFilters(card)) {
         this.filtered.push(card);
-        this.frequency[card.frequency].push(card);
-        if (card.frequency > 0) {
-          this.nFilteredNonZero++;
-        }
+        this.cardsByStatus[card.status].push(card);
       }
     });
     this.filtered.sort((a, b) => a.createdAt - b.createdAt); // Ascending.
-    for (let i = 0; i <= 10; i++) {
-      shuffleArray(this.frequency[i]);
+    for (const status of statuses) {
+      shuffleArray(this.cardsByStatus[status]);
     }
   }
 
-  // The sum of all numbers from 1 to 10 is 55, so we get a nice distribution if i has prob. i / 55.
-  private chooseBucket(): number {
-    const rand = Math.floor(Math.random() * 55);
-    for (let i = 1; i <= 10; i++) {
-      if ((i * (i + 1)) / 2 >= rand) return i;
-    }
-    return 10; // Never reached.
+  private chooseStatus(): ReviewStatus {
+    const rand = Math.random();
+    const { reviewProbability, suspendedProbability } =
+      ProfileManager.instance.getStatusProbabilities()!;
+    if (rand < reviewProbability) return 'review';
+    if (rand < reviewProbability + suspendedProbability) return 'suspended';
+    return 'normal';
   }
 
   /**
-   * Check if we can choose bucketIndex as the bucket for the next card.
+   * Check if we can choose "status" as the status for the next card.
    * We cannot choose it in two situations:
-   *  1. The bucket is empty;
-   *  2. The bucket contains only one card and is the last bucket chosen
+   *  1. There are no cards with this status;
+   *  2. There is only one card with this status and this is the last status chosen
    *      (to avoid repeating the same card twice in a row).
    */
-  private canChooseBucket(bucketIndex: number) {
-    const bucket = this.frequency[bucketIndex];
-    if (bucket.length === 0) return false;
-    if (bucket.length === 1 && bucketIndex === this.lastBucket) return false;
+  private canChooseStatus(status: ReviewStatus) {
+    const cards = this.cardsByStatus[status];
+    if (cards.length === 0) return false;
+    if (cards.length === 1 && status === this.lastStatusChosen) return false;
     return true;
   }
 
   public getNextCard(): GetNewCardResponseDTO {
     if (this.filtered.length === 0) {
-      return { card: null, nSeen: this.cardsSeen.size };
+      return { card: null, nSeen: 0 };
     }
     if (this.filtered.length === 1) {
-      return { card: this.filtered[0], nSeen: this.cardsSeen.size };
+      return { card: this.filtered[0], nSeen: 1 };
     }
     const maxTries = 30;
-    let bucketIndex = this.chooseBucket();
+    let status = this.chooseStatus();
     let tries = 0;
-    while (!this.canChooseBucket(bucketIndex) && tries < maxTries) {
-      bucketIndex = this.chooseBucket();
+    while (!this.canChooseStatus(status) && tries < maxTries) {
+      status = this.chooseStatus();
       tries++;
     }
     if (tries >= maxTries) {
-      for (let i = 1; i <= 10; i++) {
-        if (this.frequency[i].length > 0) {
-          bucketIndex = i;
+      for (const s of ['normal', 'review', 'suspended'] as const) {
+        if (this.cardsByStatus[status].length > 0) {
+          status = s;
           break;
         }
       }
     }
-    this.lastBucket = bucketIndex;
-    const bucket = this.frequency[bucketIndex];
-    const index = this.frequencyIndex[bucketIndex] % bucket.length;
+    this.lastStatusChosen = status;
+    const cards = this.cardsByStatus[status];
+    const index = ++this.cardStatusIndex[status] % cards.length;
     if (index === 0) {
-      shuffleArray(bucket);
+      shuffleArray(cards);
     }
-    const card = bucket[index];
+    const card = cards[index];
     this.cardsSeen.add(card.id);
     return { card, nSeen: this.cardsSeen.size };
   }
@@ -319,7 +321,7 @@ export class CardsManager {
     };
     const flashcardsWindowData: RendererResponseDTO = {
       where: [RefreshPlace.FLASHCARDS_PAGE_UPDATE],
-      nFiltered: this.getNFilteredNonZero(),
+      nFiltered: this.filtered.length,
       nSeen: this.cardsSeen.size,
       card,
     };
@@ -379,7 +381,7 @@ export class CardsManager {
   }
 
   // Do not send a message to the renderer here, because this method can
-  // potentially be called to a large number of cards in a single call,
+  // potentially be called for a large number of cards in a single request,
   // in the case where you are deleting a bunch of sessions.
   public async deleteCard(card: Card) {
     await DbManager.instance.deleteCard(card.id);
@@ -407,11 +409,6 @@ export class CardsManager {
     return this.filtered.length;
   }
 
-  // Number of filtered cards, excluding frequency 0 cards.
-  public getNFilteredNonZero() {
-    return this.nFilteredNonZero;
-  }
-
   public resetFlashcards() {
     this.cardsSeen.clear();
   }
@@ -420,7 +417,16 @@ export class CardsManager {
     this.scrollTop = 0;
     this.cardsMap = {};
     this.filtered = [];
-    this.frequency = {};
+    this.cardsByStatus = {
+      review: [],
+      normal: [],
+      suspended: [],
+    };
+    this.cardStatusIndex = {
+      review: 0,
+      normal: 0,
+      suspended: 0,
+    };
     this.sessionToCard = {};
   }
 }

@@ -52,8 +52,12 @@ export class FiltersManager {
   }
 
   public satisfyCurrentFilters(card: Card): boolean {
-    // - Frequency matching:
-    if (this.target.frequencies.length && !this.target.frequencies.includes(card.frequency)) {
+    // - Status matching:
+    if (this.target.status.length && !this.target.status.includes(card.status)) {
+      return false;
+    }
+    // - Stage matching:
+    if (this.target.stages.length && !this.target.stages.includes(card.stage)) {
       return false;
     }
     // - Text matching:
