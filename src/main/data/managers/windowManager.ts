@@ -149,9 +149,6 @@ export class WindowManager {
 
   public sendDataToMainWindow(data: RendererResponseDTO) {
     this.mainWindow.webContents.send(Channels.refreshData, data);
-    if (!this.flashcardsWindow.isVisible()) {
-      this.closeEditor();
-    }
   }
 
   public sendDataToFlashcardsWindow(data: RendererResponseDTO) {

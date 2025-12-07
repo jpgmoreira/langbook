@@ -11,6 +11,9 @@ if (ENABLE_PERFORMANCE_LOGS) {
   obs.observe({ entryTypes: ['measure'] });
 }
 
+/**
+ * Measures the time taken to perform an operation and logs it to the console.
+ */
 export function measure<T>(name: string, fn: () => T): T {
   if (!ENABLE_PERFORMANCE_LOGS) return fn();
   const startMark = `${name}-start`;

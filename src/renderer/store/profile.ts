@@ -9,6 +9,9 @@ import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
 
 EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
+  if (data.where.includes(RefreshPlace.PROFILE_STORE_REGISTRY)) {
+    useProfileStore().registry = data.profileRegistry!;
+  }
   if (data.where.includes(RefreshPlace.PROFILE_STORE)) {
     useProfileStore().refreshData(data);
   }
@@ -25,10 +28,8 @@ export const useProfileStore = defineStore('profile', {
   }),
   actions: {
     refreshData(data: RendererResponseDTO) {
-      if ('profile' in data) this.currProfile = data.profile || null;
-      if ('profileRegistry' in data) {
-        this.registry = data.profileRegistry || getEmptyProfileRegistry();
-      }
+      this.currProfile = data.profile!;
+      this.registry = data.profileRegistry!;
     },
     async createProfile(name: string): Promise<CreateProfileResponseDTO> {
       const result = await window.api.invoke<CreateProfileResponseDTO>(

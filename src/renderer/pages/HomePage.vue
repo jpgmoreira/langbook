@@ -16,7 +16,14 @@
   import { Tags } from '@common/schemas/tags';
   import { RefreshPlace } from '@common/types/refreshPlace';
   import { useMediaStore } from '@renderer/store/media';
-  EventEmitter.instance.on(Events.refreshData, refreshData);
+  EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
+    if (data.where.includes(RefreshPlace.HOME_PAGE_HAS_SESSIONS)) {
+      hasSessions.value = data.hasSessions!;
+    }
+    if (data.where.includes(RefreshPlace.HOME_PAGE)) {
+      refreshData(data);
+    }
+  });
   const filtersStore = useFiltersStore();
   const uiStore = useUIStore();
   const mediaStore = useMediaStore();
@@ -82,12 +89,11 @@
     window.api.invoke(Channels.openFlashcards);
   }
   function refreshData(data: RendererResponseDTO) {
-    if (!data.where.includes(RefreshPlace.HOME_PAGE)) return;
-    if ('page' in data) page.value = data.page as Card[];
-    if ('height' in data) height.value = data.height as number;
-    if ('nFiltered' in data) nFiltered.value = data.nFiltered as number;
-    if ('tags' in data) allTags.value = data.tags as Tags;
-    if ('hasSessions' in data) hasSessions.value = data.hasSessions as boolean;
+    page.value = data.page as Card[];
+    height.value = data.height as number;
+    nFiltered.value = data.nFiltered as number;
+    allTags.value = data.tags as Tags;
+    hasSessions.value = data.hasSessions as boolean;
   }
   async function mediaClick(media: MediaFile) {
     if (media.type.startsWith('audio')) {

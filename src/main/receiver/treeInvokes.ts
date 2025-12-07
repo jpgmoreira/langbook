@@ -27,7 +27,7 @@ ipcMain.handle(
       TreeManager.instance.createNode(type, prefix, parentId);
       const hasSessions = TreeManager.instance.getNFiles() > 0;
       WindowManager.instance.sendDataToMainWindow({
-        where: [RefreshPlace.HOME_PAGE, RefreshPlace.PROFILE_STORE],
+        where: [RefreshPlace.HOME_PAGE_HAS_SESSIONS],
         hasSessions,
       });
       return TreeManager.instance.buildResult(anchor);
@@ -48,7 +48,7 @@ ipcMain.handle(
       TreeManager.instance.createNodeAbove(type, prefix, baseNodeId);
       const hasSessions = TreeManager.instance.getNFiles() > 0;
       WindowManager.instance.sendDataToMainWindow({
-        where: [RefreshPlace.HOME_PAGE, RefreshPlace.PROFILE_STORE],
+        where: [RefreshPlace.HOME_PAGE_HAS_SESSIONS],
         hasSessions,
       });
       return TreeManager.instance.buildResult(anchor);
@@ -69,7 +69,7 @@ ipcMain.handle(
       TreeManager.instance.createNodeBelow(type, prefix, baseNodeId);
       const hasSessions = TreeManager.instance.getNFiles() > 0;
       WindowManager.instance.sendDataToMainWindow({
-        where: [RefreshPlace.HOME_PAGE, RefreshPlace.PROFILE_STORE],
+        where: [RefreshPlace.HOME_PAGE_HAS_SESSIONS],
         hasSessions,
       });
       return TreeManager.instance.buildResult(anchor);
@@ -130,7 +130,11 @@ ipcMain.handle(
       const tags = TagsManager.instance.getTags();
       const { page, height, nFiltered } = CardsManager.instance.getCurrentPageRefreshed();
       WindowManager.instance.sendDataToMainWindow({
-        where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
+        where: [
+          RefreshPlace.HOME_PAGE,
+          RefreshPlace.FILTERS_STORE,
+          RefreshPlace.PROFILE_STORE_REGISTRY,
+        ],
         filters: FiltersManager.instance.getFilters(),
         profileRegistry: ProfileManager.instance.getProfileRegistry(),
         hasSessions,
@@ -154,7 +158,11 @@ ipcMain.handle(
       const tags = TagsManager.instance.getTags();
       const { page, height, nFiltered } = CardsManager.instance.getCurrentPageRefreshed();
       WindowManager.instance.sendDataToMainWindow({
-        where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
+        where: [
+          RefreshPlace.HOME_PAGE,
+          RefreshPlace.FILTERS_STORE,
+          RefreshPlace.PROFILE_STORE_REGISTRY,
+        ],
         filters: FiltersManager.instance.getFilters(),
         profileRegistry: ProfileManager.instance.getProfileRegistry(),
         hasSessions,

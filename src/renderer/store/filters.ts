@@ -22,7 +22,7 @@ export const useFiltersStore = defineStore('filters', {
   }),
   actions: {
     refreshData(data: RendererResponseDTO) {
-      if ('filters' in data) this.filters = data.filters || getEmptyFilters();
+      this.filters = data.filters!;
     },
     clear() {
       this.dirty = false;
