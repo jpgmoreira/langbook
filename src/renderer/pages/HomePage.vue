@@ -23,6 +23,9 @@
     if (data.where.includes(RefreshPlace.HOME_PAGE)) {
       refreshData(data);
     }
+    if (data.where.includes(RefreshPlace.HOME_PAGE_NEW_PAGE)) {
+      refreshNewPage(data);
+    }
   });
   const filtersStore = useFiltersStore();
   const uiStore = useUIStore();
@@ -94,6 +97,11 @@
     nFiltered.value = data.nFiltered as number;
     allTags.value = data.tags as Tags;
     hasSessions.value = data.hasSessions as boolean;
+  }
+  function refreshNewPage(data: RendererResponseDTO) {
+    page.value = data.page as Card[];
+    height.value = data.height as number;
+    nFiltered.value = data.nFiltered as number;
   }
   async function mediaClick(media: MediaFile) {
     if (media.type.startsWith('audio')) {

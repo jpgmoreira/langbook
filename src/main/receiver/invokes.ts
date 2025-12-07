@@ -11,6 +11,7 @@ import { FiltersManager } from '@main/data/managers/filtersManager';
 import { ProfileManager } from '@main/data/managers/profileManager';
 import { SessionsManager } from '@main/data/managers/sessionsManager';
 import { TagsManager } from '@main/data/managers/tagsManager';
+import { TreeManager } from '@main/data/managers/treeManager';
 import { WindowManager } from '@main/data/managers/windowManager';
 import { loadStartupData } from '@main/data/startup';
 import { Channels } from '@preload/channels';
@@ -66,7 +67,7 @@ ipcMain.handle(
     CardsManager.instance.refresh();
     const { page, height, nFiltered } = CardsManager.instance.getPage(0);
     const data: RendererResponseDTO = {
-      where: [RefreshPlace.HOME_PAGE],
+      where: [RefreshPlace.HOME_PAGE_NEW_PAGE],
       height,
       page,
       nFiltered,
@@ -80,10 +81,15 @@ ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) =>
   await CardsManager.instance.deleteCard(card);
   const { page, height, nFiltered } = CardsManager.instance.getCurrentPageRefreshed();
   const data: RendererResponseDTO = {
-    where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
+    where: [
+      RefreshPlace.HOME_PAGE,
+      RefreshPlace.FILTERS_STORE,
+      RefreshPlace.PROFILE_STORE_REGISTRY,
+    ],
     profileRegistry: ProfileManager.instance.getProfileRegistry(),
     tags: TagsManager.instance.getTags(),
     sessions: SessionsManager.instance.getSessions(),
+    hasSessions: TreeManager.instance.getNFiles() > 0,
     filters: FiltersManager.instance.getFilters(),
     page,
     nFiltered,
@@ -95,7 +101,7 @@ ipcMain.handle(Channels.deleteCard, async (_: IpcMainInvokeEvent, card: Card) =>
 ipcMain.handle(Channels.getPage, async (_: IpcMainInvokeEvent, scrollTop: number) => {
   const { page, height, nFiltered } = CardsManager.instance.getPage(scrollTop);
   const data: RendererResponseDTO = {
-    where: [RefreshPlace.HOME_PAGE],
+    where: [RefreshPlace.HOME_PAGE_NEW_PAGE],
     page,
     height,
     nFiltered,
