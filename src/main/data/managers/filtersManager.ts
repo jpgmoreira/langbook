@@ -53,12 +53,19 @@ export class FiltersManager {
 
   public satisfyCurrentFilters(card: Card): boolean {
     // - Status matching:
-    if (this.target.status.length && !this.target.status.includes(card.status)) {
+    if (this.target.statuses.length && !this.target.statuses.includes(card.status)) {
       return false;
     }
-    // - Stage matching:
-    if (this.target.stages.length && !this.target.stages.includes(card.stage)) {
+    // - Tier matching:
+    if (this.target.tiers.length && !this.target.tiers.includes(card.tier)) {
       return false;
+    }
+    // - Core matching:
+    if (this.target.core.length) {
+      const value = card.core ? 'yes' : 'no';
+      if (!this.target.core.includes(value)) {
+        return false;
+      }
     }
     // - Text matching:
     if (
