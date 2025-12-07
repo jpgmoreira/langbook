@@ -83,3 +83,33 @@
 .theme-dark .flashcards-page .stats-bar .stat-total {
   color: #ddd;
 }
+
+.theme-dark .flashcards-page .card.review {
+  border-color: #2ea043;
+  background: linear-gradient(180deg, #233428, #1b2a20);
+  box-shadow:
+    0 0 12px rgba(46, 160, 67, 0.35),
+    inset 0 0 6px rgba(46, 160, 67, 0.15);
+}
+
+.theme-dark .flashcards-page .card.review:hover {
+  border-color: #33c24d;
+  box-shadow:
+    0 0 16px rgba(51, 194, 77, 0.45),
+    inset 0 0 8px rgba(51, 194, 77, 0.2);
+}
+
+.theme-dark .flashcards-page .card.suspended {
+  border-color: #d43838;
+  background: linear-gradient(180deg, #2f2323, #261b1b);
+  box-shadow:
+    0 0 12px rgba(212, 56, 56, 0.35),
+    inset 0 0 6px rgba(212, 56, 56, 0.15);
+}
+
+.theme-dark .flashcards-page .card.suspended:hover {
+  border-color: #ff4f4f;
+  box-shadow:
+    0 0 16px rgba(255, 79, 79, 0.45),
+    inset 0 0 8px rgba(255, 79, 79, 0.2);
+}

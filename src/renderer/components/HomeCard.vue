@@ -26,7 +26,7 @@
 </script>
 
 <template>
-  <div class="home-card flex flex-col whitespace-nowrap" ref="card-ref">
+  <div class="home-card flex flex-col whitespace-nowrap" ref="card-ref" :class="card.status">
     <div v-html="store.processRteImages(card.front)" class="mx-1 field"></div>
     <div v-if="card.back" v-html="store.processRteImages(card.back)" class="mx-1 field"></div>
     <div v-if="card.extra" v-html="store.processRteImages(card.extra)" class="mx-1 field"></div>

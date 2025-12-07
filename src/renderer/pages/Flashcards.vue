@@ -279,7 +279,7 @@
       @dragstart.prevent
       @selectstart.prevent
     >
-      <div class="card sep-parent absolute w-full" :style="cardStyle">
+      <div class="card sep-parent absolute w-full" :style="cardStyle" :class="currentCard.status">
         <div class="card-field flex justify-center items-center relative">
           <div v-if="reveal" class="absolute left-1 field-hint">
             {{ flip ? 'Back:' : 'Front:' }}

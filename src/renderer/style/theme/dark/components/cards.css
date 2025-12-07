@@ -58,18 +58,46 @@
   transition:
     transform 0.2s ease,
     box-shadow 0.25s ease,
-    border-color 0.25s ease;
+    border-color 0.25s ease,
+    background-color 0.25s ease;
 }
+
 .theme-dark .home-card:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
   border-color: #4c4d4f;
 }
+
+.theme-dark .home-card.review {
+  border-color: #2e7d4f;
+  background: linear-gradient(180deg, #233128, #1d2923);
+  box-shadow: 0 3px 10px rgba(40, 150, 90, 0.17);
+}
+
+.theme-dark .home-card.review:hover {
+  border-color: #39a460;
+  box-shadow: 0 6px 18px rgba(60, 180, 110, 0.27);
+}
+
+.theme-dark .home-card.suspended {
+  border-color: #6a3b3b;
+  background: linear-gradient(180deg, #332929, #292222);
+  opacity: 0.78;
+  box-shadow: 0 3px 10px rgba(150, 50, 50, 0.12);
+}
+
+.theme-dark .home-card.suspended:hover {
+  border-color: #8a4747;
+  opacity: 0.9;
+  box-shadow: 0 6px 18px rgba(170, 60, 60, 0.18);
+}
+
 .theme-dark .home-card img {
   max-width: none;
   max-height: none;
   border-radius: 6px;
 }
+
 .theme-dark .home-card > div + div {
   background-image: repeating-linear-gradient(to right, #424446 0 10px, transparent 10px 15px);
   background-size: 100% 1px;

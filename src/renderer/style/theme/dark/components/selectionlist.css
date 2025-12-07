@@ -17,8 +17,9 @@
 }
 
 .theme-dark .selection-list > div:hover {
-  background-color: #2f6097;
+  background-color: #3a526b;
 }
+
 .theme-dark .selection-list > div.selected {
-  background-color: #448ee4;
+  background-color: #5188ca;
 }
