@@ -98,7 +98,7 @@
       return 'Allow reversed is only available when the back field has content';
     return undefined;
   });
-  const selectedStage = computed(() => [card.value.stage]);
+  const selectedTier = computed(() => [card.value.tier]);
   const selectedStatus = computed(() => [card.value.status]);
 
   // --- Initialization: ---
@@ -284,8 +284,8 @@
     window.api.send(Channels.closeEditor);
   }
 
-  function setStage(stage: CardTier) {
-    card.value.stage = stage;
+  function setTier(tier: CardTier) {
+    card.value.tier = tier;
   }
 
   function setStatus(status: CardStatus) {
@@ -418,14 +418,18 @@
       @select-option="selectSession"
       @deselect-option="deselectSession"
     />
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between px-2">
       <div>
-        Stage:
-        <SelectionList :options="TIER_OPTIONS" :selected="selectedStage" @toggle="setStage" />
+        Tier:
+        <SelectionList :options="TIER_OPTIONS" :selected="selectedTier" @toggle="setTier" />
       </div>
       <div>
         Status:
         <SelectionList :options="STATUS_OPTIONS" :selected="selectedStatus" @toggle="setStatus" />
+      </div>
+      <div class="flex items-center">
+        <label for="core-checkbox" class="mr-1">Core:</label>
+        <input type="checkbox" id="core-checkbox" name="core-checkbox" v-model="card.core" />
       </div>
     </div>
     <footer class="flex justify-around mt-auto">
