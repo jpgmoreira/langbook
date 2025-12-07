@@ -19,6 +19,8 @@
     CardStatus,
     TIER_OPTIONS,
     STATUS_OPTIONS,
+    YES_OR_NO_OPTIONS,
+    YesOrNo,
   } from '@common/schemas/card';
   import { Tags } from '@common/schemas/tags';
   import { RefreshPlace } from '@common/types/refreshPlace';
@@ -124,11 +126,14 @@
     selectedMedia.value = undefined;
     uiStore.backdropVisible = false;
   }
-  function setStage(value: CardTier) {
-    filtersStore.toggleStage(value);
+  function setTier(value: CardTier) {
+    filtersStore.toggleTier(value);
   }
   function setStatus(value: CardStatus) {
     filtersStore.toggleStatus(value);
+  }
+  function setCore(value: YesOrNo) {
+    filtersStore.toggleCore(value);
   }
   function windowMouseUp() {
     isResizing.value = false;
@@ -201,19 +206,27 @@
           />
           <div class="flex items-center justify-between">
             <div>
-              Stage:
+              Tier:
               <SelectionList
                 :options="[...TIER_OPTIONS]"
-                :selected="filtersStore.filters.stages"
-                @toggle="setStage"
+                :selected="filtersStore.filters.tiers"
+                @toggle="setTier"
               />
             </div>
             <div>
               Status:
               <SelectionList
                 :options="[...STATUS_OPTIONS]"
-                :selected="filtersStore.filters.status"
+                :selected="filtersStore.filters.statuses"
                 @toggle="setStatus"
+              />
+            </div>
+            <div>
+              Core:
+              <SelectionList
+                :options="[...YES_OR_NO_OPTIONS]"
+                :selected="filtersStore.filters.core"
+                @toggle="setCore"
               />
             </div>
           </div>

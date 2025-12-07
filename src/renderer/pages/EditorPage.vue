@@ -427,7 +427,7 @@
         Status:
         <SelectionList :options="STATUS_OPTIONS" :selected="selectedStatus" @toggle="setStatus" />
       </div>
-      <div class="flex items-center">
+      <div class="flex items-center select-none">
         <label for="core-checkbox" class="mr-1">Core:</label>
         <input type="checkbox" id="core-checkbox" name="core-checkbox" v-model="card.core" />
       </div>
