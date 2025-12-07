@@ -327,6 +327,8 @@ export class CardsManager {
     const flashcardsWindowData: RendererResponseDTO = {
       where: [RefreshPlace.FLASHCARDS_PAGE_UPDATE],
       nFiltered: this.filtered.length,
+      nFilteredReview: this.cardsByStatus['review'].length,
+      nFilteredSuspended: this.cardsByStatus['suspended'].length,
       nSeen: this.cardsSeen.size,
       card,
     };
@@ -412,6 +414,14 @@ export class CardsManager {
 
   public getNFiltered() {
     return this.filtered.length;
+  }
+
+  public getNFilteredReview() {
+    return this.cardsByStatus['review'].length;
+  }
+
+  public getNFilteredSuspended() {
+    return this.cardsByStatus['suspended'].length;
   }
 
   public resetFlashcards() {

@@ -35,6 +35,8 @@
 
   const sessions = ref<Sessions>();
   const nFiltered = ref(0);
+  const nFilteredReview = ref(0);
+  const nFilteredSuspended = ref(0);
   const cardIds = ref<string[]>([]);
   const cards = ref<Record<string, Card>>({}); // maps id to card.
   const flipped = ref<boolean[]>([]);
@@ -105,6 +107,8 @@
   function initData(data: RendererResponseDTO) {
     sessions.value = data.sessions!;
     nFiltered.value = data.nFiltered!;
+    nFilteredReview.value = data.nFilteredReview!;
+    nFilteredSuspended.value = data.nFilteredSuspended!;
     cardIds.value = [];
     cards.value = {};
     flipped.value = [];
@@ -123,6 +127,8 @@
   function updateData(data: RendererResponseDTO) {
     cards.value[data.card!.id] = data.card!;
     nFiltered.value = data.nFiltered!;
+    nFilteredReview.value = data.nFilteredReview!;
+    nFilteredSuspended.value = data.nFilteredSuspended!;
     nSeen.value = data.nSeen!;
   }
 
@@ -331,7 +337,13 @@
           </div>
         </div>
       </div>
-      <div class="absolute right-0 bottom-0">Cards seen: {{ nSeen }} of {{ nFiltered }}</div>
+      <div class="stats-bar">
+        <span class="stat stat-seen">Seen: {{ nSeen }}</span>
+        <span class="stat stat-active">Active: {{ nFiltered - nFilteredSuspended }}</span>
+        <span class="stat stat-review">Review: {{ nFilteredReview }}</span>
+        <span class="stat stat-suspended">Suspended: {{ nFilteredSuspended }}</span>
+        <span class="stat stat-total">Total: {{ nFiltered }}</span>
+      </div>
     </div>
     <div v-else class="grow flex items-center justify-center whitespace-nowrap opacity-70 text-lg">
       No cards to show!

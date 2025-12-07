@@ -39,3 +39,47 @@
   -webkit-backdrop-filter: blur(6px);
   box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.35);
 }
+
+.theme-dark .flashcards-page .stats-bar {
+  display: flex;
+  gap: 12px;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.4);
+  color: #e6e6e6;
+  font-size: 1rem;
+  backdrop-filter: blur(3px);
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+/* separator */
+.theme-dark .flashcards-page .stats-bar .stat::after {
+  content: '•';
+  margin-left: 10px;
+  opacity: 0.6;
+  color: #bbb;
+}
+
+.theme-dark .flashcards-page .stats-bar .stat:last-child::after {
+  content: '';
+}
+
+/* Colors */
+.theme-dark .flashcards-page .stats-bar .stat-review {
+  color: #8aff8a;
+}
+
+.theme-dark .flashcards-page .stats-bar .stat-suspended {
+  color: #ff6e6e;
+}
+
+.theme-dark .flashcards-page .stats-bar .stat-active {
+  color: #9bd4ff;
+}
+
+.theme-dark .flashcards-page .stats-bar .stat-seen,
+.theme-dark .flashcards-page .stats-bar .stat-total {
+  color: #ddd;
+}
