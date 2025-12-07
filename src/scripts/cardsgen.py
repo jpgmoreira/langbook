@@ -24,7 +24,8 @@ def generate_card(session_id):
         "allowReversed": 0,  # default FALSE
         "createdAt": now,
         "status": "normal",
-        "stage": 0,
+        "tier": 0,
+        "core": 0,
         "tags": json.dumps([]),
         "sessions": json.dumps([session_id]),
         "media": json.dumps([]),
@@ -57,7 +58,8 @@ def main():
         allowReversed INTEGER NOT NULL DEFAULT 0,
         createdAt INTEGER NOT NULL,
         status TEXT NOT NULL DEFAULT 'normal',
-        stage INTEGER NOT NULL DEFAULT 0,
+        tier INTEGER NOT NULL DEFAULT 0,
+        core INTEGER NOT NULL DEFAULT 0,
         tags TEXT NOT NULL,
         sessions TEXT NOT NULL,
         media TEXT NOT NULL,
@@ -72,8 +74,8 @@ def main():
     cursor.executemany(
         """
     INSERT INTO cards 
-    (id, front, back, extra, allowReversed, createdAt, status, stage, tags, sessions, media, height)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (id, front, back, extra, allowReversed, createdAt, status, tier, core, tags, sessions, media, height)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """,
         [
             (
@@ -84,7 +86,8 @@ def main():
                 c["allowReversed"],
                 c["createdAt"],
                 c["status"],
-                c["stage"],
+                c["tier"],
+                c["core"],
                 c["tags"],
                 c["sessions"],
                 c["media"],
