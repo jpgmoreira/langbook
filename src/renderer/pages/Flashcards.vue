@@ -211,6 +211,10 @@
     }
   }
   function windowMouseDown(e: MouseEvent) {
+    if (e.button === 2) {
+      resetPosition();
+      return;
+    }
     const target = e.target as HTMLElement;
     if (!target) return;
     const parent = target.closest('.card-parent');

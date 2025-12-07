@@ -26,6 +26,20 @@
   font-weight: bold;
 }
 
+.theme-dark .flashcards-page .flashcard a {
+  color: #7abaff;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(122, 186, 255, 0.4);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.theme-dark .flashcards-page .flashcard a:hover {
+  color: #a5cdff;
+  border-color: #a5cdff;
+}
+
 /* --- chatgpt: --- */
 .theme-dark .flashcards-page footer {
   background: linear-gradient(180deg, #242628, #1d1f20);

@@ -133,10 +133,30 @@
     return content;
   }
 
+  function linkifyText(html: string): string {
+    const urlRegex = new RegExp(
+      '(?:https?:\\/\\/|ftp:\\/\\/|www\\.)' + // protocol (http, https, ftp) or "www."
+        '(?:' +
+        '(?:localhost)' + // match "localhost"
+        '|' +
+        '(?:\\d{1,3}(?:\\.\\d{1,3}){3})' + // match IPv4 addresses
+        '|' +
+        '(?:[\\p{L}0-9.-]+\\.[\\p{L}]{2,})' + // match domain names with TLD (Unicode supported)
+        ')' +
+        '(?::\\d+)?' + // optional port number
+        '(?:[^\\s<]*)', // match the rest of the URL (path, query, fragment) until whitespace or "<"
+      'giu'
+    );
+    return html.replace(urlRegex, (match) => {
+      return `<a href="#">${match}</a>`;
+    });
+  }
+
   function getContent() {
     if (!rteRef.value) return '';
     const clone = rteRef.value.cloneNode(true) as HTMLElement;
-    const content = normalizeLines(clone);
+    let content = normalizeLines(clone);
+    content = linkifyText(content);
     return content;
   }
 

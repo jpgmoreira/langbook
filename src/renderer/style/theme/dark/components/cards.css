@@ -41,6 +41,20 @@
   max-height: none;
 }
 
+.theme-dark .home-card a {
+  color: #7abaff;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(122, 186, 255, 0.4);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.theme-dark .home-card a:hover {
+  color: #a5cdff;
+  border-color: #a5cdff;
+}
+
 .theme-dark .home-card > div + div {
   background-image: repeating-linear-gradient(to right, #424446 0 10px, transparent 10px 15px);
   background-size: 100% 1px;
