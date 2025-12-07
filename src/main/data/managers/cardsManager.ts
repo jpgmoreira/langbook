@@ -17,6 +17,7 @@ import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
 import { isFileInsideDirectory } from '../utils';
 import { GetNewCardResponseDTO } from '@common/dto/getNewCardResponseDTO';
+import { TreeManager } from './treeManager';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -310,10 +311,15 @@ export class CardsManager {
     this.refresh();
     const { page, height, nFiltered } = this.getPage(this.scrollTop);
     const mainWindowData: RendererResponseDTO = {
-      where: [RefreshPlace.HOME_PAGE, RefreshPlace.FILTERS_STORE, RefreshPlace.PROFILE_STORE],
+      where: [
+        RefreshPlace.HOME_PAGE,
+        RefreshPlace.FILTERS_STORE,
+        RefreshPlace.PROFILE_STORE_REGISTRY,
+      ],
       profileRegistry: ProfileManager.instance.getProfileRegistry(),
       tags: TagsManager.instance.getTags(),
       filters: FiltersManager.instance.getFilters(),
+      hasSessions: TreeManager.instance.getNFiles() > 0,
       page,
       height,
       nFiltered,

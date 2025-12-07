@@ -134,7 +134,7 @@ export class WindowManager {
     const { card } = CardsManager.instance.getNextCard();
     const data: RendererResponseDTO = {
       where: [RefreshPlace.FLASHCARDS_PAGE_INIT],
-      nFiltered: CardsManager.instance.getNFilteredNonZero(),
+      nFiltered: CardsManager.instance.getNFiltered(),
       card,
       mediaDir: path.join(DATA_DIR, 'profileData', profileId, 'media'),
       sessions: SessionsManager.instance.getSessions(),

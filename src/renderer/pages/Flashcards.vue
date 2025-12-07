@@ -4,12 +4,19 @@
   import { Events } from '@renderer/events/events';
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   import { useMediaStore } from '@renderer/store/media';
-  import { Card, MediaFile } from '@common/schemas/card';
+  import {
+    Card,
+    CardStage,
+    MediaFile,
+    ReviewStatus,
+    STAGE_OPTIONS,
+    STATUS_OPTIONS,
+  } from '@common/schemas/card';
   import { Sessions } from '@common/schemas/sessions';
   import { Channels } from '@preload/channels';
   import { useUIStore } from '@renderer/store/ui';
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
-  import Frequencymeter from '@renderer/components/UI/SelectionList.vue';
+  import SelectionList from '@renderer/components/UI/SelectionList.vue';
   import { RefreshPlace } from '@common/types/refreshPlace';
   import { GetNewCardResponseDTO } from '@common/dto/getNewCardResponseDTO';
   EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
@@ -200,11 +207,20 @@
     cardPosition.scale = newScale;
   }
 
-  async function toggleFrequency(value: number) {
+  async function toggleStatus(value: ReviewStatus) {
     const card = toRaw(currentCard.value);
     if (!card) return;
-    if (card.frequency === value) return;
-    card.frequency = value;
+    if (card.status === value) return;
+    card.status = value;
+    card.media = card.media.map((m) => toRaw(m));
+    await window.api.invoke(Channels.upsertCard, card);
+  }
+
+  async function toggleStage(value: CardStage) {
+    const card = toRaw(currentCard.value);
+    if (!card) return;
+    if (card.stage === value) return;
+    card.stage = value;
     card.media = card.media.map((m) => toRaw(m));
     await window.api.invoke(Channels.upsertCard, card);
   }
@@ -294,7 +310,24 @@
                 {{ sessions![session].name }}
               </div>
             </div>
-            <Frequencymeter :selected="[currentCard.frequency]" @toggle="toggleFrequency" />
+            <div class="flex w-full items-center justify-evenly">
+              <div>
+                Stage:
+                <SelectionList
+                  :options="[...STAGE_OPTIONS]"
+                  :selected="[currentCard.stage]"
+                  @toggle="toggleStage"
+                />
+              </div>
+              <div>
+                Status:
+                <SelectionList
+                  :options="[...STATUS_OPTIONS]"
+                  :selected="[currentCard.status]"
+                  @toggle="toggleStatus"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
