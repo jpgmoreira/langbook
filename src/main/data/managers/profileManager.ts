@@ -133,7 +133,7 @@ export class ProfileManager {
   }
 
   public getStatusProbabilities() {
-    if (!this.profile) return;
+    if (!this.profile) return; // TODO: Convert this and all guard-condition returns to exceptions. Remove ! where they are used.
     return {
       reviewProbability: this.profile.reviewProbability,
       suspendedProbability: this.profile.suspendedProbability,

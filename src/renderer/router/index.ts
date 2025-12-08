@@ -4,6 +4,7 @@ import HomePage from '@renderer/pages/HomePage.vue';
 import EditorPage from '@renderer/pages/EditorPage.vue';
 import Flashcards from '@renderer/pages/Flashcards.vue';
 import GraphPage from '@renderer/pages/GraphPage.vue';
+import SettingsPage from '@renderer/pages/SettingsPage.vue';
 
 const routes = [
   {
@@ -25,6 +26,10 @@ const routes = [
   {
     path: '/graph',
     component: GraphPage,
+  },
+  {
+    path: '/settings',
+    component: SettingsPage,
   },
 ];
 
