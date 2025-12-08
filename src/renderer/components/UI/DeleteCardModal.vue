@@ -35,19 +35,19 @@
       <div class="flex justify-between">
         <button
           type="button"
-          class="btn-secondary"
-          :disabled="props.isDeleting"
-          @click="emit('close')"
-        >
-          Cancel
-        </button>
-        <button
-          type="button"
           class="btn-danger"
           :disabled="props.isDeleting"
           @click="emit('delete')"
         >
           Delete
+        </button>
+        <button
+          type="button"
+          class="btn-secondary"
+          :disabled="props.isDeleting"
+          @click="emit('close')"
+        >
+          Cancel
         </button>
       </div>
     </template>

@@ -85,6 +85,9 @@
 .theme-dark .multiselect .editor {
   border: none;
 }
+.theme-dark .multiselect .mode-select {
+  font-size: 0.9rem;
+}
 .theme-dark .multiselect .input-parent {
   display: flex;
 }

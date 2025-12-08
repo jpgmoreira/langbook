@@ -205,24 +205,24 @@
             @input="filtersStore.dirty = true"
           />
           <div class="flex items-center justify-between">
-            <div>
-              Tier:
+            <div class="flex items-center gap-1">
+              <span>Tier:</span>
               <SelectionList
                 :options="[...TIER_OPTIONS]"
                 :selected="filtersStore.filters.tiers"
                 @toggle="setTier"
               />
             </div>
-            <div>
-              Status:
+            <div class="flex items-center gap-1">
+              <span>Status:</span>
               <SelectionList
                 :options="[...STATUS_OPTIONS]"
                 :selected="filtersStore.filters.statuses"
                 @toggle="setStatus"
               />
             </div>
-            <div>
-              Core:
+            <div class="flex items-center gap-1">
+              <span>Core:</span>
               <SelectionList
                 :options="[...YES_OR_NO_OPTIONS]"
                 :selected="filtersStore.filters.core"
@@ -286,7 +286,7 @@
   }
   .separator {
     width: 5px;
-    background: gray;
+    background: rgb(66, 66, 66);
   }
   .separator:hover,
   .separator.resizing {

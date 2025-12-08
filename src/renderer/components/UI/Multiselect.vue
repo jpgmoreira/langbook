@@ -60,6 +60,7 @@
    *        .multiselect .badge .close-button svg path  (set the "stroke" CSS property to change X color)
    *        .multiselect .badges-container
    *        .multiselect .editor
+   *        .multiselect .mode-select
    */
   import { toLocaleNumber } from '@common/utils/utils';
   import { computed, reactive, useTemplateRef, ref, watch } from 'vue';
@@ -337,7 +338,7 @@
         @keydown.enter.prevent="editorEnter"
         @keydown.escape.prevent="clear"
       />
-      <select v-if="props.mode" :value="props.mode" @change="changeMode">
+      <select v-if="props.mode" :value="props.mode" @change="changeMode" class="mode-select">
         <option value="all">{{ props.allText }}</option>
         <option value="any">{{ props.anyText }}</option>
       </select>

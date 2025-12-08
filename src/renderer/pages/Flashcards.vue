@@ -24,7 +24,7 @@
   });
 
   const INITIAL_SCALE = 1;
-  const INITIAL_PADDING_TOP = 40;
+  const INITIAL_PADDING_TOP = 140;
 
   const mediaStore = useMediaStore();
   const uiStore = useUIStore();

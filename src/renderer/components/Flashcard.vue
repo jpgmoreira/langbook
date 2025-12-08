@@ -64,7 +64,11 @@
 </script>
 
 <template>
-  <div class="flashcard sep-parent absolute w-full" :style="props.style" :class="props.card.status">
+  <div
+    class="flashcard sep-parent absolute w-full p-2"
+    :style="props.style"
+    :class="props.card.status"
+  >
     <div class="card-field flex justify-center items-center relative">
       <div v-if="props.reveal" class="absolute left-1 field-hint">
         {{ flip ? 'Back:' : 'Front:' }}
@@ -102,24 +106,24 @@
           </div>
         </div>
         <div class="flex w-full items-center justify-evenly">
-          <div>
-            Tier:
+          <div class="flex items-center gap-1">
+            <span>Tier:</span>
             <SelectionList
               :options="[...TIER_OPTIONS]"
               :selected="[props.card.tier]"
               @toggle="emit('toggleTier', $event)"
             />
           </div>
-          <div>
-            Status:
+          <div class="flex items-center gap-1">
+            <span>Status:</span>
             <SelectionList
               :options="[...STATUS_OPTIONS]"
               :selected="[props.card.status]"
               @toggle="emit('toggleStatus', $event)"
             />
           </div>
-          <div class="flex items-center select-none">
-            <label for="core-checkbox" class="mr-1">Core:</label>
+          <div class="flex items-center select-none gap-1">
+            <label for="core-checkbox">Core:</label>
             <input
               type="checkbox"
               id="core-checkbox"

@@ -144,6 +144,9 @@
       </template>
       <template #footer>
         <div class="flex justify-between">
+          <button type="button" class="btn-danger" @click="deleteProfile" :disabled="isDeleting">
+            Delete
+          </button>
           <button
             type="button"
             class="btn-warning"
@@ -151,9 +154,6 @@
             :disabled="isDeleting"
           >
             Cancel
-          </button>
-          <button type="button" class="btn-danger" @click="deleteProfile" :disabled="isDeleting">
-            Delete
           </button>
         </div>
       </template>

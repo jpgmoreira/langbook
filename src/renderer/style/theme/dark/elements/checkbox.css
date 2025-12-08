@@ -1,0 +1,70 @@
+/* Compact, dark-friendly checkbox using #3f444b as base */
+.theme-dark .flashcards-page input[type='checkbox'],
+.theme-dark .editor-page input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  position: relative;
+
+  /* base */
+  background-color: #59626b; /* requested base color */
+  border: 1px solid #30343a;
+  border-radius: 4px;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+/* hover and focus */
+.theme-dark .flashcards-page input[type='checkbox']:hover,
+.theme-dark .editor-page input[type='checkbox']:hover {
+  border-color: #4b5157;
+}
+
+.theme-dark .flashcards-page input[type='checkbox']:focus,
+.theme-dark .editor-page input[type='checkbox']:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(75, 130, 194, 0.12); /* subtle focus ring */
+  border-color: #4a80c2;
+}
+
+/* checked state: keep base tone but add colored accent */
+.theme-dark .flashcards-page input[type='checkbox']:checked,
+.theme-dark .editor-page input[type='checkbox']:checked {
+  background-color: #59626b; /* keep the requested dark base */
+  border-color: #4a80c2; /* accent color for checked */
+}
+
+/* the checkmark — classic rotated-border trick */
+.theme-dark .flashcards-page input[type='checkbox']::after,
+.theme-dark .editor-page input[type='checkbox']::after {
+  content: '';
+  position: absolute;
+  display: none; /* shown only when checked */
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 12px;
+  transform: translate(-50%, -60%) rotate(45deg);
+  border: solid transparent;
+  border-width: 0 2px 2px 0; /* draw only right and bottom edges */
+}
+
+/* show check and give it color */
+.theme-dark .flashcards-page input[type='checkbox']:checked::after,
+.theme-dark .editor-page input[type='checkbox']:checked::after {
+  display: block;
+  border-color: #ffffff; /* check color */
+}
+
+/* disabled state */
+.theme-dark .flashcards-page input[type='checkbox']:disabled,
+.theme-dark .editor-page input[type='checkbox']:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #2b2f33;
+}

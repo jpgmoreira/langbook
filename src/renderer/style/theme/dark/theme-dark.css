@@ -8,6 +8,7 @@
 @import './elements/scrollbar.css';
 @import './elements/tooltip.css';
 @import './elements/text.css';
+@import './elements/checkbox.css';
 @import './components/modal.css';
 @import './components/backdrop.css';
 @import './components/toast.css';

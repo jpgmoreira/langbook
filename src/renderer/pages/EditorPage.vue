@@ -325,14 +325,14 @@
     />
     <div class="rte-parent">
       <RichTextEditor
-        v-show="showCardFields.front"
+        v-if="showCardFields.front"
         :initial="mediaStore.processRteImages(card.front)"
         class="grow"
         @blur="rteBlur('front')"
         ref="front-ref"
       />
       <div
-        v-if="!showCardFields.front"
+        v-else
         class="rte-placeholder w-full text-xl font-bold"
         @mousedown.prevent="rteClick('front')"
         @dragover.prevent
@@ -343,14 +343,14 @@
     </div>
     <div class="rte-parent">
       <RichTextEditor
-        v-show="showCardFields.back"
+        v-if="showCardFields.back"
         :initial="mediaStore.processRteImages(card.back)"
         class="grow"
         @blur="rteBlur('back')"
         ref="back-ref"
       />
       <div
-        v-if="!showCardFields.back"
+        v-else
         class="rte-placeholder w-full text-xl font-bold"
         @mousedown.prevent="rteClick('back')"
         @dragover.prevent
@@ -361,14 +361,14 @@
     </div>
     <div class="rte-parent">
       <RichTextEditor
-        v-show="showCardFields.extra"
+        v-if="showCardFields.extra"
         :initial="mediaStore.processRteImages(card.extra)"
         class="grow"
         @blur="rteBlur('extra')"
         ref="extra-ref"
       />
       <div
-        v-if="!showCardFields.extra"
+        v-else
         class="rte-placeholder w-full text-xl font-bold"
         @mousedown.prevent="rteClick('extra')"
         @dragover.prevent
@@ -418,17 +418,17 @@
       @select-option="selectSession"
       @deselect-option="deselectSession"
     />
-    <div class="flex items-center justify-between px-2">
-      <div>
-        Tier:
+    <div class="flex items-center justify-evenly">
+      <div class="flex items-center gap-1">
+        <span>Tier:</span>
         <SelectionList :options="TIER_OPTIONS" :selected="selectedTier" @toggle="setTier" />
       </div>
-      <div>
-        Status:
+      <div class="flex items-center gap-1">
+        <span>Status:</span>
         <SelectionList :options="STATUS_OPTIONS" :selected="selectedStatus" @toggle="setStatus" />
       </div>
-      <div class="flex items-center select-none">
-        <label for="core-checkbox" class="mr-1">Core:</label>
+      <div class="flex items-center gap-1 select-none">
+        <label for="core-checkbox">Core:</label>
         <input type="checkbox" id="core-checkbox" name="core-checkbox" v-model="card.core" />
       </div>
     </div>
