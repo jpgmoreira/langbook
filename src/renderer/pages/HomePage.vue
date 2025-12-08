@@ -203,6 +203,7 @@
             placeholder="Text"
             v-model.trim="filtersStore.filters.text"
             @input="filtersStore.dirty = true"
+            @keydown.enter="filter"
           />
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-1">
