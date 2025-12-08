@@ -20,6 +20,7 @@ export async function loadStartupData(): Promise<RendererResponseDTO> {
       RefreshPlace.FILTERS_STORE,
       RefreshPlace.PROFILE_STORE,
       RefreshPlace.MEDIA_STORE,
+      RefreshPlace.GRAPH_STORE,
     ],
     profile,
     profileRegistry,

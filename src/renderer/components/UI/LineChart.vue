@@ -4,10 +4,14 @@
    * Line chart component.
    * Supports plotting several series, panning and zooming.
    * Worked reasonably well with 10k points.
-   * I didn't test changing the props on the parent component to see what happens.
    */
   import { useTemplateRef, onMounted, onBeforeUnmount, ref, reactive, computed, watch } from 'vue';
   import { throttle, randomId } from '@common/utils/utils';
+  // --- Exposes: ---
+  // Exposes the reset function so you can reset the graph upon prop changes:
+  defineExpose({
+    reset,
+  });
   // --- Props: ---
   export type LineChartProps = {
     // "allXValues" and "allXLabels":
@@ -90,7 +94,7 @@
     visible: false,
   });
   // --- Functions: ---
-  function init() {
+  function reset() {
     const { allXValues, allXLabels, data } = props;
     xValueToLabel.clear();
     xValueToXaxis.clear();
@@ -118,6 +122,7 @@
     }
     allYvalues.clear(); // Not needed anymore.
     allYvaluesSorted.sort((a, b) => a - b);
+    fixCanvasSize();
   }
   function resetContextState() {
     contextState.label = null;
@@ -509,8 +514,7 @@
     window.addEventListener('mousemove', windowMouseMove);
     window.addEventListener('keydown', windowKeyDown);
     window.addEventListener('keyup', windowKeyUp);
-    init();
-    fixCanvasSize();
+    reset();
   });
   onBeforeUnmount(() => {
     window.removeEventListener('mouseup', windowMouseUp);

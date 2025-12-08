@@ -5,8 +5,10 @@ import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@renderer/events/events';
 import { useUIStore } from '@renderer/store/ui';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
+import { initStores } from './initStores';
 
 window.api.on(Channels.startup, async (data: RendererResponseDTO) => {
+  initStores(data.where);
   document.documentElement.classList.add('theme-dark');
   const title = data.profile ? `${data.profile.name}@${APP_NAME}` : APP_NAME;
   const route = data.profile ? '/home' : '/login';
@@ -34,5 +36,6 @@ window.api.on(Channels.closeBackdrop, () => {
 });
 
 window.api.on(Channels.refreshData, (data: RendererResponseDTO) => {
+  initStores(data.where);
   EventEmitter.instance.emit(Events.refreshData, data);
 });

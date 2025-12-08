@@ -31,7 +31,7 @@ export class GraphDbManager {
     });
     await setDbPragmas(this.db);
     await this.createTables(this.db);
-    await this.incrementTodayRecord();
+    await this.ensureTodayRecord();
     const result = await this.db.all('SELECT * FROM graph ORDER BY date');
     return result as GraphRecord[];
   }
@@ -41,15 +41,23 @@ export class GraphDbManager {
     CREATE TABLE IF NOT EXISTS graph (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       date INTEGER UNIQUE NOT NULL,
-      minutesStudied INTEGER NOT NULL DEFAULT 0
+      minutesStudied INTEGER NOT NULL DEFAULT 0,
     );
   `);
   }
 
-  public async incrementTodayRecord(): Promise<GraphRecord> {
-    if (!this.db) throw new Error('Database not initialized');
+  private async ensureTodayRecord() {
+    if (!this.db) return;
     const todayDate = getTodayDate();
-    const record = (await this.db.get(
+    const existing = await this.db.get('SELECT * FROM graph WHERE date = ?', todayDate);
+    if (!existing) {
+      await this.db.run('INSERT INTO graph (date, minutesStudied) VALUES (?, ?)', todayDate, 0);
+    }
+  }
+
+  public async incrementTodayRecord(): Promise<GraphRecord> {
+    const todayDate = getTodayDate();
+    const record = (await this.db!.get(
       `INSERT INTO graph (date, minutesStudied) VALUES (?, 0)
        ON CONFLICT(date) DO UPDATE SET minutesStudied = minutesStudied + 1
        RETURNING *`,
