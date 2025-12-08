@@ -11,7 +11,7 @@ import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
 import { DATA_DIR } from '../constants';
 import { ProfileManager } from './profileManager';
-import { CardsManager } from './cardsManager';
+import { CardsManager } from './cards/cardsManager';
 
 /**
  * Singleton for managing application windows.

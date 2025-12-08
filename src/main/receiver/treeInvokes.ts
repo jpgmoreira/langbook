@@ -8,7 +8,7 @@ import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { measure } from '@main/utils/performance';
 import { sleep } from '@common/utils/utils';
 import { WindowManager } from '@main/data/managers/windowManager';
-import { CardsManager } from '@main/data/managers/cardsManager';
+import { CardsManager } from '@main/data/managers/cards/cardsManager';
 import { TagsManager } from '@main/data/managers/tagsManager';
 import { RefreshPlace } from '@common/types/refreshPlace';
 import { FiltersManager } from '@main/data/managers/filtersManager';

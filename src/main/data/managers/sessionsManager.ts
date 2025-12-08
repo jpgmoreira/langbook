@@ -7,7 +7,7 @@ import { getEmptySession, Session, Sessions } from '@common/schemas/sessions';
 import { randomId } from '@common/utils/utils';
 import { ProfileManager } from './profileManager';
 import { Card } from '@common/schemas/card';
-import { CardsManager } from './cardsManager';
+import { CardsManager } from './cards/cardsManager';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   SessionsManager.instance.clear();

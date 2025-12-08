@@ -1,29 +1,29 @@
 import path from 'path';
-import { DATA_DIR } from '../constants';
+import { DATA_DIR } from '../../constants';
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Events } from '@main/events/events';
 import { open, type Database } from 'sqlite';
 import { Card, DBCard } from '@common/schemas/card';
 import sqlite3 from 'sqlite3';
-import { setDbPragmas, createTables } from '../sql/db';
+import { setDbPragmas } from '../../sql/common';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
-  DbManager.instance.clear();
+  CardsDbManager.instance.clear();
 });
 
 /**
  * Singleton for managing the db.
- * Access via DbManager.instance
+ * Access via CardsDbManager.instance
  */
-export class DbManager {
-  static #instance: DbManager;
+export class CardsDbManager {
+  static #instance: CardsDbManager;
 
   private db: Database | null = null;
   private constructor() {}
 
-  public static get instance(): DbManager {
+  public static get instance(): CardsDbManager {
     if (!this.#instance) {
-      this.#instance = new DbManager();
+      this.#instance = new CardsDbManager();
     }
     return this.#instance;
   }
@@ -35,7 +35,27 @@ export class DbManager {
       driver: sqlite3.Database,
     });
     await setDbPragmas(this.db);
-    await createTables(this.db);
+    await this.createTables(this.db);
+  }
+
+  private async createTables(db: Database) {
+    await db.exec(`
+    CREATE TABLE IF NOT EXISTS cards (
+      id TEXT PRIMARY KEY,
+      front TEXT NOT NULL,
+      back TEXT NOT NULL DEFAULT '',
+      extra TEXT NOT NULL DEFAULT '',
+      allowReversed BOOLEAN NOT NULL DEFAULT FALSE,
+      createdAt INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'normal',
+      tier INTEGER NOT NULL DEFAULT 0,
+      core BOOLEAN NOT NULL DEFAULT FALSE,
+      tags TEXT NOT NULL,
+      sessions TEXT NOT NULL,
+      media TEXT NOT NULL,
+      height INTEGER NOT NULL
+    );
+  `);
   }
 
   public async loadAllCards(): Promise<Card[]> {

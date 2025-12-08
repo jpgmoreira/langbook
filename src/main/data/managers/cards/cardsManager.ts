@@ -1,23 +1,23 @@
 import { EventEmitter } from '@common/events/eventEmitter';
 import { Card, CARD_STATUSES, CardStatus } from '@common/schemas/card';
 import { Events } from '@main/events/events';
-import { DbManager } from './dbManager';
-import { FiltersManager } from './filtersManager';
+import { CardsDbManager } from '@main/data/managers/cards/cardsDbManager';
+import { FiltersManager } from '@main/data/managers/filtersManager';
 import { extFromMime, genHash, shuffleArray } from '@common/utils/utils';
-import { SessionsManager } from './sessionsManager';
-import { TagsManager } from './tagsManager';
-import { ProfileManager } from './profileManager';
-import { DATA_DIR } from '../constants';
+import { SessionsManager } from '@main/data/managers/sessionsManager';
+import { TagsManager } from '@main/data/managers/tagsManager';
+import { ProfileManager } from '@main/data/managers/profileManager';
+import { DATA_DIR } from '@main/data/constants';
 import * as cheerio from 'cheerio';
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
-import { WindowManager } from './windowManager';
+import { WindowManager } from '@main/data/managers/windowManager';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
-import { isFileInsideDirectory } from '../utils';
+import { isFileInsideDirectory } from '@main/data/utils';
 import { GetNewCardResponseDTO } from '@common/dto/getNewCardResponseDTO';
-import { TreeManager } from './treeManager';
+import { TreeManager } from '@main/data/managers/treeManager';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   CardsManager.instance.clear();
@@ -76,9 +76,9 @@ export class CardsManager {
     return this.#instance;
   }
 
-  public async loadFromDb() {
-    // DbManager must have already been initialized.
-    const allCards = await DbManager.instance.loadAllCards();
+  public async loadFromDb(profileId: string) {
+    await CardsDbManager.instance.loadProfile(profileId);
+    const allCards = await CardsDbManager.instance.loadAllCards();
     for (const card of allCards) {
       this.cardsMap[card.id] = card;
     }
@@ -281,7 +281,7 @@ export class CardsManager {
     // Delete old card info.
     if (card.id in this.cardsMap) {
       const oldCard = this.cardsMap[card.id];
-      await DbManager.instance.deleteCard(card.id);
+      await CardsDbManager.instance.deleteCard(card.id);
       SessionsManager.instance.cardDeleted(oldCard);
       TagsManager.instance.cardDeleted(oldCard);
       for (const media of oldCard.media) {
@@ -307,7 +307,7 @@ export class CardsManager {
       ProfileManager.instance.addCards(1);
     }
     // Update with new info.
-    await DbManager.instance.insertCard(card);
+    await CardsDbManager.instance.insertCard(card);
     SessionsManager.instance.cardCreated(card);
     TagsManager.instance.cardCreated(card);
     this.cardsMap[card.id] = card;
@@ -388,7 +388,7 @@ export class CardsManager {
       if (card.sessions.length === 0) {
         await this.deleteCard(card);
       } else {
-        await DbManager.instance.updateCard(card);
+        await CardsDbManager.instance.updateCard(card);
       }
     }
     delete this.sessionToCard[sessionId];
@@ -398,7 +398,7 @@ export class CardsManager {
   // potentially be called for a large number of cards in a single request,
   // in the case where you are deleting a bunch of sessions.
   public async deleteCard(card: Card) {
-    await DbManager.instance.deleteCard(card.id);
+    await CardsDbManager.instance.deleteCard(card.id);
     TagsManager.instance.cardDeleted(card);
     SessionsManager.instance.cardDeleted(card);
     ProfileManager.instance.addCards(-1);

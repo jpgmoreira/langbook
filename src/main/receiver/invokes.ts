@@ -6,7 +6,7 @@ import { Card } from '@common/schemas/card';
 import { Filters } from '@common/schemas/filters';
 import { RefreshPlace } from '@common/types/refreshPlace';
 import { sleep } from '@common/utils/utils';
-import { CardsManager } from '@main/data/managers/cardsManager';
+import { CardsManager } from '@main/data/managers/cards/cardsManager';
 import { FiltersManager } from '@main/data/managers/filtersManager';
 import { ProfileManager } from '@main/data/managers/profileManager';
 import { SessionsManager } from '@main/data/managers/sessionsManager';
