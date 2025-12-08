@@ -76,7 +76,7 @@ export class CardsManager {
     return this.#instance;
   }
 
-  public async loadFromDb(profileId: string) {
+  public async loadProfile(profileId: string) {
     await CardsDbManager.instance.loadProfile(profileId);
     const allCards = await CardsDbManager.instance.loadAllCards();
     for (const card of allCards) {
@@ -457,5 +457,6 @@ export class CardsManager {
       suspended: 0,
     };
     this.sessionToCard = {};
+    CardsDbManager.instance.clear();
   }
 }

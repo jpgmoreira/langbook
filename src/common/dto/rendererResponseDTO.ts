@@ -4,6 +4,7 @@ import type { Sessions } from '@common/schemas/sessions';
 import type { Tags } from '@common/schemas/tags';
 import type { Profile, ProfileRegistry } from '@common/schemas/profile';
 import { RefreshPlace } from '@common/types/refreshPlace';
+import { GraphRecord } from '@common/schemas/graph';
 
 /**
  * A generic DTO to represent application data sent to the renderer.
@@ -24,4 +25,5 @@ export type RendererResponseDTO = {
   nFilteredSuspended?: number;
   nFilteredReview?: number;
   nSeen?: number;
+  graphData?: GraphRecord[];
 };

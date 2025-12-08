@@ -9,6 +9,7 @@ import { CardsManager } from './managers/cards/cardsManager';
 import { RefreshPlace } from '@common/types/refreshPlace';
 import { DATA_DIR } from './constants';
 import path from 'node:path';
+import { GraphDbManager } from './managers/graph/graphDbManager';
 
 export async function loadStartupData(): Promise<RendererResponseDTO> {
   const profile = ProfileManager.instance.getCurrProfile();
@@ -29,6 +30,7 @@ export async function loadStartupData(): Promise<RendererResponseDTO> {
     page: [],
     height: 0,
     nFiltered: 0,
+    graphData: [],
   };
   if (profile) {
     // The order of initialization below is extremely important.
@@ -36,7 +38,8 @@ export async function loadStartupData(): Promise<RendererResponseDTO> {
     FiltersManager.instance.loadProfile(profile.id);
     SessionsManager.instance.loadProfile(profile.id);
     TreeManager.instance.loadTree(profile.id);
-    await CardsManager.instance.loadFromDb(profile.id);
+    await CardsManager.instance.loadProfile(profile.id);
+    const graphData = await GraphDbManager.instance.loadProfile(profile.id);
     const { page, height, nFiltered } = CardsManager.instance.getPage(0);
     const hasSessions = TreeManager.instance.getNFiles() > 0;
     data.mediaDir = path.join(DATA_DIR, 'profileData', profile.id, 'media');
@@ -47,6 +50,7 @@ export async function loadStartupData(): Promise<RendererResponseDTO> {
     data.page = page;
     data.height = height;
     data.nFiltered = nFiltered;
+    data.graphData = graphData;
   }
   return data;
 }

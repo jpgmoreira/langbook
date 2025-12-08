@@ -1,15 +1,9 @@
 import path from 'path';
 import { DATA_DIR } from '../../constants';
-import { EventEmitter } from '@common/events/eventEmitter';
-import { Events } from '@main/events/events';
 import { open, type Database } from 'sqlite';
 import { Card, DBCard } from '@common/schemas/card';
 import sqlite3 from 'sqlite3';
 import { setDbPragmas } from '../../sql/common';
-
-EventEmitter.instance.on(Events.clearProfileData, () => {
-  CardsDbManager.instance.clear();
-});
 
 /**
  * Singleton for managing the db.
@@ -29,7 +23,7 @@ export class CardsDbManager {
   }
 
   public async loadProfile(profileId: string) {
-    const filename = path.join(DATA_DIR, 'profileData', profileId, 'db.sqlite');
+    const filename = path.join(DATA_DIR, 'profileData', profileId, 'cards.sqlite');
     this.db = await open({
       filename,
       driver: sqlite3.Database,
