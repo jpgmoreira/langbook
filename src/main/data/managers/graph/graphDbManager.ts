@@ -41,13 +41,13 @@ export class GraphDbManager {
     CREATE TABLE IF NOT EXISTS graph (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       date INTEGER UNIQUE NOT NULL,
-      minutesStudied INTEGER NOT NULL DEFAULT 0,
+      minutesStudied INTEGER NOT NULL DEFAULT 0
     );
   `);
   }
 
   private async ensureTodayRecord() {
-    if (!this.db) return;
+    if (!this.db) throw new Error('Database not initialized');
     const todayDate = getTodayDate();
     const existing = await this.db.get('SELECT * FROM graph WHERE date = ?', todayDate);
     if (!existing) {
@@ -56,8 +56,9 @@ export class GraphDbManager {
   }
 
   public async incrementTodayRecord(): Promise<GraphRecord> {
+    if (!this.db) throw new Error('Database not initialized');
     const todayDate = getTodayDate();
-    const record = (await this.db!.get(
+    const record = (await this.db.get(
       `INSERT INTO graph (date, minutesStudied) VALUES (?, 0)
        ON CONFLICT(date) DO UPDATE SET minutesStudied = minutesStudied + 1
        RETURNING *`,
