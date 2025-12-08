@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { ref, onMounted, onBeforeUnmount, computed, toRaw } from 'vue';
+  import { ref, onMounted, onBeforeUnmount, computed, toRaw, nextTick } from 'vue';
   import { useFiltersStore } from '@renderer/store/filters';
   import { useUIStore } from '@renderer/store/ui';
   import Header from '@renderer/components/Header.vue';
@@ -9,8 +9,6 @@
   import CardsView from '@renderer/components/CardsView.vue';
   import MediaModal from '@renderer/components/UI/MediaModal.vue';
   import { Channels } from '@preload/channels';
-  import { EventEmitter } from '@common/events/eventEmitter';
-  import { Events } from '@renderer/events/events';
   import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
   import {
     Card,
@@ -22,35 +20,15 @@
     YES_OR_NO_OPTIONS,
     YesOrNo,
   } from '@common/schemas/card';
-  import { Tags } from '@common/schemas/tags';
-  import { RefreshPlace } from '@common/types/refreshPlace';
   import { useMediaStore } from '@renderer/store/media';
-  EventEmitter.instance.on(Events.refreshData, (data: RendererResponseDTO) => {
-    if (data.where.includes(RefreshPlace.HOME_PAGE_HAS_SESSIONS)) {
-      hasSessions.value = data.hasSessions!;
-    }
-    if (data.where.includes(RefreshPlace.HOME_PAGE)) {
-      refreshData(data);
-    }
-    if (data.where.includes(RefreshPlace.HOME_PAGE_NEW_PAGE)) {
-      refreshNewPage(data);
-    }
-  });
+  import { useHomePageStore } from '@renderer/store/home';
   const filtersStore = useFiltersStore();
   const uiStore = useUIStore();
   const mediaStore = useMediaStore();
   const isResizing = ref(false);
-  const treeAreaWidth = ref(300);
-  const contestsAreaWidth = ref(window.innerWidth - 300);
-  const hideFilters = ref(false);
-  const page = ref<Card[]>([]);
-  const height = ref(0);
-  const nFiltered = ref(0);
-  const selectedMedia = ref<MediaFile | undefined>(undefined);
-  const hasSessions = ref(false);
-  const allTags = ref<Tags>({});
+  const homeStore = useHomePageStore();
   const tagsOptions = computed(() => {
-    const entries = Object.entries(allTags.value);
+    const entries = Object.entries(homeStore.allTags);
     const result: MultiselectOption[] = [];
     for (const [tag, count] of entries) {
       const option: MultiselectOption = {
@@ -65,23 +43,23 @@
     return result;
   });
   const filterButtonClass = computed(() => {
-    if (filtersStore.dirty && hasSessions.value) return 'btn-warning';
+    if (filtersStore.dirty && homeStore.hasSessions) return 'btn-warning';
     return 'btn-primary';
   });
   const addCardsTooltip = computed(() => {
-    if (hasSessions.value) return undefined;
+    if (homeStore.hasSessions) return undefined;
     return 'Can only create cards if there are sessions!';
   });
   const filterTooltip = computed(() => {
-    if (hasSessions.value) return undefined;
+    if (homeStore.hasSessions) return undefined;
     return 'Can only filter cards if there are sessions!';
   });
   const clearTooltip = computed(() => {
-    if (hasSessions.value) return undefined;
+    if (homeStore.hasSessions) return undefined;
     return 'Can only clear filters when filtering is enabled!';
   });
   const flashcardsTooltip = computed(() => {
-    if (page.value.length) return undefined;
+    if (homeStore.page.length) return undefined;
     return 'Can only use flashcards if there are cards!';
   });
   async function filter() {
@@ -90,7 +68,11 @@
       Channels.filter,
       toRaw(filtersStore.filters)
     );
-    refreshNewPage(result);
+    homeStore.refreshNewPage(result);
+  }
+  async function applyFilter() {
+    await nextTick();
+    filter();
   }
   function openEditor(card: Card | null) {
     uiStore.backdropVisible = true;
@@ -100,18 +82,6 @@
     uiStore.backdropVisible = true;
     window.api.invoke(Channels.openFlashcards);
   }
-  function refreshData(data: RendererResponseDTO) {
-    page.value = data.page as Card[];
-    height.value = data.height as number;
-    nFiltered.value = data.nFiltered as number;
-    allTags.value = data.tags as Tags;
-    hasSessions.value = data.hasSessions as boolean;
-  }
-  function refreshNewPage(data: RendererResponseDTO) {
-    page.value = data.page as Card[];
-    height.value = data.height as number;
-    nFiltered.value = data.nFiltered as number;
-  }
   async function mediaClick(media: MediaFile) {
     if (media.type.startsWith('audio')) {
       const mediaPath = mediaStore.resolveMediaPath(media.path);
@@ -119,11 +89,11 @@
       audio.play();
     } else if (media.type.startsWith('image')) {
       uiStore.backdropVisible = true;
-      selectedMedia.value = media;
+      homeStore.selectedMedia = media;
     }
   }
   function mediaModalClick() {
-    selectedMedia.value = undefined;
+    homeStore.selectedMedia = undefined;
     uiStore.backdropVisible = false;
   }
   function setTier(value: CardTier) {
@@ -140,8 +110,7 @@
   }
   function windowMouseMove(e: MouseEvent) {
     if (!isResizing.value) return;
-    treeAreaWidth.value = e.clientX;
-    contestsAreaWidth.value = window.innerWidth - e.clientX;
+    homeStore.setTreeAreaWidth(e.clientX);
     window.getSelection()?.removeAllRanges();
   }
   function windowKeyDown(e: KeyboardEvent) {
@@ -164,9 +133,9 @@
 <template>
   <div class="home-page h-screen flex flex-col overflow-hidden" :class="{ resizing: isResizing }">
     <Header />
-    <MediaModal :media="selectedMedia" @click="mediaModalClick" />
+    <MediaModal :media="homeStore.selectedMedia" @click="mediaModalClick" />
     <div class="flex grow">
-      <div :style="{ width: `${treeAreaWidth}px` }">
+      <div :style="{ width: `${homeStore.treeAreaWidth}px` }">
         <TreeView class="select-none" files-hint file-icon checkbox />
       </div>
       <div
@@ -174,17 +143,17 @@
         :class="{ resizing: isResizing }"
         @mousedown="isResizing = true"
       ></div>
-      <div class="flex flex-col grow" :style="{ width: `${contestsAreaWidth}px` }">
+      <div class="flex flex-col grow" :style="{ width: `${homeStore.contestsAreaWidth}px` }">
         <div class="grow overflow-hidden">
           <CardsView
-            :page="page"
-            :height="height"
-            :n-filtered="nFiltered"
+            :page="homeStore.page"
+            :height="homeStore.height"
+            :n-filtered="homeStore.nFiltered"
             :onMediaClick="mediaClick"
             :openEditor="openEditor"
           />
         </div>
-        <div v-if="!hideFilters" class="filters-container px-2 py-1.5 whitespace-nowrap">
+        <div v-if="!homeStore.hideFilters" class="filters-container px-2 py-1.5 whitespace-nowrap">
           <div>Filters:</div>
           <Multiselect
             :options="tagsOptions"
@@ -203,7 +172,7 @@
             placeholder="Text"
             v-model.trim="filtersStore.filters.text"
             @input="filtersStore.dirty = true"
-            @keydown.enter="filter"
+            @keydown.enter="applyFilter"
           />
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-1">
@@ -236,14 +205,14 @@
           <button
             type="button"
             class="caret-button"
-            :class="{ rotated: hideFilters }"
-            @click="hideFilters = !hideFilters"
+            :class="{ rotated: homeStore.hideFilters }"
+            @click="homeStore.toggleHideFilters"
           ></button>
           <button
             type="button"
             :class="filterButtonClass"
             @click="filter"
-            :disabled="!hasSessions"
+            :disabled="!homeStore.hasSessions"
             v-tooltip="filterTooltip"
           >
             Filter
@@ -252,7 +221,7 @@
             type="button"
             class="btn-primary"
             @click="filtersStore.clearFilters"
-            :disabled="!hasSessions"
+            :disabled="!homeStore.hasSessions"
             v-tooltip="clearTooltip"
           >
             Clear
@@ -261,7 +230,7 @@
             type="button"
             class="btn-primary whitespace-nowrap"
             @click="openEditor(null)"
-            :disabled="!hasSessions"
+            :disabled="!homeStore.hasSessions"
             v-tooltip="addCardsTooltip"
           >
             Add card
@@ -269,7 +238,7 @@
           <button
             type="button"
             class="btn-primary"
-            :disabled="!page.length"
+            :disabled="!homeStore.page.length"
             @click="openFlashcards"
             v-tooltip="flashcardsTooltip"
           >
