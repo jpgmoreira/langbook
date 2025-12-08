@@ -8,9 +8,9 @@
   import { useTemplateRef, onMounted, onBeforeUnmount, ref, reactive, computed, watch } from 'vue';
   import { throttle, randomId } from '@common/utils/utils';
   // --- Exposes: ---
-  // Exposes the reset function so you can reset the graph upon prop changes:
+  // Exposes the flush function so you can flush the graph upon prop changes:
   defineExpose({
-    reset,
+    flush,
   });
   // --- Props: ---
   export type LineChartProps = {
@@ -94,7 +94,7 @@
     visible: false,
   });
   // --- Functions: ---
-  function reset() {
+  function flush() {
     const { allXValues, allXLabels, data } = props;
     xValueToLabel.clear();
     xValueToXaxis.clear();
@@ -286,8 +286,8 @@
     mainCtx.strokeStyle = '#aaa';
     // Horizontal lines:
     const x0 = _toCanvasCoordX(0, scaleX, offsetX);
-    for (let i = 1; i <= maxYvalue; i++) {
-      const y = toCanvasCoordY(i, scaleY, offsetY);
+    for (const yVal of allYvaluesSorted) {
+      const y = toCanvasCoordY(yVal, scaleY, offsetY);
       if (y < 0) break;
       if (y > yBottom) continue;
       mainCtx.beginPath();
@@ -514,7 +514,7 @@
     window.addEventListener('mousemove', windowMouseMove);
     window.addEventListener('keydown', windowKeyDown);
     window.addEventListener('keyup', windowKeyUp);
-    reset();
+    flush();
   });
   onBeforeUnmount(() => {
     window.removeEventListener('mouseup', windowMouseUp);

@@ -14,4 +14,5 @@ export enum Channels {
   openFlashcards = 'open-flashcards',
   closeBackdrop = 'close-backdrop',
   getNewCard = 'get-new-card',
+  updateGraphRecord = 'update-graph-record',
 }

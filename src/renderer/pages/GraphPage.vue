@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-  import { reactive, ref, useTemplateRef, watch } from 'vue';
+  import { reactive, useTemplateRef, watch, nextTick } from 'vue';
   import Header from '@renderer/components/Header.vue';
   import LineChart, { type LineChartProps } from '@renderer/components/UI/LineChart.vue';
   import { useGraphStore } from '@renderer/store/graph';
   import { randomId } from '@common/utils/utils';
-  import { GraphRecord } from '@common/schemas/graph';
   import { getTodayDate, incrementDate, parseNumericDate } from '@common/utils/dateUtils';
+  import { storeToRefs } from 'pinia';
   const store = useGraphStore();
+  const { records } = storeToRefs(store);
   const chartRef = useTemplateRef('chart-ref');
-  const records = ref<GraphRecord[]>([]);
   const content = reactive<LineChartProps>({
     allXValues: [],
     allXLabels: [],
@@ -18,7 +18,7 @@
     const series: LineChartProps['data'][number] = {
       id: randomId(),
       color: '#181818',
-      title: 'Time studied (minutes)',
+      title: 'Minutes studied',
       x: [],
       y: [],
     };
@@ -32,7 +32,7 @@
       series.x.push(i);
       content.allXValues.push(i);
       content.allXLabels.push(parseNumericDate(d));
-      if (records.value.length < r && records.value[r].date === d) {
+      if (r < records.value.length && records.value[r].date === d) {
         const record = records.value[r];
         series.y.push(record.minutesStudied);
         r++;
@@ -41,12 +41,13 @@
       }
     }
     content.data.push(series);
-    chartRef.value?.reset();
+    nextTick(() => {
+      chartRef.value?.flush();
+    });
   }
   watch(
-    () => store.records,
-    (newVal) => {
-      records.value = newVal;
+    records,
+    () => {
       updateData();
     },
     { deep: true, immediate: true }

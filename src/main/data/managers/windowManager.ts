@@ -12,6 +12,7 @@ import { RefreshPlace } from '@common/types/refreshPlace';
 import { DATA_DIR } from '../constants';
 import { ProfileManager } from './profileManager';
 import { CardsManager } from './cards/cardsManager';
+import { GraphRecord } from '@common/schemas/graph';
 
 /**
  * Singleton for managing application windows.
@@ -157,5 +158,9 @@ export class WindowManager {
 
   public sendDataToFlashcardsWindow(data: RendererResponseDTO) {
     this.flashcardsWindow.webContents.send(Channels.refreshData, data);
+  }
+
+  public graphRecordIncremented(record: GraphRecord) {
+    this.mainWindow.webContents.send(Channels.updateGraphRecord, record);
   }
 }

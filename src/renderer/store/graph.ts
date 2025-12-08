@@ -28,6 +28,18 @@ export const useGraphStore = defineStore('graph', {
     init(records: GraphRecord[]) {
       this.records = records;
     },
+    updateRecord(record: GraphRecord) {
+      if (!this.records.length) {
+        this.records.push(record);
+        return;
+      }
+      const last = this.records.at(-1)!;
+      if (record.date === last.date) {
+        last.minutesStudied = record.minutesStudied;
+        return;
+      }
+      this.records.push(record);
+    },
     clear() {
       this.records = [];
     },

@@ -6,6 +6,8 @@ import { Events } from '@renderer/events/events';
 import { useUIStore } from '@renderer/store/ui';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { initStores } from './initStores';
+import { GraphRecord } from '@common/schemas/graph';
+import { useGraphStore } from '@renderer/store/graph';
 
 window.api.on(Channels.startup, async (data: RendererResponseDTO) => {
   initStores(data.where);
@@ -38,4 +40,8 @@ window.api.on(Channels.closeBackdrop, () => {
 window.api.on(Channels.refreshData, (data: RendererResponseDTO) => {
   initStores(data.where);
   EventEmitter.instance.emit(Events.refreshData, data);
+});
+
+window.api.on(Channels.updateGraphRecord, (record: GraphRecord) => {
+  useGraphStore().updateRecord(record);
 });

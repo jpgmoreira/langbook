@@ -41,6 +41,7 @@ export const allowedOnChannels = Object.freeze([
   Channels.startup,
   Channels.refreshData,
   Channels.openFlashcards,
+  Channels.updateGraphRecord,
 ] as const);
 
 export interface ElectronAPI {
