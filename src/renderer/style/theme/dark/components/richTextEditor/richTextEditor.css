@@ -34,17 +34,3 @@
 .theme-dark .rte-root .context-menu > div:active {
   background: #333;
 }
-
-.theme-dark .rte-root a {
-  color: #7abaff;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(122, 186, 255, 0.4);
-  transition:
-    color 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.theme-dark .rte-root a:hover {
-  color: #a5cdff;
-  border-color: #a5cdff;
-}

@@ -15,6 +15,8 @@ export const allowedInvokeChannels = Object.freeze([
   Channels.openFlashcards,
   Channels.closeBackdrop,
   Channels.getNewCard,
+  Channels.updateFlashcardsProbabilities,
+  Channels.logout,
   // Channels to perform treeview operations:
   TreeChannels.createNode,
   TreeChannels.createNodeAbove,

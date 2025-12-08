@@ -154,6 +154,12 @@ export class ProfileManager {
     record.cards += n;
   }
 
+  public updateFlashcardsProbabilities(review: number, suspended: number) {
+    if (!this.profile) return;
+    this.profile.reviewProbability = review;
+    this.profile.suspendedProbability = suspended;
+  }
+
   public logout() {
     EventEmitter.instance.emit(Events.clearProfileData);
   }

@@ -52,6 +52,11 @@ ipcMain.handle(
   }
 );
 
+ipcMain.handle(Channels.logout, async (_: IpcMainInvokeEvent): Promise<RendererResponseDTO> => {
+  ProfileManager.instance.logout();
+  return loadStartupData();
+});
+
 ipcMain.handle(Channels.openEditor, async (_: IpcMainInvokeEvent, card: Card | null) => {
   WindowManager.instance.openEditor(card);
 });
@@ -129,5 +134,12 @@ ipcMain.handle(
   Channels.getNewCard,
   async (_: IpcMainInvokeEvent): Promise<GetNewCardResponseDTO> => {
     return CardsManager.instance.getNextCard();
+  }
+);
+
+ipcMain.handle(
+  Channels.updateFlashcardsProbabilities,
+  async (_: IpcMainInvokeEvent, review: number, suspended: number) => {
+    ProfileManager.instance.updateFlashcardsProbabilities(review, suspended);
   }
 );

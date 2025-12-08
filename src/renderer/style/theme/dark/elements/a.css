@@ -1,0 +1,13 @@
+.theme-dark a:not(.router-link) {
+  color: #7abaff;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(122, 186, 255, 0.4);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.theme-dark a:hover:not(.router-link) {
+  color: #a5cdff;
+  border-color: #a5cdff;
+}

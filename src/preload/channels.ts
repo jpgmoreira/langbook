@@ -5,6 +5,7 @@ export enum Channels {
   renameProfile = 'rename-profile',
   deleteProfile = 'delete-profile',
   login = 'login',
+  logout = 'logout',
   openEditor = 'open-editor',
   closeEditor = 'close-editor',
   upsertCard = 'upsert-card',
@@ -15,4 +16,5 @@ export enum Channels {
   closeBackdrop = 'close-backdrop',
   getNewCard = 'get-new-card',
   updateGraphRecord = 'update-graph-record',
+  updateFlashcardsProbabilities = 'update-flashcards-probabilities',
 }

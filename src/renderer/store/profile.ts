@@ -74,5 +74,14 @@ export const useProfileStore = defineStore('profile', {
       }
       return result;
     },
+    async updateFlashcardsProbabilities(review: number, suspended: number) {
+      await window.api.invoke(Channels.updateFlashcardsProbabilities, review, suspended);
+      this.currProfile!.reviewProbability = review;
+      this.currProfile!.suspendedProbability = suspended;
+    },
+
+    async logout() {
+      return await window.api.invoke(Channels.logout);
+    },
   },
 });

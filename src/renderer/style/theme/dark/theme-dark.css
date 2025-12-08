@@ -1,10 +1,12 @@
 @import './pages/login.css';
 @import './pages/home.css';
 @import './pages/editor.css';
+@import './pages/settings.css';
 @import './pages/flashcards.css';
 @import './elements/buttons.css';
 @import './elements/controls.css';
 @import './elements/table.css';
+@import './elements/a.css';
 @import './elements/scrollbar.css';
 @import './elements/tooltip.css';
 @import './elements/text.css';

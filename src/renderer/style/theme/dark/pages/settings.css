@@ -1,0 +1,13 @@
+.theme-dark .settings-page input[type='number'] {
+  max-width: 100px;
+  text-align: center;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  margin: 0;
+}
+
+.theme-dark .settings-page input[type='number']::-webkit-inner-spin-button,
+.theme-dark .settings-page input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

@@ -16,6 +16,7 @@ window.api.on(Channels.startup, async (data: RendererResponseDTO) => {
   const route = data.profile ? '/home' : '/login';
   document.title = title;
   await router.replace(route);
+  EventEmitter.instance.emit(Events.clearProfileData);
   EventEmitter.instance.emit(Events.refreshData, data);
 });
 
