@@ -161,7 +161,7 @@ export class CardsManager {
     }
     if (tries >= maxTries) {
       for (const s of CARD_STATUSES) {
-        if (this.cardsByStatus[status].length > 0) {
+        if (this.cardsByStatus[s].length > 0) {
           status = s;
           break;
         }
