@@ -5,7 +5,7 @@
   import { useGraphStore } from '@renderer/store/graph';
   import { randomId } from '@common/utils/utils';
   import { GraphRecord } from '@common/schemas/graph';
-  import { parseNumericDate } from '@common/utils/dateUtils';
+  import { getTodayDate, incrementDate, parseNumericDate } from '@common/utils/dateUtils';
   const store = useGraphStore();
   const chartRef = useTemplateRef('chart-ref');
   const records = ref<GraphRecord[]>([]);
@@ -18,19 +18,27 @@
     const series: LineChartProps['data'][number] = {
       id: randomId(),
       color: '#181818',
-      title: 'Minutes studied',
+      title: 'Time studied (minutes)',
       x: [],
       y: [],
     };
     content.allXValues = [];
     content.allXLabels = [];
     content.data = [];
-    for (let i = 0; i < records.value.length; i++) {
-      const record = records.value[i];
+    const today = getTodayDate();
+    const minDate = records.value.length ? records.value[0].date : today;
+    let r = 0;
+    for (let d = minDate, i = 0; d <= today; d = incrementDate(d), i++) {
       series.x.push(i);
-      series.y.push(record.minutesStudied);
       content.allXValues.push(i);
-      content.allXLabels.push(parseNumericDate(record.date));
+      content.allXLabels.push(parseNumericDate(d));
+      if (records.value.length < r && records.value[r].date === d) {
+        const record = records.value[r];
+        series.y.push(record.minutesStudied);
+        r++;
+      } else {
+        series.y.push(0);
+      }
     }
     content.data.push(series);
     chartRef.value?.reset();
