@@ -17,7 +17,7 @@
   function updateData() {
     const series: LineChartProps['data'][number] = {
       id: randomId(),
-      color: '#181818',
+      color: '#3B82F6',
       title: 'Minutes studied',
       x: [],
       y: [],

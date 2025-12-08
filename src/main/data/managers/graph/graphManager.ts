@@ -15,6 +15,7 @@ export class GraphManager {
   static #instance: GraphManager;
 
   private timer: ReturnType<typeof setInterval> | undefined = undefined;
+  private isUpdating = false;
 
   private constructor() {}
 
@@ -26,11 +27,24 @@ export class GraphManager {
   }
 
   public async loadProfile(profileId: string) {
+    const records = await GraphDbManager.instance.loadProfile(profileId);
+    const oneMinute = 60_000;
+    let lastUpdated = Date.now();
     this.timer = setInterval(async () => {
-      const record = await GraphDbManager.instance.incrementTodayRecord();
-      WindowManager.instance.graphRecordIncremented(record);
-    }, 3000);
-    return GraphDbManager.instance.loadProfile(profileId);
+      if (this.isUpdating) return;
+      const now = Date.now();
+      const minutesPassed = Math.floor((now - lastUpdated) / oneMinute);
+      if (minutesPassed <= 0) return;
+      lastUpdated = now;
+      this.isUpdating = true;
+      try {
+        const record = await GraphDbManager.instance.incrementTodayRecord(minutesPassed);
+        WindowManager.instance.graphRecordUpdated(record);
+      } finally {
+        this.isUpdating = false;
+      }
+    }, oneMinute);
+    return records;
   }
 
   public clear() {

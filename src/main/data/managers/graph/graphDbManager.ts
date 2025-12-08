@@ -51,18 +51,19 @@ export class GraphDbManager {
     const todayDate = getTodayDate();
     const existing = await this.db.get('SELECT * FROM graph WHERE date = ?', todayDate);
     if (!existing) {
-      await this.db.run('INSERT INTO graph (date, minutesStudied) VALUES (?, ?)', todayDate, 0);
+      await this.db.run('INSERT INTO graph (date, minutesStudied) VALUES (?, 0)', todayDate);
     }
   }
 
-  public async incrementTodayRecord(): Promise<GraphRecord> {
+  public async incrementTodayRecord(amount: number): Promise<GraphRecord> {
     if (!this.db) throw new Error('Database not initialized');
     const todayDate = getTodayDate();
     const record = (await this.db.get(
-      `INSERT INTO graph (date, minutesStudied) VALUES (?, 0)
-       ON CONFLICT(date) DO UPDATE SET minutesStudied = minutesStudied + 1
+      `INSERT INTO graph (date, minutesStudied) VALUES (?, 1)
+       ON CONFLICT(date) DO UPDATE SET minutesStudied = minutesStudied + ?
        RETURNING *`,
-      todayDate
+      todayDate,
+      amount
     )) as GraphRecord;
     return record;
   }

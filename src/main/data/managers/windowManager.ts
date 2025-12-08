@@ -160,7 +160,7 @@ export class WindowManager {
     this.flashcardsWindow.webContents.send(Channels.refreshData, data);
   }
 
-  public graphRecordIncremented(record: GraphRecord) {
+  public graphRecordUpdated(record: GraphRecord) {
     this.mainWindow.webContents.send(Channels.updateGraphRecord, record);
   }
 }
