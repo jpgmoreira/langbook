@@ -126,10 +126,10 @@
       <div class="absolute border border-transparent" :style="ghostStyle"></div>
       <div class="absolute top-0 left-0 bottom-0 w-full flex flex-col" :style="pageStyle">
         <div v-for="card in props.page" class="w-fit min-w-full">
-          <div class="card-number flex justify-between whitespace-nowrap pb-0.5 px-1">
+          <div class="card-number flex justify-between whitespace-nowrap px-1">
             <div>
               <span>{{ card.index! + 1 }}</span>
-              <span v-if="card.core" class="text-sm ml-2">(Core)</span>
+              <span v-if="card.core" class="text-sm core">(Core)</span>
             </div>
             <span class="text-sm">Created: {{ parseTimestamp(card.createdAt) }}</span>
           </div>
