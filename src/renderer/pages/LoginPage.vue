@@ -192,7 +192,7 @@
         </table>
       </div>
     </div>
-    <footer class="relative flex p-2">
+    <footer class="flex p-2">
       <div class="flex grow gap-1 justify-center">
         <button type="button" class="btn-primary" @click="openCreateModal">Create</button>
         <button type="button" class="btn-primary" @click="login" :disabled="!selected">
@@ -210,8 +210,6 @@
           Delete
         </button>
       </div>
-      <!-- TODO: About -->
-      <button type="button" class="btn-primary absolute right-2">About</button>
     </footer>
   </div>
 </template>

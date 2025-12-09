@@ -104,7 +104,9 @@ export class ProfileManager {
     }
     const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
     record.name = name;
-    // TODO: Rename profile in their folder.
+    const fPath = path.join(DATA_DIR, 'profileData', profileId, 'profile.json');
+    const fProxy = new FileProxy(fPath, getEmptyProfile(profileId, name));
+    fProxy.proxy.name = name;
     return { status: 'success' };
   }
 
