@@ -12,6 +12,7 @@ import { Events } from '@main/events/events';
 import { GenericResponseDTO } from '@common/dto/genericResponseDTO';
 import { buildId, sleep } from '@common/utils/utils';
 import { ensureDirExists } from '../utils';
+import fs from 'node:fs';
 
 EventEmitter.instance.on(Events.clearProfileData, () => {
   ProfileManager.instance.clear();
@@ -113,7 +114,8 @@ export class ProfileManager {
   public async deleteProfile(profileId: string): Promise<GenericResponseDTO> {
     await sleep(5000);
     try {
-      // TODO: Perform entire profile deletion.
+      const folderPath = path.join(DATA_DIR, 'profileData', profileId);
+      fs.rmSync(folderPath, { recursive: true, force: true });
       this.registry.profileRecords = this.registry.profileRecords.filter((p) => p.id !== profileId);
     } catch (err) {
       console.log('Error while deleting profile:', err);
