@@ -45,6 +45,7 @@ export const useFiltersStore = defineStore('filters', {
     },
     changeTagsMode(mode: TagsMode) {
       this.filters.tagsMode = mode;
+      this.dirty = true;
     },
     toggleListSelector<T>(value: T, list: T[]) {
       if (list.includes(value)) {
@@ -69,7 +70,8 @@ export const useFiltersStore = defineStore('filters', {
         this.filters.tags.length ||
         this.filters.text.trim() ||
         this.filters.tiers.length ||
-        this.filters.statuses.length
+        this.filters.statuses.length ||
+        this.filters.core.length
       ) {
         this.dirty = true;
       }
@@ -77,6 +79,7 @@ export const useFiltersStore = defineStore('filters', {
       this.filters.text = '';
       this.filters.tiers = [];
       this.filters.statuses = [];
+      this.filters.core = [];
     },
   },
 });

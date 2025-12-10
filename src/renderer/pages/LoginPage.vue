@@ -92,6 +92,7 @@
         <div class="mb-1">Create a new profile:</div>
         <input
           type="text"
+          spellcheck="false"
           ref="create-input"
           v-model.trim="names.create"
           placeholder="Profile Name..."
@@ -113,6 +114,7 @@
         <div class="mb-1">Rename the "{{ selected?.name }}" profile:</div>
         <input
           type="text"
+          spellcheck="false"
           ref="rename-input"
           v-model.trim="names.rename"
           :placeholder="selected?.name"
