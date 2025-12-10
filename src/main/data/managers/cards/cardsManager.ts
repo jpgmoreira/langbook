@@ -11,7 +11,6 @@ import { DATA_DIR } from '@main/data/constants';
 import * as cheerio from 'cheerio';
 import fs from 'node:fs';
 import path from 'node:path';
-import sharp from 'sharp';
 import { WindowManager } from '@main/data/managers/windowManager';
 import { RendererResponseDTO } from '@common/dto/rendererResponseDTO';
 import { RefreshPlace } from '@common/types/refreshPlace';
@@ -257,8 +256,7 @@ export class CardsManager {
         const base64 = src.slice(src.indexOf(';base64,') + ';base64,'.length);
         buffer = Buffer.from(base64, 'base64');
       }
-      const pngBuffer = await sharp(buffer).png().toBuffer();
-      fs.writeFileSync(fPath, pngBuffer);
+      fs.writeFileSync(fPath, buffer);
     }
     // Necessary to update the src in the images in the fields:
     card.front = $front.html();
