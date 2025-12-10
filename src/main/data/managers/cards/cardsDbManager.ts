@@ -53,18 +53,18 @@ export class CardsDbManager {
   }
 
   public async loadAllCards(): Promise<Card[]> {
-    if (!this.db) return [];
+    if (!this.db) throw new Error('Db not initialized');
     const result = (await this.db.all('SELECT * FROM cards')) as DBCard[];
     return result.map(this.deserializeCard);
   }
 
   public async deleteCard(cardId: string) {
-    if (!this.db) return;
+    if (!this.db) throw new Error('Db not initialized');
     await this.db.run('DELETE FROM cards WHERE id = ?', cardId);
   }
 
   public async insertCard(card: Card) {
-    if (!this.db) return;
+    if (!this.db) throw new Error('Db not initialized');
     const serialized = this.serializeCard(card);
     await this.db.run(
       `
@@ -93,7 +93,7 @@ export class CardsDbManager {
   }
 
   public async updateCard(card: Card) {
-    if (!this.db) return;
+    if (!this.db) throw new Error('Db not initialized');
     const serialized = this.serializeCard(card);
     await this.db.run(
       `

@@ -137,7 +137,7 @@ export class ProfileManager {
   }
 
   public getStatusProbabilities() {
-    if (!this.profile) return; // TODO: Convert this and all guard-condition returns to exceptions. Remove ! where they are used.
+    if (!this.profile) throw new Error('Invalid profile');
     return {
       reviewProbability: this.profile.reviewProbability,
       suspendedProbability: this.profile.suspendedProbability,
@@ -145,21 +145,21 @@ export class ProfileManager {
   }
 
   public addSessions(n: 1 | -1) {
-    const profileId = this.profile?.id;
-    if (!profileId) return;
+    if (!this.profile) throw new Error('Invalid profile');
+    const profileId = this.profile.id;
     const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
     record.sessions += n;
   }
 
   public addCards(n: 1 | -1) {
-    const profileId = this.profile?.id;
-    if (!profileId) return;
+    if (!this.profile) throw new Error('Invalid profile');
+    const profileId = this.profile.id;
     const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
     record.cards += n;
   }
 
   public updateFlashcardsProbabilities(review: number, suspended: number) {
-    if (!this.profile) return;
+    if (!this.profile) throw new Error('Invalid profile');
     this.profile.reviewProbability = review;
     this.profile.suspendedProbability = suspended;
   }
