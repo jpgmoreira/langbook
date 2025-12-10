@@ -286,10 +286,13 @@
     mainCtx.strokeStyle = '#aaa';
     // Horizontal lines:
     const x0 = _toCanvasCoordX(0, scaleX, offsetX);
+    let lastY = 0;
     for (const yVal of allYvaluesSorted) {
       const y = toCanvasCoordY(yVal, scaleY, offsetY);
       if (y < 0) break;
       if (y > yBottom) continue;
+      if (Math.abs(y - lastY) < minYlabelDistance) continue;
+      lastY = y;
       mainCtx.beginPath();
       mainCtx.moveTo(xLeft, y);
       mainCtx.lineTo(x0, y);
