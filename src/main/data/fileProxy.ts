@@ -4,7 +4,7 @@ import fs from 'fs';
 import util from 'util';
 import path from 'path';
 
-export const INDENT = 2;
+export const INDENT = 0;
 export const DISK_FLUSH_DEBOUNCE = 500; // Debounce in milliseconds to write file to disk.
 
 /**
