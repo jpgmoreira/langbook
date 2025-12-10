@@ -461,6 +461,7 @@ export class TreeManager {
     }
     this.nSelectedFiles = 0;
     this.nSelectedNodes = 0;
+    this.selectedSessions.length = 0;
     this._proxy!.queueWrite();
   }
 
@@ -469,7 +470,10 @@ export class TreeManager {
     for (const node of this.expandedFlat) {
       node.selected = true;
       if (node.type === 'dir') node.nSelDesc = node.nDesc;
-      if (node.type === 'file') this.nSelectedFiles++;
+      if (node.type === 'file') {
+        this.nSelectedFiles++;
+        this.selectedSessions.push(node.sessionId);
+      }
     }
     this.nSelectedNodes = this.expandedFlat.length;
     this._proxy!.queueWrite();
