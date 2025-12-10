@@ -285,6 +285,9 @@
     mainCtx.setLineDash([6, 2]);
     mainCtx.strokeStyle = '#aaa';
     // Horizontal lines:
+    // (in this version of LineChart, I only draw horizontal lines
+    //  for the Y values that appear in the input, and also consider
+    //  a minimum distance between horizontal lines).
     const x0 = _toCanvasCoordX(0, scaleX, offsetX);
     let lastY = 0;
     for (const yVal of allYvaluesSorted) {
