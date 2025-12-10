@@ -129,6 +129,7 @@ export class ProfileManager {
 
   private loadProfile(profileId: string) {
     const record = this.registry.profileRecords.find((p) => p.id === profileId)!;
+    record.lastAccess = Date.now();
     const filePath = path.join(DATA_DIR, 'profileData', profileId, 'profile.json');
     this._currProfileProxy = new FileProxy(filePath, getEmptyProfile(profileId, record.name));
     this.registry.currProfileId = profileId;
