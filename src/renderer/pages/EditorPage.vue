@@ -428,13 +428,15 @@
         <SelectionList :options="STATUS_OPTIONS" :selected="selectedStatus" @toggle="setStatus" />
       </div>
       <div class="flex items-center gap-1 select-none">
-        <label for="core-checkbox">Core:</label>
+        <label for="core-checkbox" class="cursor-pointer">Core:</label>
         <input type="checkbox" id="core-checkbox" name="core-checkbox" v-model="card.core" />
       </div>
     </div>
     <footer class="flex justify-around mt-auto">
       <div class="flex items-center" v-tooltip="allowReversedTooltip">
-        <label class="whitespace-nowrap mr-1" for="allow-reversed">Allow reversed</label>
+        <label class="whitespace-nowrap mr-1 cursor-pointer" for="allow-reversed">
+          Allow reversed
+        </label>
         <input
           type="checkbox"
           id="allow-reversed"

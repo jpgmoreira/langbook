@@ -123,7 +123,7 @@
             />
           </div>
           <div class="flex items-center select-none gap-1">
-            <label for="core-checkbox">Core:</label>
+            <label for="core-checkbox" class="cursor-pointer">Core:</label>
             <input
               type="checkbox"
               id="core-checkbox"
