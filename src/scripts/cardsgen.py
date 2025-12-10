@@ -45,7 +45,7 @@ def main():
     print(f"Session ID: {session_id}")
 
     # Connect to SQLite database
-    conn = sqlite3.connect("db.sqlite")
+    conn = sqlite3.connect("cards.sqlite")
     cursor = conn.cursor()
 
     # Create table "cards"
@@ -99,7 +99,7 @@ def main():
 
     conn.commit()
     conn.close()
-    print(f"{N} cards generated in 'db.sqlite'.")
+    print(f"{N} cards generated in 'cards.sqlite'.")
 
 
 if __name__ == "__main__":

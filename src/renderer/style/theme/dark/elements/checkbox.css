@@ -10,7 +10,7 @@
   position: relative;
 
   /* base */
-  background-color: #59626b; /* requested base color */
+  background-color: #b7bec5; /* requested base color */
   border: 1px solid #30343a;
   border-radius: 4px;
   transition:
@@ -22,7 +22,7 @@
 /* hover and focus */
 .theme-dark .flashcards-page input[type='checkbox']:hover,
 .theme-dark .editor-page input[type='checkbox']:hover {
-  border-color: #4b5157;
+  border-color: #b7bec5;
 }
 
 .theme-dark .flashcards-page input[type='checkbox']:focus,
