@@ -2,7 +2,7 @@ import { app, BrowserWindow, globalShortcut, protocol } from 'electron';
 import type { Event, WebContents, WebPreferences } from 'electron';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { WindowManager } from './data/managers/windowManager';
-import path from 'node:path';
+import { fileURLToPath } from 'url';
 
 app.whenReady().then(() => {
   // Set app user model id for windows
@@ -10,8 +10,14 @@ app.whenReady().then(() => {
   // Create a custom protocol for loading local files:
   // [https://stackoverflow.com/a/61623585/7974053]
   protocol.registerFileProtocol('safe-file', (request, callback) => {
-    const url = request.url.replace('safe-file://', '');
-    callback(decodeURIComponent(path.resolve(url)));
+    try {
+      const fileUrl = request.url.replace('safe-file://', 'file://');
+      const filePath = fileURLToPath(fileUrl);
+      callback({ path: filePath });
+    } catch (err) {
+      console.error('safe-file resolution error:', err);
+      callback({ path: '' });
+    }
   });
 
   // Default open or close DevTools by F12 in development

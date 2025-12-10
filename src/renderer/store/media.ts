@@ -26,7 +26,10 @@ export const useMediaStore = defineStore('media', {
       this.mediaDir = '';
     },
     resolveMediaPath(mediaPath: string) {
-      return `safe-file://${this.mediaDir}/${mediaPath}`;
+      const base = this.mediaDir.replace(/\\/g, '/');
+      const prefix = base.startsWith('/') ? 'safe-file://' : 'safe-file:///';
+      const encodedFile = encodeURIComponent(mediaPath);
+      return `${prefix}${base}/${encodedFile}`;
     },
     processRteImages(html: string) {
       if (!html) return html;
