@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import { ref, reactive, useTemplateRef, onMounted } from 'vue';
+  import DOMPurify from 'dompurify';
   import Toolbar from './Toolbar.vue';
 
   // --- Exposes: ---
@@ -7,7 +8,7 @@
   defineExpose({
     focus,
     getContent,
-    refresh,
+    refresh, // Refreshes content based on the "initial" prop.
     drop,
   });
 
@@ -157,6 +158,7 @@
     const clone = rteRef.value.cloneNode(true) as HTMLElement;
     let content = normalizeLines(clone);
     content = linkifyText(content);
+    content = DOMPurify.sanitize(content);
     return content;
   }
 
