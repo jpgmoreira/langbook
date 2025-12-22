@@ -102,8 +102,8 @@
             // remove comments/spaces and check if innerHTML contains anything "visible"
             divInner.replace(/<!--[\s\S]*?-->/g, '').replace(/(\s|&nbsp;|<br\/?>)*/gi, '') === '';
           if (isEmptyDiv) {
-            // Empty line -> represent as <br>
-            lines.push('<br>');
+            // Empty line
+            lines.push('');
           } else {
             // DIV with content -> use the div's innerHTML as a line
             lines.push(divInner);
