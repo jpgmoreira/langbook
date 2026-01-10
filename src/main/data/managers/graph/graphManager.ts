@@ -30,6 +30,7 @@ export class GraphManager {
     const records = await GraphDbManager.instance.loadProfile(profileId);
     const oneMinute = 60_000;
     let lastUpdated = Date.now();
+    if (this.timer) clearInterval(this.timer);
     this.timer = setInterval(async () => {
       if (this.isUpdating) return;
       const now = Date.now();
