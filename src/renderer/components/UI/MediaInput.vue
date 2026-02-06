@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   /**
-   * "items" array must contain objects in the form:
+   * The "items" prop must contain an array with objects in the form:
    * {
    *      name: string,
    *      path: string,
